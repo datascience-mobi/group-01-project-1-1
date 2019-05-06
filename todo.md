@@ -11,8 +11,7 @@
   - data which are not brain
         cancer
     
-        allDepMapData$annotation = allDepMapData$annotation[allDepMapData$annotation$  
-        Primary.Disease == "Brain Cancer", ]
+        allDepMapData$annotation = allDepMapData$annotation[allDepMapData$annotation$Primary.Disease == "Brain Cancer", ]
 
   - (remove source, gender, aliases?)
 
