@@ -1,0 +1,89 @@
+---
+title: "Project-01-group-01"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Chosen cancer type of interest
+
+Brain cancer
+
+
+## Dataset
+
+Loading data set as follows:
+
+```{r Data}
+allDepMapData = readRDS("~/GitHub/project-01-group-01/DepMap19Q1_allData.RDS")
+names(allDepMapData)
+```
+
+The list named as `allDepMapData` consists of the following matrices:
+
+* **Gene expression:**  consists of gene TPM (transcripts per million) values, which reflect the level of gene expression. Higher values suggest over expression of genes and vice versa. The rows are the gene names and the columns the cancer cell line identifiers.
+```{r Visualising espression}
+dim(allDepMapData$expression)
+```
+
+* **Gene copy number:** consists of gene copy number (CN) values. These values reflect the copy number level per gene, higher values (CN > 2) might reflect amplification, lower values (CN < 2) might reflect deletion. The rows are the gene names and the columns the cancer cell line identifiers.
+
+```{r Visualising CN}
+dim(allDepMapData$copynumber)
+```
+
+* ** Gene mutations:** annotation file for the various mutations observed in a sample. The `isDeleterious` flag specifies if the mutations has a functional effect or not.
+
+* ** Gene knockdown (CERES):** consists of gene knockdown scores. The score shows how essential the gene is for cell survival. Smaller values reflect higher essentiality. The rows are the gene names and the columns the cancer cell line identifiers.
+
+```{r Visulalising CERES}
+dim(allDepMapData$kd.ceres)
+```
+
+* **Gene knockdown (probability):** probability values for the effect of gene knockdown. A higher probability signifies that knocking down the gene very likely reduces cell proliferation. 
+
+```{r Visualising Prob}
+dim(allDepMapData$kd.prob)
+```
+
+* **Annotation:** gives information regarding the cell lines.
+
+```{r Visualising Annotation}
+dim(allDepMapData$annotation)
+colnames(allDepMapData$annotation)
+rownames(allDepMapData$annotation)
+```
+
+
+## Things to do
+
+* Identification of 3-5 most prominent mutations or genetic alterations driving cancer growth (non-drugable)
+
+* Identification of appropriate cell line models (differ between cell lines with and without driver mutation)
+
+* Read papers to extract interesting questions we want to address
+
+* Timetable, summary of literature
+
+* Data cleanup, exploration, reduction and modelling
+
+
+## Questions 
+
+
+## Data cleanup
+
+* Extracting cell lines with brain cancer as primary disease
+
+```{r}
+Celllines_BC <- subset(allDepMapData$annotation, Primary.Disease == "Brain Cancer")
+summary(Celllines_BC)
+```
+
+
+# Literature review on brain cancer
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
