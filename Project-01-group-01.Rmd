@@ -73,6 +73,8 @@ rownames(allDepMapData$annotation)
 
 ## Questions 
 
+* Importan driver mutations (especially non-drugable) and associated passenger mutations? 
+* Shall we just focus on glioblastoma? (28 instead of 44 cell lines)
 
 ## Data cleanup
 
@@ -85,5 +87,52 @@ summary(Celllines_BC)
 
 
 # Literature review on brain cancer
+
+## TCGA's Study of Glioblastoma Multiforme (GBM)
+
+* most common, fast-growing, malignent brain tumor in adults with poor prognosis and survivability (less than 15 months) and no effective long-term treatments
+
+### Comprehensive genomic characterization defines human glioblastoma genes and core pathways (2008)
+
+* 91 samples (72 untreated and 19 treated cases)
+
+* High level focal amplifications for *EGFR* (41/91), *CDK4*, *PDGFRA*, *MDM2* and *MDM4*
+
+* Significant mutated somatic genes: *TP53*, *PTEN*, *NF1*, *EGFR*, *ERBB2*, *RB1*
+
+* Frequent genetic alterations in three critical signalling pathways:
+  + RB pathway (most common: homozygotic deletion of *CDKN2A/CDKN2B* (55%/53%) or amplification of *CDK4* (14%) locus)
+  + Inactivation of p53 pathway by *ARF* (55%) deletion (followed by *TP53* mutation), *MDM2* (11%) or *MDM4* (4%) amplificaton, additionally to *p53* mutation
+  + RTK/RAS/PI3k pathway: deletions or mutations of *PTEN* and at least of one RTK (*EGFR*, *ERBB2*, *PDGFRA* 13% , *MET* 4%)
+  
+* *MGMT* methylation status (promotor of DNA repair enzyme) predicts sensitivity to alkylating agents (treatment method which leads to cell death). But cells develop resistancy and a hypermutator phenotype (MMR-defective) ... **selective strategy to target mismatch-repair-deficient cells combinated with alkylating therapy to prevent resistance** (didnt quite understand the molecular background, but this outlook was part of the discussion)
+
+
+### The Somatic genomic landscape of glioblastoma (2013)
+
+* GBM growth is driven by a signaling network with functional redundancy that permits adaptation in response to targeted molecular treatments
+
+* GBM subtypes with molecular and epigenetic differences, which may affect clincical outcome and sensitivity of individual tumors to therapy
+  + Subtypes: proneural, nerual, classical and mesenchymal
+  + Proneural with G-CIMP and non-G-CIMP phenotype
+  + survival advantage of proneural subtype with G-cIMP **(-> target genes affected by G-CIMP phenotype likely contribute to improved diagnosis; possible with our data to analyze?)**
+  + least survivability with non-G-CIMP proneural GBMs and not mesenchymal GBM
+  
+* *MGMT* DNA Methylation as a predictive biomarker, but just in GBM classical subtype
+
+* 40% of tumors harbor at least one nonsynonymous mutation among the chromatin-modifier genes (chromatin organization may play role in GBM pathology), additionally to alterations in siganture oncogenes like *EGFR*
+
+* high frequency of complex *EGFR* fusion and deletion variants (also *MDM2* and *CDK4*) -> different *EGFR* alterations might exist concurrently in a tumor and yield differential biological activities/responses to any given targeted inhibitor **(find common second-site targets. Possible?)**
+    
+* Confirms results of 1st paper (251 samples):
+  + at least one RTK was altered in 67% of GBM overall (mostly *EGFR* 57% and *PDGFRA* 13%)
+  + 25% of GBM show PI3K-kinase mutation and 35% *PTEN* mutation/deletion (mutually exclusive)
+  + 10% of GBM had *NF1* mutated or deleted
+  + 90% of GBM had at least one alteration in PI3K pathway, 40% had more than one
+  + p53 pathway was dysregulated in 85% through mutation/deletion of *TP53* (28%), amplification of *MDM1/2/4* (15%) oder deletion of *CDKN2A* (58%); mutually exclusivity between *TP53* and *MDM/CDKN2A*
+  + 80% of tumors had alteration of Rb function: *CDKN2A* 56%, *CDK4/6* 16% and *RB1* 8%
+  
+* subset of individuals survives more than 3 years
+  + **Question: factors for long-term survival (guess not realizable with our data)** 
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
