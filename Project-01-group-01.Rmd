@@ -35,9 +35,9 @@ dim(allDepMapData$expression)
 dim(allDepMapData$copynumber)
 ```
 
-* ** Gene mutations:** annotation file for the various mutations observed in a sample. The `isDeleterious` flag specifies if the mutations has a functional effect or not.
+* **Gene mutations:** annotation file for the various mutations observed in a sample. The `isDeleterious` flag specifies if the mutations has a functional effect or not.
 
-* ** Gene knockdown (CERES):** consists of gene knockdown scores. The score shows how essential the gene is for cell survival. Smaller values reflect higher essentiality. The rows are the gene names and the columns the cancer cell line identifiers.
+* **Gene knockdown (CERES):** consists of gene knockdown scores. The score shows how essential the gene is for cell survival. Smaller values reflect higher essentiality. The rows are the gene names and the columns the cancer cell line identifiers.
 
 ```{r Visulalising CERES}
 dim(allDepMapData$kd.ceres)
@@ -73,7 +73,7 @@ rownames(allDepMapData$annotation)
 
 ## Questions 
 
-* Importan driver mutations (especially non-drugable) and associated passenger mutations? 
+* Important driver mutations (especially non-drugable) and associated passenger mutations? 
 * Shall we just focus on glioblastoma? (28 instead of 44 cell lines)
 
 ## Data cleanup
