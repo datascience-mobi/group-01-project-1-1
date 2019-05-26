@@ -31,16 +31,16 @@ sum(is.na(relevant.mutations)) //0, some matrices in this list have some though
 copy.clean = copy.clean[-which(apply(copy.clean, 1, function(x) {sum(is.na(x))}) > 0), ]
 sum(is.na(copy.clean)) //0
 ```
-  + expression matrix is supposed to be > 0
+  +  expression matrix is supposed to be > 0
   ```
   sum(exp.clean < 0) //0
   ```
-  + kd.prob matrix is supposed to be 0<=x<=1
+  +  kd.prob matrix is supposed to be 0<=x<=1
   ``` 
   sum(prob.clean < 0) //0
   sum(prob.clean > 1) //0
   ```
-  + check for values = 0
+  +  check for values = 0
   
   ```
   sum(ceres.clean == 0) //28
