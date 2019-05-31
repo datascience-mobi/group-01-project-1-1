@@ -98,12 +98,12 @@ The list named as `allDepMapData` consists of the following matrices:
 
 # Literature review on brain cancer
 
-## TCGA’s Study of Glioblastoma Multiforme (GBM)
+## TCGA's Study of Glioblastoma Multiforme (GBM)
 
   - most common, fast-growing, malignent brain tumor in adults with poor
     prognosis and survivability (less than 15 months) and no effective
     long-term
-treatments
+    treatments
 
 ### Comprehensive genomic characterization defines human glioblastoma genes and core pathways (2008)
 
@@ -128,7 +128,7 @@ treatments
   - *MGMT* methylation status (promotor of DNA repair enzyme) predicts
     sensitivity to alkylating agents (treatment method which leads to
     cell death). But cells develop resistancy and a hypermutator
-    phenotype (MMR-defective) … **selective strategy to target
+    phenotype (MMR-defective) . **selective strategy to target
     mismatch-repair-deficient cells combinated with alkylating therapy
     to prevent resistance** (didnt quite understand the molecular
     background, but this outlook was part of the discussion)
@@ -241,6 +241,85 @@ data)**
       - **KM-plots to show that survivability of the patient is
         positively correlated with the number of SL pairs
         counderexpressed**
+
+## Markers for GBM SUbtypes
+
+### Classical:
+
+  -> chromosome 7 amplification paired with chromosome 10 loss
+  
+  - **EGFR:** high-level amfplification of CN
+              high-level expression
+              partly point mutations or vIII EGFR mutation
+        
+  - **TP53:** no mutation (although most frequent mutated gene in GBM)
+  
+  - **IDH1:** no mutation
+  
+  - **PDGFRA:** no mutation
+                low-level gene expression
+  
+  - **CDKN2A:** low-level gene expression
+                homozygous deletion
+          
+  - **RB1:** less deletion events compared to other subtypes
+  
+  - **Downregulation of:** Bid, Bak, cleaved caspase 7 and 9
+  
+  - **High expression of:** **NES** (neural precursor and stem cell marker)
+                            **NOTCH3/NOTCH1/JAG1/CFNG** (Notch pathway)
+                            **SMO/GAS1/GLI2** (sonic hedgehog pathway)
+
+
+### Mesenchymal
+
+  - **NF1:** hemizygous deletion
+             low-level gene expression
+             no methylation
+             comutated with **PTEN**
+             half of the **NF1** mutation are in this subtype
+        
+  - **TP53:** partly mutated
+  
+  - **High expression of:** **TRADD/RELB/TNFRSF1A** (TNF superfamily pathway and NF-kB pathway)
+  
+  - **Expression of mesenchymal markers:** **NIET/CHI3L1/YKL40**
+  
+  - **Expression of endothelial markers:** **CD31/VEGFR-2**
+  
+  - **Higher activity of:** **CD44/MERTK**
+
+
+### Proneural
+
+  - **PDGFR:** high-level amplification 
+               highly overeexpressed
+               few mutations
+            
+  - **IDH1:** highly point mutated (if IDH1 is mutated, usually PDGFRA is not)
+  
+  - **TP53:** highly mutated
+              heterozygous deletion
+              
+  -> only on 50% is chromosome 7 amplificated and chromosome 10 lost
+  
+  - **PIK3CA/PIK3RI:** mutated (but PDGFRA is not instead)
+  
+  - **PTEN:** less deletion events than in other subtypes
+  
+  - **High expression of:** **PDGFRA/NKX2-2 and OLIG2** (oligodendrocentric development genes,
+    which downregulate the p21 tumor suppressor gene CDKN1A -> proliferation)
+    
+  - **Expression of proneural development genes:** **SOX/PCX/DCC3/ASCL1/TCF4**
+  
+  - **significantly less high-level amplification events of: EGFR/CDK6/MET**
+  
+
+### Neural
+
+  - **Expression marker: NEFL/GABRA1/SYT1/SGC12A5**
+  
+  - no significant expression/CN/mutation profile
 
 Note that the `echo = FALSE` parameter was added to the code chunk to
 prevent printing of the R code that generated the plot.
