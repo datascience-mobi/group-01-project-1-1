@@ -90,3 +90,23 @@ prob.clean = prob.clean[order(rownames(prob.clean)), order(colnames(prob.clean))
 exp.clean = exp.clean[order(rownames(exp.clean)), order(colnames(exp.clean))]
 copy.clean = copy.clean[order(rownames(copy.clean)), order(colnames(copy.clean))]
 ```
+* most commonly mutated genes among relevant cells
+
+```
+common.genes = as.data.frame(table(c(relevant.mutations$`ACH-000036`$Hugo_Symbol,relevant.mutations$`ACH-000040`$Hugo_Symbol, relevant.mutations$`ACH-000075`$Hugo_Symbol, relevant.mutations$`ACH-000098`$Hugo_Symbol, relevant.mutations$`ACH-000208`$Hugo_Symbol, relevant.mutations$`ACH-000215`$Hugo_Symbol, relevant.mutations$`ACH-000137`$Hugo_Symbol, relevant.mutations$`ACH-000152`$Hugo_Symbol, relevant.mutations$`ACH-000591`$Hugo_Symbol, relevant.mutations$`ACH-000673`$Hugo_Symbol, relevant.mutations$`ACH-000231`$Hugo_Symbol, relevant.mutations$`ACH-000244`$Hugo_Symbol, relevant.mutations$`ACH-000760`$Hugo_Symbol, relevant.mutations$`ACH-000368`$Hugo_Symbol, relevant.mutations$`ACH-000376`$Hugo_Symbol, relevant.mutations$`ACH-000445`$Hugo_Symbol, relevant.mutations$`ACH-000464`$Hugo_Symbol, relevant.mutations$`ACH-000469`$Hugo_Symbol, relevant.mutations$`ACH-000479`$Hugo_Symbol, relevant.mutations$`ACH-000570`$Hugo_Symbol, relevant.mutations$`ACH-000571`$Hugo_Symbol, relevant.mutations$`ACH-000623`$Hugo_Symbol, relevant.mutations$`ACH-000631`$Hugo_Symbol, relevant.mutations$`ACH-000738`$Hugo_Symbol, relevant.mutations$`ACH-000756`$Hugo_Symbol, relevant.mutations$`ACH-000819`$Hugo_Symbol, relevant.mutations$`ACH-000128`$Hugo_Symbol, relevant.mutations$`ACH-000887`$Hugo_Symbol)))
+summary(common.genes)
+```
+
+common.genes  
+ MT-ND5 :   32  //mitochondrially encoded NADH:ubiquinone oxidoreductase core subunit 5
+ TTN    :   26  //titin, large abundant protein of striated muscle
+ TP53   :   24  //
+ MUC16  :   23  //mucin
+ MT-CYB :   18  //mitochondrially encoded cytochrome b
+ PTEN   :   17  //phosphatase and tensin homolog
+ (Other):10096
+ 
+```
+rownames(common.genes) = common.genes$Var1
+common.genes$Var1 = NULL
+common.genes.c = subset(common.genes, common.genes$Freq >11)
