@@ -110,3 +110,12 @@ common.genes
 rownames(common.genes) = common.genes$Var1
 common.genes$Var1 = NULL
 common.genes.c = subset(common.genes, common.genes$Freq >11)
+barplot_commongenes <- barplot(common.genes.c, beside = TRUE, names.arg = rownames(common.genes.c), ylab = "Frequency", main = "Most common gene mutations")
+```
+
+* boxplots for expression and CN matrix
+
+```
+boxplot_expression <- boxplot(exp.clean, ylab ="Expression level", main = "Distribution of expression", par(las =2))
+boxplot_CN <- boxplot(copy.clean, ylab = "Copy number", main = "Distribution of copy number", par(las=2))
+```
