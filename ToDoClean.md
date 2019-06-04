@@ -110,6 +110,7 @@ common.genes
 rownames(common.genes) = common.genes$Var1
 common.genes$Var1 = NULL
 common.genes.c = subset(common.genes, common.genes$Freq >11)
+common.genes.c = as.matrix((common.genes.c))
 barplot_commongenes <- barplot(common.genes.c, beside = TRUE, names.arg = rownames(common.genes.c), ylab = "Frequency", main = "Most common gene mutations")
 ```
 
