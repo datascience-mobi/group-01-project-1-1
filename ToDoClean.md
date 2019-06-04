@@ -114,26 +114,26 @@ common.genes.c = as.matrix((common.genes.c))
 barplot_commongenes <- barplot(common.genes.c, beside = TRUE, names.arg = rownames(common.genes.c), ylab = "Frequency", main = "Most common gene mutations")
 ```
 
-*combine the mutation matrices of all GBM cell lines
+* combine the mutation matrices of all GBM cell lines
 
 ```
 mutations.all = rbind(relevant.mutations$`ACH-000036`,relevant.mutations$`ACH-000040`, relevant.mutations$`ACH-000075`, relevant.mutations$`ACH-000098`, relevant.mutations$`ACH-000208`, relevant.mutations$`ACH-000215`, relevant.mutations$`ACH-000137`, relevant.mutations$`ACH-000152`, relevant.mutations$`ACH-000591`, relevant.mutations$`ACH-000673`, relevant.mutations$`ACH-000231`, relevant.mutations$`ACH-000244`, relevant.mutations$`ACH-000760`, relevant.mutations$`ACH-000368`, relevant.mutations$`ACH-000376`, relevant.mutations$`ACH-000445`, relevant.mutations$`ACH-000464`, relevant.mutations$`ACH-000469`, relevant.mutations$`ACH-000479`, relevant.mutations$`ACH-000570`, relevant.mutations$`ACH-000571`, relevant.mutations$`ACH-000623`, relevant.mutations$`ACH-000631`, relevant.mutations$`ACH-000738`, relevant.mutations$`ACH-000756`, relevant.mutations$`ACH-000819`, relevant.mutations$`ACH-000128`, relevant.mutations$`ACH-000887`$Hugo_Symbol)
 ```
 
-*Extract the relevant columns "Hugo_Symbol", "IsDeleterious" and "DepMap_ID"
+* Extract the relevant columns "Hugo_Symbol", "IsDeleterious" and "DepMap_ID"
 
 ```
 mutations.all= select(mutations.all, c(2,21, 36))
 ```
 
-*Determine the GBM cell lines, which contain our four most prominent driver mutations
+* Determine the GBM cell lines, which contain our four most prominent driver mutations
 
 ```
 list.cells = subset(mutations.all, mutations.all$Hugo_Symbol %in% rownames(common.genes.c))
 unique(list.cells$DepMap_ID)
 ```
 
-*Extract the cell lines which contain one specific driving mutation
+* Extract the cell lines which contain one specific driving mutation
 
 For MT-ND5:
 ```
@@ -159,7 +159,7 @@ list.ttn = unique(subset(mutations.all, mutations.all$Hugo_Symbol == "TTN"))
 cells.ttn = c(list.ttn$DepMap_ID)
 ```
 
-*Convert expression, CN, CERES and probability matrix for each driving mutation, that it just contains the necessary cell lines
+* Convert expression, CN, CERES and probability matrix for each driving mutation, that it just contains the necessary cell lines
 
 For MT-ND5:
 ```
@@ -193,7 +193,7 @@ ceres.ttn = ceres.clean[,which(colnames(ceres.clean) %in% cells.ttn)]
 prob.ttn = prob.clean[,which(colnames(prob.clean) %in% cells.ttn)]
 ```
 
-*Determine mean expression/CN/CERES/probability of all genes over the cell lines, which contain a specific driving mutation
+* Determine mean expression/CN/CERES/probability of all genes over the cell lines, which contain a specific driving mutation
 
 For MT-ND5:
 ```
@@ -227,9 +227,9 @@ ttn.prob.mean = as.matrix(c(rowMeans(prob.ttn)))
 ```
 
 
-#Data Visualization
+# Data Visualization
 
-* boxplots for whole expression and CN matrix
+* Boxplots for whole expression and CN matrix
 
 ```{r}
 boxplot_expression <- boxplot(exp.clean, ylab ="Expression level", main = "Distribution of expression", par(las =2))
