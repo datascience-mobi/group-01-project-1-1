@@ -114,9 +114,131 @@ common.genes.c = as.matrix((common.genes.c))
 barplot_commongenes <- barplot(common.genes.c, beside = TRUE, names.arg = rownames(common.genes.c), ylab = "Frequency", main = "Most common gene mutations")
 ```
 
-* boxplots for expression and CN matrix
+*combine the mutation matrices of all GBM cell lines
 
 ```
+mutations.all = rbind(relevant.mutations$`ACH-000036`,relevant.mutations$`ACH-000040`, relevant.mutations$`ACH-000075`, relevant.mutations$`ACH-000098`, relevant.mutations$`ACH-000208`, relevant.mutations$`ACH-000215`, relevant.mutations$`ACH-000137`, relevant.mutations$`ACH-000152`, relevant.mutations$`ACH-000591`, relevant.mutations$`ACH-000673`, relevant.mutations$`ACH-000231`, relevant.mutations$`ACH-000244`, relevant.mutations$`ACH-000760`, relevant.mutations$`ACH-000368`, relevant.mutations$`ACH-000376`, relevant.mutations$`ACH-000445`, relevant.mutations$`ACH-000464`, relevant.mutations$`ACH-000469`, relevant.mutations$`ACH-000479`, relevant.mutations$`ACH-000570`, relevant.mutations$`ACH-000571`, relevant.mutations$`ACH-000623`, relevant.mutations$`ACH-000631`, relevant.mutations$`ACH-000738`, relevant.mutations$`ACH-000756`, relevant.mutations$`ACH-000819`, relevant.mutations$`ACH-000128`, relevant.mutations$`ACH-000887`$Hugo_Symbol)
+```
+
+*Extract the relevant columns "Hugo_Symbol", "IsDeleterious" and "DepMap_ID"
+
+```
+mutations.all= select(mutations.all, c(2,21, 36))
+```
+
+*Determine the GBM cell lines, which contain our four most prominent driver mutations
+
+```
+list.cells = subset(mutations.all, mutations.all$Hugo_Symbol %in% rownames(common.genes.c))
+unique(list.cells$DepMap_ID)
+```
+
+*Extract the cell lines which contain one specific driving mutation
+
+For MT-ND5:
+```
+list.mtnd5 = unique(subset(mutations.all, mutations.all$Hugo_Symbol == "MT-ND5"))
+cells.mtnd5 = c(list.mtnd5$DepMap_ID)
+```
+
+For MUC16:
+```
+list.muc16 = unique(subset(mutations.all, mutations.all$Hugo_Symbol == "MUC16"))
+cells.muc16 = c(list.muc16$DepMap_ID)
+```
+
+For TP53:
+```
+list.tp53 = unique(subset(mutations.all, mutations.all$Hugo_Symbol == "TP53"))
+cells.tp53 = c(list.tp53$DepMap_ID)
+```
+
+For TTN:
+```
+list.ttn = unique(subset(mutations.all, mutations.all$Hugo_Symbol == "TTN"))
+cells.ttn = c(list.ttn$DepMap_ID)
+```
+
+*Convert expression, CN, CERES and probability matrix for each driving mutation, that it just contains the necessary cell lines
+
+For MT-ND5:
+```
+exp.mtnd5 = exp.clean[,which(colnames(exp.clean) %in% cells.mtnd5)]
+copy.mtnd5 = copy.clean[,which(colnames(copy.clean) %in% cells.mtnd5)]
+ceres.mtnd5 = ceres.clean[,which(colnames(ceres.clean) %in% cells.mtnd5)]
+prob.mtnd5 = prob.clean[,which(colnames(prob.clean) %in% cells.mtnd5)]
+```
+
+For MUC16:
+```
+exp.muc16 = exp.clean[,which(colnames(exp.clean) %in% cells.muc16)]
+copy.muc16 = copy.clean[,which(colnames(copy.clean) %in% cells.muc16)]
+ceres.muc16 = ceres.clean[,which(colnames(ceres.clean) %in% cells.muc16)]
+prob.muc16 = prob.clean[,which(colnames(prob.clean) %in% cells.muc16)]
+```
+
+For TP53:
+```
+exp.tp53 = exp.clean[,which(colnames(exp.clean) %in% cells.tp53)]
+copy.tp53 = copy.clean[,which(colnames(copy.clean) %in% cells.tp53)]
+ceres.tp53 = ceres.clean[,which(colnames(ceres.clean) %in% cells.tp53)]
+prob.tp53 = prob.clean[,which(colnames(prob.clean) %in% cells.tp53)]
+```
+
+For TTN:
+```
+exp.ttn = exp.clean[,which(colnames(exp.clean) %in% cells.ttn)]
+copy.ttn = copy.clean[,which(colnames(copy.clean) %in% cells.ttn)]
+ceres.ttn = ceres.clean[,which(colnames(ceres.clean) %in% cells.ttn)]
+prob.ttn = prob.clean[,which(colnames(prob.clean) %in% cells.ttn)]
+```
+
+*Determine mean expression/CN/CERES/probability of all genes over the cell lines, which contain a specific driving mutation
+
+For MT-ND5:
+```
+mtnd5.exp.mean = as.matrix(c(rowMeans(exp.mtnd5)))
+mtnd5.copy.mean = as.matrix(c(rowMeans(copy.mtnd5)))
+mtnd5.ceres.mean = as.matrix(c(rowMeans(ceres.mtnd5)))
+mtnd5.prob.mean = as.matrix(c(rowMeans(prob.mtnd5)))
+```
+
+For MUC16:
+```
+muc16.exp.mean = as.matrix(c(rowMeans(exp.muc16)))
+muc16.copy.mean = as.matrix(c(rowMeans(copy.muc16)))
+muc16.ceres.mean = as.matrix(c(rowMeans(ceres.muc16)))
+muc16.prob.mean = as.matrix(c(rowMeans(prob.muc16)))
+```
+
+For TP53:
+```
+tp53.exp.mean = as.matrix(c(rowMeans(exp.tp53)))
+tp53.copy.mean = as.matrix(c(rowMeans(copy.tp53)))
+tp53.ceres.mean = as.matrix(c(rowMeans(ceres.tp53)))
+tp53.prob.mean = as.matrix(c(rowMeans(prob.tp53)))
+```
+For TTN:
+```
+ttn.exp.mean = as.matrix(c(rowMeans(exp.ttn)))
+ttn.copy.mean = as.matrix(c(rowMeans(copy.ttn)))
+ttn.ceres.mean = as.matrix(c(rowMeans(ceres.ttn)))
+ttn.prob.mean = as.matrix(c(rowMeans(prob.ttn)))
+```
+
+
+#Data Visualization
+
+* boxplots for whole expression and CN matrix
+
+```{r}
 boxplot_expression <- boxplot(exp.clean, ylab ="Expression level", main = "Distribution of expression", par(las =2))
 boxplot_CN <- boxplot(copy.clean, ylab = "Copy number", main = "Distribution of copy number", par(las=2))
 ```
+* Boxplot für MT-ND5 mean expression and copy number
+ 
+```
+boxplot_mtnd5_exp <- boxplot(mtnd5.exp.mean, ylab = "Expression level", main = "Mean expression of all genes containing MT-ND5 as DM")
+boxplot_mtnd5_CN <- boxplot(mtnd5.copy.mean, ylab = "Copy number", main = "Mean copy number of all genes containing MT-ND5 as DM")
+```
+
