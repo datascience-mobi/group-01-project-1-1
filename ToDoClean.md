@@ -339,7 +339,7 @@ boxplot_mtnd5_CN <- boxplot(mtnd5.copy.mean, ylab = "Copy number", main = "Mean 
 
 * Heatmaps of whole mutation/CN/expression/CERES and probability matrices
 
-Expression matrix(few overexpressed, but a lot deleted genes:
+Expression matrix (few overexpressed, but a lot deleted genes):
 ```
 setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
 pheatmap(exp.clean, show_rownames = F)
@@ -357,7 +357,7 @@ grid.text("celllines", y=-0.07, gp=gpar(fontsize=16))
 grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
 ```
 
-CERES matrix(few genes, which seems to be essential):
+CERES matrix (few genes, which seems to be essential):
 ```
 setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
 pheatmap(ceres.clean, show_rownames = F)
@@ -366,7 +366,7 @@ grid.text("celllines", y=-0.07, gp=gpar(fontsize=16))
 grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
 ```
 
-Probability matrix(few genes which seem to be essential):
+Probability matrix (few genes which seem to be essential):
 ```
 setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
 pheatmap(prob.clean, show_rownames = F)
