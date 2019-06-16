@@ -331,7 +331,7 @@ non_ttn.prob.mean = as.matrix(c(rowMeans(prob.non_ttn)))
 boxplot_expression <- boxplot(exp.clean, ylab ="Expression level", main = "Distribution of expression", par(las =2))
 boxplot_CN <- boxplot(copy.clean, ylab = "Copy number", main = "Distribution of copy number", par(las=2))
 ```
-* Boxplot f?r MT-ND5 mean expression and copy number
+* Boxplot for MT-ND5 mean expression and copy number
  
 ```
 boxplot_mtnd5_exp <- boxplot(mtnd5.exp.mean, ylab = "Expression level", main = "Mean expression of all genes containing MT-ND5 as DM")
@@ -375,3 +375,147 @@ setHook("grid.newpage", NULL, "replace")
 grid.text("celllines", y=-0.07, gp=gpar(fontsize=16))
 grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
 ```
+
+# Data reduction
+
+## Additional cleanup beforehand 
+
+* Remove rows containing zero in matrices
+
+```
+sum(exp.clean == 0)
+exp.clean.w0 <- exp.clean[!(apply(exp.clean, 1, function(y) any(y == 0))),]
+sum(exp.clean.w0 == 0)
+
+sum(copy.clean == 0)
+copy.clean.w0 <- copy.clean[!(apply(copy.clean, 1, function(y) any(y == 0))),]
+sum(copy.clean.w0 == 0)
+
+sum(ceres.clean == 0)
+ceres.clean.w0 <- ceres.clean[!(apply(ceres.clean, 1, function(y) any(y == 0))),]
+sum(ceres.clean.w0 == 0)
+
+sum(prob.clean == 0)
+prob.clean.w0 <- prob.clean[!(apply(prob.clean, 1, function(y) any(y == 0))),]
+sum(prob.clean.w0 == 0)
+```
+
+* compare gene data availability between data sets
+```
+dim(copy.clean.w0) == dim(exp.clean.w0)
+gene.data.ex = c(rownames(exp.clean.w0))
+copy.clean.w0 = copy.clean.w0[-which(rownames(copy.clean.w0) %!in% gene.data.ex),]
+genes.clean.w0 = rownames(exp.clean.w0)
+ceres.clean.w0 = ceres.clean.w0[-which(rownames(ceres.clean.w0) %!in% genes.clean.w0),]
+prob.clean.w0 = prob.clean.w0[-which(rownames(prob.clean.w0) %!in% genes.clean.w0),]
+genes.clean.w0 = rownames(prob.clean.w0
+exp.clean.w0 = exp.clean.w0[-which(rownames(exp.clean.w0) %!in% genes.clean.w0),]
+copy.clean.w0 = copy.clean.w0[-which(rownames(copy.clean.w0) %!in% genes.clean.w0),]
+ceres.clean.w0 = ceres.clean.w0[-which(rownames(ceres.clean.w0) %!in% genes.clean.w0),]
+rm(gene.data.ex)
+```
+  dimensions: 11545x28
+
+## Principal component analysis
+
+* Expression matrix
+
+```
+pca_exp <- prcomp(t(exp.clean.w0), scale = TRUE) //matrix must be transposed, because prcomp() expects samples to be rows and genes to be columns; if we dont do it, we get a graph how genes are related to each other
+plot(pca_exp$x[,1], pca_exp$x[,2]) //PC1 plotted against PC2
+pca_exp_var <- pca_exp$sdev^2 //calculate variation each PC accounts for
+pca_exp_var_per <- round(pca_exp_var/sum(pca_exp_var)*100, 1) //convert it into percentage
+barplot(pca_exp_var_per, main = "Proportion of variance", xlab = "Principal component", ylab = "Percent variation")
+
+pca_data_exp <- data.frame(Sample = rownames(pca_exp$x), X = pca_exp$x[,1], Y = pca_exp$x[,2]) //create data frame for ggplot
+pca_data_exp
+pca_exp_plot <- ggplot(data = pca_data_exp, aes(x=X, y=Y, label = Sample)) //tell ggplot which data to use
++ geom_point()   // plot dots, with geom.text() sample names are plotted
++ xlab(paste("PC1 -", pca_exp_var_per[1], "%", sep = ""))  // add labels with percentage
++ ylab(paste("PC2 -", pca_exp_var_per[2], "%", sep="")) 
++ theme_bw()  // make background white, without its grey (idc what to use, just an idea)                                                                            
++ ggtitle("PCA expression") // add title
+pca_exp_plot
+
+loading_scores_exp <- pca_exp$rotation[,1]      // determine which genes have largest effect on where the samples are plotted 
+gene_scores_exp <- abs(loading_scores_exp)          // make values absolute
+gene_score_exp_ranked <- sort(gene_scores_exp, decreasing = TRUE)
+top_10_genes_exp <- names(gene_score_exp_ranked[1:10])
+top_10_genes_exp
+pca_exp$rotation[top_10_genes_exp,1]
+```
+
+* copy number matrix
+
+```
+pca_copy <- prcomp(t(copy.clean.w0), scale = TRUE) 
+plot(pca_copy$x[,1], pca_copy$x[,2]) 
+pca_copy_var <- pca_copy$sdev^2 
+pca_copy_var_per <- round(pca_copy_var/sum(pca_copy_var)*100, 1) 
+barplot(pca_copy_var_per, main = "Proportion of variance", xlab = "Principal component", ylab = "Percent variation")
+
+pca_data_copy <- data.frame(Sample = rownames(pca_copy$x), X = pca_copy$x[,1], Y = pca_copy$x[,2]) 
+pca_data_copy
+pca_copy_plot <- ggplot(data = pca_data_copy, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_copy_var_per[1], "%", sep = ""))  + ylab(paste("PC2 -", pca_copy_var_per[2], "%", sep="")) + theme_bw() + ggtitle("PCA copy number") 
+pca_copy_plot
+
+loading_scores_copy <- pca_copy$rotation[,1]      
+gene_scores_copy <- abs(loading_scores_copy)          
+gene_score_copy_ranked <- sort(gene_scores_copy, decreasing = TRUE)
+top_10_genes_copy <- names(gene_score_copy_ranked[1:10])
+top_10_genes_copy
+pca_copy$rotation[top_10_genes_copy,1]
+```
+
+* CERES matrix
+
+```
+pca_ceres <- prcomp(t(ceres.clean.w0), scale = TRUE) 
+plot(pca_ceres$x[,1], pca_ceres$x[,2]) 
+pca_ceres_var <- pca_ceres$sdev^2 
+pca_ceres_var_per <- round(pca_ceres_var/sum(pca_ceres_var)*100, 1) 
+barplot(pca_ceres_var_per, main = "Proportion of variance", xlab = "Principal component", ylab = "Percent variation")
+
+pca_data_ceres <- data.frame(Sample = rownames(pca_ceres$x), X = pca_ceres$x[,1], Y = pca_ceres$x[,2]) 
+pca_data_ceres
+pca_ceres_plot <- ggplot(data = pca_data_ceres, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_ceres_var_per[1], "%", sep = ""))  + ylab(paste("PC2 -", pca_ceres_var_per[2], "%", sep="")) + theme_bw() + ggtitle("PCA CERES score")
+pca_ceres_plot
+
+loading_scores_ceres <- pca_ceres$rotation[,1]      
+gene_scores_ceres <- abs(loading_scores_ceres)          
+gene_score_ceres_ranked <- sort(gene_scores_ceres, decreasing = TRUE)
+top_10_genes_ceres <- names(gene_score_ceres_ranked[1:10])
+top_10_genes_ceres
+pca_ceres$rotation[top_10_genes_ceres,1]
+```
+
+* Probability matrix
+
+```
+pca_prob <- prcomp(t(prob.clean.w0), scale = TRUE) 
+plot(pca_prob$x[,1], pca_prob$x[,2]) 
+pca_prob_var <- pca_prob$sdev^2 
+pca_prob_var_per <- round(pca_prob_var/sum(pca_prob_var)*100, 1) 
+barplot(pca_prob_var_per, main = "Proportion of variance", xlab = "Principal component", ylab = "Percent variation")
+
+pca_data_prob <- data.frame(Sample = rownames(pca_prob$x), X = pca_prob$x[,1], Y = pca_prob$x[,2]) 
+pca_data_prob
+pca_prob_plot <- ggplot(data = pca_data_prob, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_prob_var_per[1], "%", sep = ""))  + ylab(paste("PC2 -", pca_prob_var_per[2], "%", sep="")) + theme_bw() + ggtitle("PCA probability score")
+pca_prob_plot
+
+loading_scores_prob <- pca_prob$rotation[,1]      
+gene_scores_prob <- abs(loading_scores_prob)          
+gene_score_prob_ranked <- sort(gene_scores_prob, decreasing = TRUE)
+top_10_genes_prob <- names(gene_score_prob_ranked[1:10])
+top_10_genes_prob
+pca_prob$rotation[top_10_genes_prob,1]
+```
+
+## Further steps:
+
+* Interprete the proportion of variances, maybe plot other PC´s against each other
+* Interprete plots plus additional plots
+* loading scores for more than ten genes (Attention: in these cases the loading scores just refer to the PC1!!!!)
+* loading scores for PC2, PC3, .... for each matrix
+* Determine which possible 2nd site targets to look at (how many?) for further analyzing
+* Make plots more beautiful
