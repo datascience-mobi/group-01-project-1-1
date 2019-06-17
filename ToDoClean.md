@@ -408,7 +408,7 @@ copy.clean.w0 = copy.clean.w0[-which(rownames(copy.clean.w0) %!in% gene.data.ex)
 genes.clean.w0 = rownames(exp.clean.w0)
 ceres.clean.w0 = ceres.clean.w0[-which(rownames(ceres.clean.w0) %!in% genes.clean.w0),]
 prob.clean.w0 = prob.clean.w0[-which(rownames(prob.clean.w0) %!in% genes.clean.w0),]
-genes.clean.w0 = rownames(prob.clean.w0
+genes.clean.w0 = rownames(prob.clean.w0)
 exp.clean.w0 = exp.clean.w0[-which(rownames(exp.clean.w0) %!in% genes.clean.w0),]
 copy.clean.w0 = copy.clean.w0[-which(rownames(copy.clean.w0) %!in% genes.clean.w0),]
 ceres.clean.w0 = ceres.clean.w0[-which(rownames(ceres.clean.w0) %!in% genes.clean.w0),]
@@ -445,7 +445,7 @@ top_10_genes_exp
 pca_exp$rotation[top_10_genes_exp,1]
 ```
 
-* copy number matrix
+* Copy number matrix
 
 ```
 pca_copy <- prcomp(t(copy.clean.w0), scale = TRUE) 
