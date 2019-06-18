@@ -1,0 +1,200 @@
+install.packages(operators)
+library(operators)
+install.packages(pheatmap)
+library(pheatmap)
+install.packages(ggplot2)
+library(ggplot2)
+install.packages(dplyr)
+library(dplyr)
+brain.anno = allDepMapData$annotation[allDepMapData$annotation$Subtype.Disease == "Glioblastoma", ]
+rownames(brain.anno) = brain.anno$DepMap_ID
+brain.anno = brain.anno[, -1]
+cell.lines = dput(rownames(brain.anno))
+exp.clean = allDepMapData$expression[, -which(colnames(allDepMapData$expression) %!in% cell.lines)]
+copy.clean = allDepMapData$copynumber[, -which(colnames(allDepMapData$copynumber) %!in% cell.lines)]
+relevant.mutations = subset(allDepMapData$mutation, names(allDepMapData$mutation) %in% cell.lines)
+ceres.clean = allDepMapData$kd.ceres[, -which(colnames(allDepMapData$kd.ceres) %!in% cell.lines)]
+prob.clean = allDepMapData$kd.prob[, -which(colnames(allDepMapData$kd.prob) %!in% cell.lines)]
+sum(is.na(ceres.clean))
+sum(is.na(prob.clean))
+sum(is.na(copy.clean))
+sum(is.na(exp.clean))
+sum(is.na(relevant.mutations))
+copy.clean = copy.clean[-which(apply(copy.clean, 1, function(x) {sum(is.na(x))}) > 0), ]
+sum(is.na(copy.clean))
+sum(exp.clean < 0)
+sum(prob.clean < 0)
+sum(prob.clean > 1)
+sum(ceres.clean == 0) 
+sum(prob.clean == 0) 
+sum(copy.clean == 0)
+sum(exp.clean == 0)
+dim(copy.clean) == dim(exp.clean)
+gene.data.co = c(rownames(copy.clean))
+gene.data.ex = c(rownames(exp.clean))
+exp.clean = exp.clean[-which(rownames(exp.clean) %!in% gene.data.co),]
+copy.clean = copy.clean[-which(rownames(copy.clean) %!in% gene.data.ex),]
+genes.clean = rownames(exp.clean)
+ceres.clean = ceres.clean[-which(rownames(ceres.clean) %!in% genes.clean),]
+prob.clean = prob.clean[-which(rownames(prob.clean) %!in% genes.clean),]
+genes.clean = rownames(ceres.clean)
+exp.clean = exp.clean[-which(rownames(exp.clean) %!in% genes.clean),]
+copy.clean = copy.clean[-which(rownames(copy.clean) %!in% genes.clean),]
+rm(gene.data.co)
+rm(gene.data.ex)
+brain.anno$CCLE_Name = factor(brain.anno$CCLE_Name)
+brain.anno$Aliases = factor(brain.anno$Aliases)
+brain.anno$Primary.Disease = factor(brain.anno$Primary.Disease)
+brain.anno$Subtype.Disease = factor(brain.anno$Subtype.Disease)
+brain.anno$Subtype.Gender = factor(brain.anno$Gender)
+brain.anno$Subtype.Source = factor(brain.anno$Source)
+ceres.clean = ceres.clean[order(rownames(ceres.clean)), order(colnames(ceres.clean))]
+prob.clean = prob.clean[order(rownames(prob.clean)), order(colnames(prob.clean))]
+exp.clean = exp.clean[order(rownames(exp.clean)), order(colnames(exp.clean))]
+copy.clean = copy.clean[order(rownames(copy.clean)), order(colnames(copy.clean))]
+relevant.mutations.combi = do.call(rbind, lapply(which(names(allDepMapData$mutation) %in% cell.lines), function(a) allDepMapData$mutation[[a]]))
+common.genes = as.matrix(table(c(relevant.mutations.combi$Hugo_Symbol)))
+summary(common.genes)
+rownames(common.genes) = common.genes$Var1
+common.genes$Var1 = NULL
+barplot(common.genes, beside = T, names.arg = rownames(common.genes), las = 2)
+common.genes.c = subset(common.genes, common.genes$Freq >11)
+common.genes.c = common.genes.c[c(6, 11, 10, 7, 4, 9, 3, 2, 1, 8),]
+barplot_commongenes <- barplot(common.genes.c, beside = T, names.arg = rownames(common.genes.c), ylab = "Frequency", main = "Most common gene mutations", las = 2)
+list.cells = subset(mutations.all, mutations.all$Hugo_Symbol %in% rownames(common.genes.c))
+unique(list.cells$DepMap_ID)
+list.mtnd5 = unique(subset(mutations.all, mutations.all$Hugo_Symbol == "MT-ND5"))
+cells.mtnd5 = c(list.mtnd5$DepMap_ID)
+list.non_mtnd5 = unique(subset(mutations.all, mutations.all$Hugo_Symbol != "MT-ND5"))
+cells.non_mtnd5 = c(list.non_mtnd5$DepMap_ID)
+list.muc16 = unique(subset(mutations.all, mutations.all$Hugo_Symbol == "MUC16"))
+cells.muc16 = c(list.muc16$DepMap_ID)
+list.non_muc16 = unique(subset(mutations.all, mutations.all$Hugo_Symbol != "MUC16"))
+cells.non_muc16 = c(list.non_muc16$DepMap_ID)
+list.tp53 = unique(subset(mutations.all, mutations.all$Hugo_Symbol == "TP53"))
+cells.tp53 = c(list.tp53$DepMap_ID)
+list.non_tp53 = unique(subset(mutations.all, mutations.all$Hugo_Symbol != "TP53"))
+cells.non_tp53 = c(list.non_tp53$DepMap_ID)
+list.ttn = unique(subset(mutations.all, mutations.all$Hugo_Symbol == "TTN"))
+cells.ttn = c(list.ttn$DepMap_ID)
+exp.muc16 = exp.clean[,which(colnames(exp.clean) %in% cells.muc16)]
+copy.muc16 = copy.clean[,which(colnames(copy.clean) %in% cells.muc16)]
+ceres.muc16 = ceres.clean[,which(colnames(ceres.clean) %in% cells.muc16)]
+prob.muc16 = prob.clean[,which(colnames(prob.clean) %in% cells.muc16)]
+exp.non_muc16 = exp.clean[,which(colnames(exp.clean) %in% cells.non_muc16)]
+copy.non_muc16 = copy.clean[,which(colnames(copy.clean) %in% cells.non_muc16)]
+ceres.non_muc16 = ceres.clean[,which(colnames(ceres.clean) %in% cells.non_muc16)]
+prob.non_muc16 = prob.clean[,which(colnames(prob.clean) %in% cells.non_muc16)]
+exp.tp53 = exp.clean[,which(colnames(exp.clean) %in% cells.tp53)]
+copy.tp53 = copy.clean[,which(colnames(copy.clean) %in% cells.tp53)]
+ceres.tp53 = ceres.clean[,which(colnames(ceres.clean) %in% cells.tp53)]
+prob.tp53 = prob.clean[,which(colnames(prob.clean) %in% cells.tp53)]
+exp.non_tp53 = exp.clean[,which(colnames(exp.clean) %in% cells.non_tp53)]
+copy.non_tp53 = copy.clean[,which(colnames(copy.clean) %in% cells.non_tp53)]
+ceres.non_tp53 = ceres.clean[,which(colnames(ceres.clean) %in% cells.non_tp53)]
+prob.non_tp53 = prob.clean[,which(colnames(prob.clean) %in% cells.non_tp53)]
+exp.ttn = exp.clean[,which(colnames(exp.clean) %in% cells.ttn)]
+copy.ttn = copy.clean[,which(colnames(copy.clean) %in% cells.ttn)]
+ceres.ttn = ceres.clean[,which(colnames(ceres.clean) %in% cells.ttn)]
+prob.ttn = prob.clean[,which(colnames(prob.clean) %in% cells.ttn)]
+exp.non_ttn = exp.clean[,which(colnames(exp.clean) %in% cells.non_ttn)]
+copy.non_ttn = copy.clean[,which(colnames(copy.clean) %in% cells.non_ttn)]
+ceres.non_ttn = ceres.clean[,which(colnames(ceres.clean) %in% cells.non_ttn)]
+prob.non_ttn = prob.clean[,which(colnames(prob.clean) %in% cells.non_ttn)]
+non_tp53.exp.mean = as.matrix(c(rowMeans(exp.non_tp53)))
+non_tp53.copy.mean = as.matrix(c(rowMeans(copy.non_tp53)))
+non_tp53.ceres.mean = as.matrix(c(rowMeans(ceres.non_tp53)))
+non_tp53.prob.mean = as.matrix(c(rowMeans(prob.non_tp53)))
+ttn.exp.mean = as.matrix(c(rowMeans(exp.ttn)))
+ttn.copy.mean = as.matrix(c(rowMeans(copy.ttn)))
+ttn.ceres.mean = as.matrix(c(rowMeans(ceres.ttn)))
+ttn.prob.mean = as.matrix(c(rowMeans(prob.ttn)))
+non_ttn.exp.mean = as.matrix(c(rowMeans(exp.non_ttn)))
+non_ttn.copy.mean = as.matrix(c(rowMeans(copy.non_ttn)))
+non_ttn.ceres.mean = as.matrix(c(rowMeans(ceres.non_ttn)))
+non_ttn.prob.mean = as.matrix(c(rowMeans(prob.non_ttn)))
+boxplot_expression <- boxplot(exp.clean, ylab ="Expression level", main = "Distribution of expression", par(las =2))
+boxplot_CN <- boxplot(copy.clean, ylab = "Copy number", main = "Distribution of copy number", par(las=2))
+boxplot_mtnd5_exp <- boxplot(mtnd5.exp.mean, ylab = "Expression level", main = "Mean expression of all genes containing MT-ND5 as DM")
+boxplot_mtnd5_CN <- boxplot(mtnd5.copy.mean, ylab = "Copy number", main = "Mean copy number of all genes containing MT-ND5 as DM")
+setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
+pheatmap(exp.clean, show_rownames = F)
+setHook("grid.newpage", NULL, "replace")
+grid.text("celllines", y=-0.07, gp=gpar(fontsize=16))
+grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
+setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
+pheatmap(copy.clean, show_rownames = F)
+setHook("grid.newpage", NULL, "replace")
+grid.text("celllines", y=-0.07, gp=gpar(fontsize=16))
+grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
+setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
+pheatmap(ceres.clean, show_rownames = F)
+setHook("grid.newpage", NULL, "replace")
+grid.text("celllines", y=-0.07, gp=gpar(fontsize=16))
+grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
+setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
+pheatmap(prob.clean, show_rownames = F)
+setHook("grid.newpage", NULL, "replace")
+grid.text("celllines", y=-0.07, gp=gpar(fontsize=16))
+grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
+sum(prob.clean == 0)
+prob.clean.w0 <- prob.clean[!(apply(prob.clean, 1, function(y) any(y == 0))),]
+sum(prob.clean.w0 == 0)
+dim(copy.clean.w0) == dim(exp.clean.w0)
+gene.data.ex = c(rownames(exp.clean.w0))
+copy.clean.w0 = copy.clean.w0[-which(rownames(copy.clean.w0) %!in% gene.data.ex),]
+genes.clean.w0 = rownames(exp.clean.w0)
+ceres.clean.w0 = ceres.clean.w0[-which(rownames(ceres.clean.w0) %!in% genes.clean.w0),]
+prob.clean.w0 = prob.clean.w0[-which(rownames(prob.clean.w0) %!in% genes.clean.w0),]
+genes.clean.w0 = rownames(prob.clean.w0)
+exp.clean.w0 = exp.clean.w0[-which(rownames(exp.clean.w0) %!in% genes.clean.w0),]
+copy.clean.w0 = copy.clean.w0[-which(rownames(copy.clean.w0) %!in% genes.clean.w0),]
+ceres.clean.w0 = ceres.clean.w0[-which(rownames(ceres.clean.w0) %!in% genes.clean.w0),]
+rm(gene.data.ex)
+pca_exp <- prcomp(t(exp.clean.w0), scale = TRUE) 
+plot(pca_exp$x[,1], pca_exp$x[,2]) 
+pca_exp_var <- pca_exp$sdev^2
+pca_exp_var_per <- round(pca_exp_var/sum(pca_exp_var)*100, 1) 
+barplot(pca_exp_var_per, main = "Proportion of variance", xlab = "Principal component", ylab = "Percent variation")
+pca_data_exp <- data.frame(Sample = rownames(pca_exp$x), X = pca_exp$x[,1], Y = pca_exp$x[,2]) 
+pca_data_exp
+pca_exp_plot <- ggplot(data = pca_data_exp, aes(x=X, y=Y, label = Sample)), geom_point(), xlab(paste("PC1 -", pca_exp_var_per[1], "%", sep = "")), ylab(paste("PC2 -", pca_exp_var_per[2], "%", sep="")), theme_bw(), ggtitle("PCA expression")
+pca_exp_plot
+loading_scores_exp <- pca_exp$rotation[,1]
+gene_scores_exp <- abs(loading_scores_exp)
+gene_score_exp_ranked <- sort(gene_scores_exp, decreasing = TRUE)
+top_10_genes_exp <- names(gene_score_exp_ranked[1:10])
+top_10_genes_exp
+pca_exp$rotation[top_10_genes_exp,1]
+top_10_genes_copy
+pca_copy$rotation[top_10_genes_copy,1]
+pca_ceres <- prcomp(t(ceres.clean.w0), scale = TRUE) 
+plot(pca_ceres$x[,1], pca_ceres$x[,2]) 
+pca_ceres_var <- pca_ceres$sdev^2 
+pca_ceres_var_per <- round(pca_ceres_var/sum(pca_ceres_var)*100, 1) 
+barplot(pca_ceres_var_per, main = "Proportion of variance", xlab = "Principal component", ylab = "Percent variation")
+pca_data_ceres <- data.frame(Sample = rownames(pca_ceres$x), X = pca_ceres$x[,1], Y = pca_ceres$x[,2]) 
+pca_data_ceres
+pca_ceres_plot <- ggplot(data = pca_data_ceres, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_ceres_var_per[1], "%", sep = ""))  + ylab(paste("PC2 -", pca_ceres_var_per[2], "%", sep="")) + theme_bw() + ggtitle("PCA CERES score")
+pca_ceres_plot
+loading_scores_ceres <- pca_ceres$rotation[,1]
+gene_scores_ceres <- abs(loading_scores_ceres)
+gene_score_ceres_ranked <- sort(gene_scores_ceres, decreasing = TRUE)
+top_10_genes_ceres <- names(gene_score_ceres_ranked[1:10])
+top_10_genes_ceres
+pca_ceres$rotation[top_10_genes_ceres,1]
+pca_prob <- prcomp(t(prob.clean.w0), scale = TRUE) 
+plot(pca_prob$x[,1], pca_prob$x[,2]) 
+pca_prob_var <- pca_prob$sdev^2 
+pca_prob_var_per <- round(pca_prob_var/sum(pca_prob_var)*100, 1) 
+barplot(pca_prob_var_per, main = "Proportion of variance", xlab = "Principal component", ylab = "Percent variation")
+pca_data_prob <- data.frame(Sample = rownames(pca_prob$x), X = pca_prob$x[,1], Y = pca_prob$x[,2]) 
+pca_data_prob
+pca_prob_plot <- ggplot(data = pca_data_prob, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_prob_var_per[1], "%", sep = ""))  + ylab(paste("PC2 -", pca_prob_var_per[2], "%", sep="")) + theme_bw() + ggtitle("PCA probability score")
+pca_prob_plot
+loading_scores_prob <- pca_prob$rotation[,1]
+gene_scores_prob <- abs(loading_scores_prob)
+gene_score_prob_ranked <- sort(gene_scores_prob, decreasing = TRUE)
+top_10_genes_prob <- names(gene_score_prob_ranked[1:10])
+top_10_genes_prob
+pca_prob$rotation[top_10_genes_prob,1]
