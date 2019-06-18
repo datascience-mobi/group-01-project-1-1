@@ -519,7 +519,7 @@ Plot PC1 against PC2:
 ```
 pca_data_ceres_12 <- data.frame(Sample = rownames(pca_ceres$x), X = pca_ceres$x[,1], Y = pca_ceres$x[,2]) 
 pca_data_ceres_12
-pca_ceres_plot_12 <- ggplot(data = pca_data_ceres_12, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_ceres_var_per[1], "%", sep = ""))  + ylab(paste("PC2 -", pca_ceres_var_per[2], "%", sep="")) + theme_bw() + ggtitle("PCA ceresability score")
+pca_ceres_plot_12 <- ggplot(data = pca_data_ceres_12, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_ceres_var_per[1], "%", sep = ""))  + ylab(paste("PC2 -", pca_ceres_var_per[2], "%", sep="")) + theme_bw() + ggtitle("PCA ceres score")
 pca_ceres_plot_12
 ```
 
@@ -527,7 +527,7 @@ Plot PC1 against PC3:
 ```
 pca_data_ceres_13 <- data.frame(Sample = rownames(pca_ceres$x), X = pca_ceres$x[,1], Y = pca_ceres$x[,3]) 
 pca_data_ceres_13
-pca_ceres_plot_13 <- ggplot(data = pca_data_ceres_13, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_ceres_var_per[1], "%", sep = ""))  + ylab(paste("PC3 -", pca_ceres_var_per[3], "%", sep="")) + theme_bw() + ggtitle("PCA ceresability score")
+pca_ceres_plot_13 <- ggplot(data = pca_data_ceres_13, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_ceres_var_per[1], "%", sep = ""))  + ylab(paste("PC3 -", pca_ceres_var_per[3], "%", sep="")) + theme_bw() + ggtitle("PCA ceres score")
 pca_ceres_plot_13
 ```
 
@@ -535,7 +535,7 @@ Plot PC1 against PC4:
 ```
 pca_data_ceres_14 <- data.frame(Sample = rownames(pca_ceres$x), X = pca_ceres$x[,1], Y = pca_ceres$x[,4]) 
 pca_data_ceres_14
-pca_ceres_plot_14 <- ggplot(data = pca_data_ceres_14, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_ceres_var_per[1], "%", sep = ""))  + ylab(paste("PC4 -", pca_ceres_var_per[4], "%", sep="")) + theme_bw() + ggtitle("PCA ceresability score")
+pca_ceres_plot_14 <- ggplot(data = pca_data_ceres_14, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_ceres_var_per[1], "%", sep = ""))  + ylab(paste("PC4 -", pca_ceres_var_per[4], "%", sep="")) + theme_bw() + ggtitle("PCA ceres score")
 pca_ceres_plot_14
 ```
 
@@ -543,7 +543,7 @@ Plot PC1 against PC5:
 ```
 pca_data_ceres_15 <- data.frame(Sample = rownames(pca_ceres$x), X = pca_ceres$x[,1], Y = pca_ceres$x[,5]) 
 pca_data_ceres_15
-pca_ceres_plot_15 <- ggplot(data = pca_data_ceres_15, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_ceres_var_per[1], "%", sep = ""))  + ylab(paste("PC5 -", pca_ceres_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA ceresability score")
+pca_ceres_plot_15 <- ggplot(data = pca_data_ceres_15, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_ceres_var_per[1], "%", sep = ""))  + ylab(paste("PC5 -", pca_ceres_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA ceres score")
 pca_ceres_plot_15
 ```
 
@@ -551,7 +551,7 @@ Plot PC2 against PC3:
 ```
 pca_data_ceres_23 <- data.frame(Sample = rownames(pca_ceres$x), X = pca_ceres$x[,2], Y = pca_ceres$x[,3]) 
 pca_data_ceres_23
-pca_ceres_plot_23 <- ggplot(data = pca_data_ceres_23, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC2 -", pca_ceres_var_per[2], "%", sep = ""))  + ylab(paste("PC3 -", pca_ceres_var_per[3], "%", sep="")) + theme_bw() + ggtitle("PCA ceresability score")
+pca_ceres_plot_23 <- ggplot(data = pca_data_ceres_23, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC2 -", pca_ceres_var_per[2], "%", sep = ""))  + ylab(paste("PC3 -", pca_ceres_var_per[3], "%", sep="")) + theme_bw() + ggtitle("PCA ceres score")
 pca_ceres_plot_23
 ```
 
@@ -559,7 +559,7 @@ Plot PC2 against PC4:
 ```
 pca_data_ceres_24 <- data.frame(Sample = rownames(pca_ceres$x), X = pca_ceres$x[,2], Y = pca_ceres$x[,4]) 
 pca_data_ceres_24
-pca_ceres_plot_24 <- ggplot(data = pca_data_ceres_24, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC2 -", pca_ceres_var_per[2], "%", sep = ""))  + ylab(paste("PC4 -", pca_ceres_var_per[4], "%", sep="")) + theme_bw() + ggtitle("PCA ceresability score")
+pca_ceres_plot_24 <- ggplot(data = pca_data_ceres_24, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC2 -", pca_ceres_var_per[2], "%", sep = ""))  + ylab(paste("PC4 -", pca_ceres_var_per[4], "%", sep="")) + theme_bw() + ggtitle("PCA ceres score")
 pca_ceres_plot_24
 ```
 
@@ -567,7 +567,7 @@ Plot PC2 against PC5:
 ```
 pca_data_ceres_25 <- data.frame(Sample = rownames(pca_ceres$x), X = pca_ceres$x[,2], Y = pca_ceres$x[,5]) 
 pca_data_ceres_25
-pca_ceres_plot_25 <- ggplot(data = pca_data_ceres_25, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC2 -", pca_ceres_var_per[2], "%", sep = ""))  + ylab(paste("PC5 -", pca_ceres_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA ceresability score")
+pca_ceres_plot_25 <- ggplot(data = pca_data_ceres_25, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC2 -", pca_ceres_var_per[2], "%", sep = ""))  + ylab(paste("PC5 -", pca_ceres_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA ceres score")
 pca_ceres_plot_25
 ```
 
@@ -575,7 +575,7 @@ Plot PC3 against PC4:
 ```
 pca_data_ceres_34 <- data.frame(Sample = rownames(pca_ceres$x), X = pca_ceres$x[,3], Y = pca_ceres$x[,4]) 
 pca_data_ceres_34
-pca_ceres_plot_34 <- ggplot(data = pca_data_ceres_34, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC3 -", pca_ceres_var_per[3], "%", sep = ""))  + ylab(paste("PC4 -", pca_ceres_var_per[4], "%", sep="")) + theme_bw() + ggtitle("PCA ceresability score")
+pca_ceres_plot_34 <- ggplot(data = pca_data_ceres_34, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC3 -", pca_ceres_var_per[3], "%", sep = ""))  + ylab(paste("PC4 -", pca_ceres_var_per[4], "%", sep="")) + theme_bw() + ggtitle("PCA ceres score")
 pca_ceres_plot_34
 ```
 
@@ -583,7 +583,7 @@ Plot PC3 against PC5:
 ```
 pca_data_ceres_35 <- data.frame(Sample = rownames(pca_ceres$x), X = pca_ceres$x[,3], Y = pca_ceres$x[,5]) 
 pca_data_ceres_35
-pca_ceres_plot_35 <- ggplot(data = pca_data_ceres_35, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC3 -", pca_ceres_var_per[3], "%", sep = ""))  + ylab(paste("PC5 -", pca_ceres_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA ceresability score")
+pca_ceres_plot_35 <- ggplot(data = pca_data_ceres_35, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC3 -", pca_ceres_var_per[3], "%", sep = ""))  + ylab(paste("PC5 -", pca_ceres_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA ceres score")
 pca_ceres_plot_35
 ```
 
@@ -591,7 +591,7 @@ Plot PC4 against PC5:
 ```
 pca_data_ceres_45 <- data.frame(Sample = rownames(pca_ceres$x), X = pca_ceres$x[,4], Y = pca_ceres$x[,5]) 
 pca_data_ceres_45
-pca_ceres_plot_45 <- ggplot(data = pca_data_ceres_45, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC4 -", pca_ceres_var_per[4], "%", sep = ""))  + ylab(paste("PC5 -", pca_ceres_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA ceresability score")
+pca_ceres_plot_45 <- ggplot(data = pca_data_ceres_45, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC4 -", pca_ceres_var_per[4], "%", sep = ""))  + ylab(paste("PC5 -", pca_ceres_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA ceres score")
 pca_ceres_plot_45
 ```
 * Determine genes with highest variances
