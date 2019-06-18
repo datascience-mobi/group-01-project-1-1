@@ -1,11 +1,11 @@
-install.packages(operators)
-library(operators)
-install.packages(pheatmap)
-library(pheatmap)
-install.packages(ggplot2)
-library(ggplot2)
-install.packages(dplyr)
-library(dplyr)
+install.packages("operators")
+library("operators")
+install.packages("pheatmap")
+library("pheatmap")
+install.packages("ggplot2")
+library("ggplot2")
+install.packages("dplyr")
+library("dplyr")
 brain.anno = allDepMapData$annotation[allDepMapData$annotation$Subtype.Disease == "Glioblastoma", ]
 rownames(brain.anno) = brain.anno$DepMap_ID
 brain.anno = brain.anno[, -1]
