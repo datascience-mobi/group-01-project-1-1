@@ -418,7 +418,7 @@ rm(gene.data.ex)
 
 ## Principal component analysis
 
-* Expression matrix
+### Expression matrix
 
 ```
 pca_exp <- prcomp(t(exp.clean.w0), scale = TRUE) //matrix must be transposed, because prcomp() expects samples to be rows and genes to be columns; if we dont do it, we get a graph how genes are related to each other
@@ -445,7 +445,7 @@ top_10_genes_exp
 pca_exp$rotation[top_10_genes_exp,1]
 ```
 
-* Copy number matrix
+### Copy number matrix
 
 ```
 pca_copy <- prcomp(t(copy.clean.w0), scale = TRUE) 
@@ -467,7 +467,7 @@ top_10_genes_copy
 pca_copy$rotation[top_10_genes_copy,1]
 ```
 
-* CERES matrix
+### CERES matrix
 
 ```
 pca_ceres <- prcomp(t(ceres.clean.w0), scale = TRUE) 
@@ -489,7 +489,9 @@ top_10_genes_ceres
 pca_ceres$rotation[top_10_genes_ceres,1]
 ```
 
-* Probability matrix
+### Probability matrix
+
+* Barplot with proportional variances
 
 ```
 pca_prob <- prcomp(t(prob.clean.w0), scale = TRUE) 
@@ -497,18 +499,137 @@ plot(pca_prob$x[,1], pca_prob$x[,2])
 pca_prob_var <- pca_prob$sdev^2 
 pca_prob_var_per <- round(pca_prob_var/sum(pca_prob_var)*100, 1) 
 barplot(pca_prob_var_per, main = "Proportion of variance", xlab = "Principal component", ylab = "Percent variation")
+```
 
-pca_data_prob <- data.frame(Sample = rownames(pca_prob$x), X = pca_prob$x[,1], Y = pca_prob$x[,2]) 
-pca_data_prob
-pca_prob_plot <- ggplot(data = pca_data_prob, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_prob_var_per[1], "%", sep = ""))  + ylab(paste("PC2 -", pca_prob_var_per[2], "%", sep="")) + theme_bw() + ggtitle("PCA probability score")
-pca_prob_plot
+* Plotting PC´s against each other
 
-loading_scores_prob <- pca_prob$rotation[,1]      
-gene_scores_prob <- abs(loading_scores_prob)          
-gene_score_prob_ranked <- sort(gene_scores_prob, decreasing = TRUE)
-top_10_genes_prob <- names(gene_score_prob_ranked[1:10])
-top_10_genes_prob
-pca_prob$rotation[top_10_genes_prob,1]
+Plot PC1 against PC2:
+```
+pca_data_prob_12 <- data.frame(Sample = rownames(pca_prob$x), X = pca_prob$x[,1], Y = pca_prob$x[,2]) 
+pca_data_prob_12
+pca_prob_plot_12 <- ggplot(data = pca_data_prob_12, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_prob_var_per[1], "%", sep = ""))  + ylab(paste("PC2 -", pca_prob_var_per[2], "%", sep="")) + theme_bw() + ggtitle("PCA probability score")
+pca_prob_plot_12
+```
+
+Plot PC1 against PC3:
+```
+pca_data_prob_13 <- data.frame(Sample = rownames(pca_prob$x), X = pca_prob$x[,1], Y = pca_prob$x[,3]) 
+pca_data_prob_13
+pca_prob_plot_13 <- ggplot(data = pca_data_prob_13, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_prob_var_per[1], "%", sep = ""))  + ylab(paste("PC3 -", pca_prob_var_per[3], "%", sep="")) + theme_bw() + ggtitle("PCA probability score")
+pca_prob_plot_13
+```
+
+Plot PC1 against PC4:
+```
+pca_data_prob_14 <- data.frame(Sample = rownames(pca_prob$x), X = pca_prob$x[,1], Y = pca_prob$x[,4]) 
+pca_data_prob_14
+pca_prob_plot_14 <- ggplot(data = pca_data_prob_14, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_prob_var_per[1], "%", sep = ""))  + ylab(paste("PC4 -", pca_prob_var_per[4], "%", sep="")) + theme_bw() + ggtitle("PCA probability score")
+pca_prob_plot_14
+```
+
+Plot PC1 against PC5:
+```
+pca_data_prob_15 <- data.frame(Sample = rownames(pca_prob$x), X = pca_prob$x[,1], Y = pca_prob$x[,5]) 
+pca_data_prob_15
+pca_prob_plot_15 <- ggplot(data = pca_data_prob_15, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_prob_var_per[1], "%", sep = ""))  + ylab(paste("PC5 -", pca_prob_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA probability score")
+pca_prob_plot_15
+```
+Plot PC2 against PC3:
+```
+pca_data_prob_23 <- data.frame(Sample = rownames(pca_prob$x), X = pca_prob$x[,2], Y = pca_prob$x[,3]) 
+pca_data_prob_23
+pca_prob_plot_23 <- ggplot(data = pca_data_prob_23, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC2 -", pca_prob_var_per[2], "%", sep = ""))  + ylab(paste("PC3 -", pca_prob_var_per[3], "%", sep="")) + theme_bw() + ggtitle("PCA probability score")
+pca_prob_plot_23
+```
+
+Plot PC2 against PC4:
+```
+pca_data_prob_24 <- data.frame(Sample = rownames(pca_prob$x), X = pca_prob$x[,2], Y = pca_prob$x[,4]) 
+pca_data_prob_24
+pca_prob_plot_24 <- ggplot(data = pca_data_prob_24, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC2 -", pca_prob_var_per[2], "%", sep = ""))  + ylab(paste("PC4 -", pca_prob_var_per[4], "%", sep="")) + theme_bw() + ggtitle("PCA probability score")
+pca_prob_plot_24
+```
+
+Plot PC2 against PC5:
+```
+pca_data_prob_25 <- data.frame(Sample = rownames(pca_prob$x), X = pca_prob$x[,2], Y = pca_prob$x[,5]) 
+pca_data_prob_25
+pca_prob_plot_25 <- ggplot(data = pca_data_prob_25, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC2 -", pca_prob_var_per[2], "%", sep = ""))  + ylab(paste("PC5 -", pca_prob_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA probability score")
+pca_prob_plot_25
+```
+
+Plot PC3 against PC4:
+```
+pca_data_prob_34 <- data.frame(Sample = rownames(pca_prob$x), X = pca_prob$x[,3], Y = pca_prob$x[,4]) 
+pca_data_prob_34
+pca_prob_plot_34 <- ggplot(data = pca_data_prob_34, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC3 -", pca_prob_var_per[3], "%", sep = ""))  + ylab(paste("PC4 -", pca_prob_var_per[4], "%", sep="")) + theme_bw() + ggtitle("PCA probability score")
+pca_prob_plot_34
+```
+
+Plot PC3 against PC5:
+```
+pca_data_prob_35 <- data.frame(Sample = rownames(pca_prob$x), X = pca_prob$x[,3], Y = pca_prob$x[,5]) 
+pca_data_prob_35
+pca_prob_plot_35 <- ggplot(data = pca_data_prob_35, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC3 -", pca_prob_var_per[3], "%", sep = ""))  + ylab(paste("PC5 -", pca_prob_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA probability score")
+pca_prob_plot_35
+```
+
+Plot PC4 against PC5:
+```
+pca_data_prob_45 <- data.frame(Sample = rownames(pca_prob$x), X = pca_prob$x[,4], Y = pca_prob$x[,5]) 
+pca_data_prob_45
+pca_prob_plot_45 <- ggplot(data = pca_data_prob_45, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC4 -", pca_prob_var_per[4], "%", sep = ""))  + ylab(paste("PC5 -", pca_prob_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA probability score")
+pca_prob_plot_45
+```
+* Determine genes with highest variances
+
+Loading scores PC1
+```
+loading_scores_prob_1 <- pca_prob$rotation[,1]      
+gene_scores_prob_1 <- abs(loading_scores_prob_1)          
+gene_score_prob_ranked_1 <- sort(gene_scores_prob_1, decreasing = TRUE)
+top_10_genes_prob_1 <- names(gene_score_prob_ranked_1[1:10])
+top_10_genes_prob_1
+pca_prob$rotation[top_10_genes_prob_1,1]
+```
+
+Loading scores PC2
+```
+loading_scores_prob_2 <- pca_prob$rotation[,2]      
+gene_scores_prob_2 <- abs(loading_scores_prob_2)          
+gene_score_prob_ranked_2 <- sort(gene_scores_prob_2, decreasing = TRUE)
+top_10_genes_prob_2 <- names(gene_score_prob_ranked_2[1:10])
+top_10_genes_prob_2
+pca_prob$rotation[top_10_genes_prob_2,2]
+```
+
+Loading scores PC3
+```
+loading_scores_prob_3 <- pca_prob$rotation[,3]      
+gene_scores_prob_3 <- abs(loading_scores_prob_3)          
+gene_score_prob_ranked_3 <- sort(gene_scores_prob_3, decreasing = TRUE)
+top_10_genes_prob_3 <- names(gene_score_prob_ranked_3[1:10])
+top_10_genes_prob_3
+pca_prob$rotation[top_10_genes_prob_3,3]
+```
+Loading scores PC4
+```
+loading_scores_prob_4 <- pca_prob$rotation[,4]      
+gene_scores_prob_4 <- abs(loading_scores_prob_4)          
+gene_score_prob_ranked_4 <- sort(gene_scores_prob_4, decreasing = TRUE)
+top_10_genes_prob_4 <- names(gene_score_prob_ranked_4[1:10])
+top_10_genes_prob_4
+pca_prob$rotation[top_10_genes_prob,4]
+```
+
+Loading scores PC5
+```
+loading_scores_prob_5 <- pca_prob$rotation[,5]      
+gene_scores_prob_5 <- abs(loading_scores_prob_5)          
+gene_score_prob_ranked_5 <- sort(gene_scores_prob_5, decreasing = TRUE)
+top_10_genes_prob_5 <- names(gene_score_prob_ranked_5[1:10])
+top_10_genes_prob_5
+pca_prob$rotation[top_10_genes_prob,5]
 ```
 
 ## Further steps:
