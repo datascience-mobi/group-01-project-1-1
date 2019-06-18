@@ -340,10 +340,24 @@ boxplot_mtnd5_CN <- boxplot(mtnd5.copy.mean, ylab = "Copy number", main = "Mean 
 
 * Heatmaps of whole mutation/CN/expression/CERES and probability matrices
 
+```
+library(pheatmap)
+library(grid)
+```
+
 Expression matrix (few overexpressed, but a lot deleted genes):
+
 ```
 setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
 pheatmap(exp.clean, show_rownames = F)
+setHook("grid.newpage", NULL, "replace")
+grid.text("celllines", y=-0.07, gp=gpar(fontsize=16))
+grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
+```
+
+```
+setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
+pheatmap(exp.clean.w0, show_rownames = F)
 setHook("grid.newpage", NULL, "replace")
 grid.text("celllines", y=-0.07, gp=gpar(fontsize=16))
 grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
@@ -358,10 +372,26 @@ grid.text("celllines", y=-0.07, gp=gpar(fontsize=16))
 grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
 ```
 
+```
+setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
+pheatmap(copy.clean.w0, show_rownames = F)
+setHook("grid.newpage", NULL, "replace")
+grid.text("celllines", y=-0.07, gp=gpar(fontsize=16))
+grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
+```
+
 CERES matrix (few genes, which seems to be essential):
 ```
 setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
 pheatmap(ceres.clean, show_rownames = F)
+setHook("grid.newpage", NULL, "replace")
+grid.text("celllines", y=-0.07, gp=gpar(fontsize=16))
+grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
+```
+
+```
+setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
+pheatmap(ceres.clean.w0, show_rownames = F)
 setHook("grid.newpage", NULL, "replace")
 grid.text("celllines", y=-0.07, gp=gpar(fontsize=16))
 grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
@@ -375,6 +405,13 @@ setHook("grid.newpage", NULL, "replace")
 grid.text("celllines", y=-0.07, gp=gpar(fontsize=16))
 grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
 ```
+```
+setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
+pheatmap(prob.clean.w0, show_rownames = F)
+setHook("grid.newpage", NULL, "replace")
+grid.text("celllines", y=-0.07, gp=gpar(fontsize=16))
+grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
+``` 
 
 # Data reduction
 
@@ -619,7 +656,7 @@ gene_scores_prob_4 <- abs(loading_scores_prob_4)
 gene_score_prob_ranked_4 <- sort(gene_scores_prob_4, decreasing = TRUE)
 top_10_genes_prob_4 <- names(gene_score_prob_ranked_4[1:10])
 top_10_genes_prob_4
-pca_prob$rotation[top_10_genes_prob,4]
+pca_prob$rotation[top_10_genes_prob_4,4]
 ```
 
 Loading scores PC5
@@ -629,7 +666,7 @@ gene_scores_prob_5 <- abs(loading_scores_prob_5)
 gene_score_prob_ranked_5 <- sort(gene_scores_prob_5, decreasing = TRUE)
 top_10_genes_prob_5 <- names(gene_score_prob_ranked_5[1:10])
 top_10_genes_prob_5
-pca_prob$rotation[top_10_genes_prob,5]
+pca_prob$rotation[top_10_genes_prob_5,5]
 ```
 
 ## Further steps:
