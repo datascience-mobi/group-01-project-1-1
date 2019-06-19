@@ -632,6 +632,195 @@ top_10_genes_prob_5
 pca_prob$rotation[top_10_genes_prob,5]
 ```
 
+
+* Expression matrix
+
+```{r}
+pca_exp <- prcomp(t(exp.clean.w0), scale = TRUE) 
+plot(pca_exp$x[,1], pca_exp$x[,2]) 
+pca_exp_var <- pca_exp$sdev^2 
+pca_exp_var_per <- round(pca_exp_var/sum(pca_exp_var)*100, 1) 
+barplot(pca_exp_var_per, main = "Proportion of variance", xlab = "Principal component", ylab = "Percent variation")
+```
+
+```{r}
+pca_data_exp <- data.frame(Sample = rownames(pca_exp$x), X = pca_exp$x[,1], Y = pca_exp$x[,2]) 
+pca_data_exp
+pca_exp_plot <- ggplot(data = pca_data_exp, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_exp_var_per[1], "%", sep = ""))  + ylab(paste("PC2 -", pca_exp_var_per[2], "%", sep="")) + theme_bw() + ggtitle("PCA expression score")
+pca_exp_plot
+```
+
+* Plotting PCs against each other
+
+*   PC1 against PC2
+```{r}
+pca_data_exp_12 <- data.frame(Sample = rownames(pca_exp$x), X = pca_exp$x[,1], Y = pca_exp$x[,2]) 
+pca_data_exp_12
+pca_exp_plot_12 <- ggplot(data = pca_data_exp_12, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_exp_var_per[1], "%", sep = ""))  + ylab(paste("PC2 -", pca_exp_var_per[2], "%", sep="")) + theme_bw() + ggtitle("PCA expression score")
+pca_exp_plot_12
+```
+
+*   PC1 against PC3
+
+```{r}
+pca_data_exp_13 <- data.frame(Sample = rownames(pca_exp$x), X = pca_exp$x[,1], Y = pca_exp$x[,3]) 
+pca_data_exp_13
+pca_exp_plot_13 <- ggplot(data = pca_data_exp_13, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_exp_var_per[1], "%", sep = ""))  + ylab(paste("PC3 -", pca_exp_var_per[3], "%", sep="")) + theme_bw() + ggtitle("PCA expression score")
+pca_exp_plot_13
+```
+
+* PC1 against PC4:
+
+```{r}
+pca_data_exp_14 <- data.frame(Sample = rownames(pca_exp$x), X = pca_exp$x[,1], Y = pca_exp$x[,4]) 
+pca_data_exp_14
+pca_exp_plot_14 <- ggplot(data = pca_data_exp_14, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_exp_var_per[1], "%", sep = ""))  + ylab(paste("PC4 -", pca_exp_var_per[4], "%", sep="")) + theme_bw() + ggtitle("PCA expression score")
+pca_exp_plot_14
+```
+
+* PC1 against PC5:
+
+```{r}
+pca_data_exp_15 <- data.frame(Sample = rownames(pca_exp$x), X = pca_exp$x[,1], Y = pca_exp$x[,5]) 
+pca_data_exp_15
+pca_exp_plot_15 <- ggplot(data = pca_data_exp_15, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_exp_var_per[1], "%", sep = ""))  + ylab(paste("PC5 -", pca_exp_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA expression score")
+pca_exp_plot_15
+```
+
+* PC2 against PC3:
+
+```{r}
+pca_data_exp_23 <- data.frame(Sample = rownames(pca_exp$x), X = pca_exp$x[,2], Y = pca_exp$x[,3]) 
+pca_data_exp_23
+pca_exp_plot_23 <- ggplot(data = pca_data_exp_23, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC2 -", pca_exp_var_per[2], "%", sep = ""))  + ylab(paste("PC3 -", pca_exp_var_per[3], "%", sep="")) + theme_bw() + ggtitle("PCA expression score")
+pca_exp_plot_23
+```
+
+* PC2 against PC4:
+
+```{r}
+pca_data_exp_24 <- data.frame(Sample = rownames(pca_exp$x), X = pca_exp$x[,2], Y = pca_exp$x[,4]) 
+pca_data_exp_24
+pca_exp_plot_24 <- ggplot(data = pca_data_exp_24, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC2 -", pca_exp_var_per[2], "%", sep = ""))  + ylab(paste("PC4 -", pca_exp_var_per[4], "%", sep="")) + theme_bw() + ggtitle("PCA expression score")
+pca_exp_plot_24
+```
+
+* PC2 against PC5:
+
+```{r}
+pca_data_exp_25 <- data.frame(Sample = rownames(pca_exp$x), X = pca_exp$x[,2], Y = pca_exp$x[,5]) 
+pca_data_exp_25
+pca_exp_plot_25 <- ggplot(data = pca_data_exp_25, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC2 -", pca_exp_var_per[2], "%", sep = ""))  + ylab(paste("PC5 -", pca_exp_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA expression score")
+pca_exp_plot_25
+```
+
+* PC3 against PC4:
+
+```{r}
+pca_data_exp_34 <- data.frame(Sample = rownames(pca_exp$x), X = pca_exp$x[,3], Y = pca_exp$x[,4]) 
+pca_data_exp_34
+pca_exp_plot_34 <- ggplot(data = pca_data_exp_34, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC3 -", pca_exp_var_per[3], "%", sep = ""))  + ylab(paste("PC4 -", pca_exp_var_per[4], "%", sep="")) + theme_bw() + ggtitle("PCA expression score")
+pca_exp_plot_34
+```
+
+* PC3 against PC5:
+
+```{r}
+pca_data_exp_35 <- data.frame(Sample = rownames(pca_exp$x), X = pca_exp$x[,3], Y = pca_exp$x[,5]) 
+pca_data_exp_35
+pca_exp_plot_35 <- ggplot(data = pca_data_exp_35, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC3 -", pca_exp_var_per[3], "%", sep = ""))  + ylab(paste("PC5 -", pca_exp_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA expression score")
+pca_exp_plot_35
+```
+
+* PC4 against PC5:
+
+```{r}
+pca_data_exp_45 <- data.frame(Sample = rownames(pca_exp$x), X = pca_exp$x[,4], Y = pca_exp$x[,5]) 
+pca_data_exp_45
+pca_exp_plot_45 <- ggplot(data = pca_data_exp_45, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC4 -", pca_exp_var_per[4], "%", sep = ""))  + ylab(paste("PC5 -", pca_exp_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA expression score")
+pca_exp_plot_45
+```
+
+* Determine genes with highest variances
+
+```{r}
+loading_scores_exp <- pca_exp$rotation[,1]      
+gene_scores_exp <- abs(loading_scores_exp)          
+gene_score_exp_ranked <- sort(gene_scores_exp, decreasing = TRUE)
+top_10_genes_exp <- names(gene_score_exp_ranked[1:10])
+top_10_genes_exp
+pca_exp$rotation[top_10_genes_exp,1]
+```
+
+* Loading scores PC1
+
+```{r}
+loading_scores_exp_1 <- pca_exp$rotation[,1]      
+gene_scores_exp_1 <- abs(loading_scores_exp_1)          
+gene_score_exp_ranked_1 <- sort(gene_scores_exp_1, decreasing = TRUE)
+top_10_genes_exp_1 <- names(gene_score_exp_ranked_1[1:10])
+top_10_genes_exp_1
+pca_exp$rotation[top_10_genes_exp_1,1]
+```
+
+* Loading scores PC2
+
+```{r}
+loading_scores_exp_2 <- pca_exp$rotation[,2]      
+gene_scores_exp_2 <- abs(loading_scores_exp_2)          
+gene_score_exp_ranked_2 <- sort(gene_scores_exp_2, decreasing = TRUE)
+top_10_genes_exp_2 <- names(gene_score_exp_ranked_2[1:10])
+top_10_genes_exp_2
+pca_exp$rotation[top_10_genes_exp_2,2]
+```
+
+```{r}
+pca_data_exp <- data.frame(Sample = rownames(pca_exp$x), X = pca_exp$x[,1], Y = pca_exp$x[,2]) 
+pca_data_exp
+pca_exp_plot <- ggplot(data = pca_data_exp, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_exp_var_per[1], "%", sep = ""))  + ylab(paste("PC2 -", pca_exp_var_per[2], "%", sep="")) + theme_bw() + ggtitle("PCA expression score")
+pca_exp_plot
+
+loading_scores_exp <- pca_exp$rotation[,1]      
+gene_scores_exp <- abs(loading_scores_exp)          
+gene_score_exp_ranked <- sort(gene_scores_exp, decreasing = TRUE)
+top_10_genes_exp <- names(gene_score_exp_ranked[1:10])
+top_10_genes_exp
+pca_exp$rotation[top_10_genes_exp,1]
+```
+
+* Loading scores PC3
+
+```{r}
+loading_scores_exp_3 <- pca_exp$rotation[,3]      
+gene_scores_exp_3 <- abs(loading_scores_exp_3)          
+gene_score_exp_ranked_3 <- sort(gene_scores_exp_3, decreasing = TRUE)
+top_10_genes_exp_3 <- names(gene_score_exp_ranked_3[1:10])
+top_10_genes_exp_3
+pca_exp$rotation[top_10_genes_exp_3,3]
+```
+
+* Loading scores PC4
+
+```{r}
+loading_scores_exp_4 <- pca_exp$rotation[,4]      
+gene_scores_exp_4 <- abs(loading_scores_exp_4)          
+gene_score_exp_ranked_4 <- sort(gene_scores_exp_4, decreasing = TRUE)
+top_10_genes_exp_4 <- names(gene_score_exp_ranked_4[1:10])
+top_10_genes_exp_4
+pca_exp$rotation[top_10_genes_exp,4]
+```
+
+Loading scores PC5
+
+```{r}
+loading_scores_exp_5 <- pca_exp$rotation[,5]      
+gene_scores_exp_5 <- abs(loading_scores_exp_5)          
+gene_score_exp_ranked_5 <- sort(gene_scores_exp_5, decreasing = TRUE)
+top_10_genes_exp_5 <- names(gene_score_exp_ranked_5[1:10])
+top_10_genes_exp_5
+pca_exp$rotation[top_10_genes_exp,5]
+```
+
 ## Further steps:
 
 * Interprete the proportion of variances, maybe plot other PC´s against each other
