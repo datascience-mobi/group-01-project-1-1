@@ -658,7 +658,7 @@ pca_prob_var_per <- round(pca_prob_var/sum(pca_prob_var)*100, 1)
 barplot(pca_prob_var_per, main = "Proportion of variance", xlab = "Principal component", ylab = "Percent variation")
 ```
 
-* Plotting PC´s against each other
+* Plotting PC??s against each other
 
 Plot PC1 against PC2:
 ```
@@ -807,7 +807,7 @@ pca_exp_plot <- ggplot(data = pca_data_exp, aes(x=X, y=Y, label = Sample)) + geo
 pca_exp_plot
 ```
 
-* Plotting PCs against each other
+* Plotting PC's against each other
 
 *   PC1 against PC2
 ```{r}
@@ -978,9 +978,162 @@ top_10_genes_exp_5
 pca_exp$rotation[top_10_genes_exp,5]
 ```
 
+** copy number matrix
+
+Barplot with proportional variances
+
+```{r}
+pca_copy <- prcomp(t(copy.clean.w0), scale = TRUE)
+plot(pca_copy$x[,1], pca_copy$x[,2])
+pca_copy_var <- pca_copy$sdev^2
+pca_copy_var_per <- round(pca_copy_var/sum(pca_copy_var)*100, 1)
+barplot(pca_copy_var_per, main = "Proportion of variance", xlab = "Principal component", ylab = "Percent variation")
+```
+
+Plotting PC's against each other
+
+Plot PC1 against PC2:
+```{r}
+pca_data_copy_12 <- data.frame(sample = rownames(pca_copy$x), X = pca_copy$x[,1], Y = pca_copy$x[,2])
+pca_data_copy_12
+pca_copy_plot_12 <- ggplot(data = pca_data_copy_12, aes(x=X, y=Y, label = sample)) + geom_point()   + xlab(paste("PC1 -", pca_copy_var_per[1], "%", sep = ""))  + ylab(paste("PC2 -", pca_copy_var_per[2], "%", sep="")) + theme_bw() + ggtitle("PCA copy score")
+pca_copy_plot_12
+```
+
+Plot PC1 against PC3:
+
+```{r}
+pca_data_copy_13 <- data.frame(sample = rownames(pca_copy$x), X = pca_copy$x[,1], Y = pca_copy$x[,3])
+pca_data_copy_13
+pca_copy_plot_13 <- ggplot(data = pca_data_copy_13, aes(x=X, y=Y, label = sample)) + geom_point()   + xlab(paste("PC1 -", pca_copy_var_per[1], "%", sep = ""))  + ylab(paste("PC3 -", pca_copy_var_per[3], "%", sep="")) + theme_bw() + ggtitle("PCA copy score")
+pca_copy_plot_13
+```
+Plot PC1 against PC4:
+
+```{r}
+pca_data_copy_14 <- data.frame(sample = rownames(pca_copy$x), X = pca_copy$x[,1], Y = pca_copy$x[,4])
+pca_data_copy_14
+pca_copy_plot_14 <- ggplot(data = pca_data_copy_14, aes(x=X, y=Y, label = sample)) + geom_point()   + xlab(paste("PC1 -", pca_copy_var_per[1], "%", sep = ""))  + ylab(paste("PC4 -", pca_copy_var_per[4], "%", sep="")) + theme_bw() + ggtitle("PCA copy score")
+pca_copy_plot_14
+```
+Plot PC1 against PC5:
+
+```{r}
+pca_data_copy_15 <- data.frame(sample = rownames(pca_copy$x), X = pca_copy$x[,1], Y = pca_copy$x[,5])
+pca_data_copy_15
+pca_copy_plot_15 <- ggplot(data = pca_data_copy_15, aes(x=X, y=Y, label = sample)) + geom_point()   + xlab(paste("PC1 -", pca_copy_var_per[1], "%", sep = ""))  + ylab(paste("PC5 -", pca_copy_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA copy score")
+pca_copy_plot_15
+```
+
+Plot PC2 against PC3:
+
+```{r}
+pca_data_copy_23 <- data.frame(sample = rownames(pca_copy$x), X = pca_copy$x[,2], Y = pca_copy$x[,3])
+pca_data_copy_23
+pca_copy_plot_23 <- ggplot(data = pca_data_copy_23, aes(x=X, y=Y, label = sample)) + geom_point()   + xlab(paste("PC2 -", pca_copy_var_per[2], "%", sep = ""))  + ylab(paste("PC3 -", pca_copy_var_per[3], "%", sep="")) + theme_bw() + ggtitle("PCA copy score")
+pca_copy_plot_23
+```
+
+Plot PC2 against PC4:
+
+```{r}
+pca_data_copy_24 <- data.frame(sample = rownames(pca_copy$x), X = pca_copy$x[,2], Y = pca_copy$x[,4])
+pca_data_copy_24
+pca_copy_plot_24 <- ggplot(data = pca_data_copy_24, aes(x=X, y=Y, label = sample)) + geom_point()   + xlab(paste("PC2 -", pca_copy_var_per[2], "%", sep = ""))  + ylab(paste("PC4 -", pca_copy_var_per[4], "%", sep="")) + theme_bw() + ggtitle("PCA copy score")
+pca_copy_plot_24
+```
+
+Plot PC2 against PC5:
+
+```{r}
+pca_data_copy_25 <- data.frame(sample = rownames(pca_copy$x), X = pca_copy$x[,2], Y = pca_copy$x[,5])
+pca_data_copy_25
+pca_copy_plot_25 <- ggplot(data = pca_data_copy_25, aes(x=X, y=Y, label = sample)) + geom_point()   + xlab(paste("PC2 -", pca_copy_var_per[2], "%", sep = ""))  + ylab(paste("PC5 -", pca_copy_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA copy score")
+pca_copy_plot_25
+```
+
+Plot PC3 against PC4:
+
+```{r}
+pca_data_copy_34 <- data.frame(sample = rownames(pca_copy$x), X = pca_copy$x[,3], Y = pca_copy$x[,4])
+pca_data_copy_34
+pca_copy_plot_34 <- ggplot(data = pca_data_copy_34, aes(x=X, y=Y, label = sample)) + geom_point()   + xlab(paste("PC3 -", pca_copy_var_per[3], "%", sep = ""))  + ylab(paste("PC4 -", pca_copy_var_per[4], "%", sep="")) + theme_bw() + ggtitle("PCA copy score")
+pca_copy_plot_34
+```
+
+Plot PC3 against PC5:
+
+```{r}
+pca_data_copy_35 <- data.frame(sample = rownames(pca_copy$x), X = pca_copy$x[,3], Y = pca_copy$x[,5])
+pca_data_copy_35
+pca_copy_plot_35 <- ggplot(data = pca_data_copy_35, aes(x=X, y=Y, label = sample)) + geom_point()   + xlab(paste("PC3 -", pca_copy_var_per[3], "%", sep = ""))  + ylab(paste("PC5 -", pca_copy_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA copy score")
+pca_copy_plot_35
+```
+
+Plot PC4 against PC5: 
+
+```{r}
+pca_data_copy_45 <- data.frame(sample = rownames(pca_copy$x), X = pca_copy$x[,4], Y = pca_copy$x[,5])
+pca_data_copy_45
+pca_copy_plot_45 <- ggplot(data = pca_data_copy_45, aes(x=X, y=Y, label = sample)) + geom_point()   + xlab(paste("PC4 -", pca_copy_var_per[4], "%", sep = ""))  + ylab(paste("PC5 -", pca_copy_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA copy score")
+pca_copy_plot_45
+```
+**Determine genes with highest variances
+
+Loading scores PC1
+
+```{r}
+loading_scores_copy_1 <- pca_copy$rotation[,1]
+gene_scores_copy_1 <- abs(loading_scores_copy_1)
+gene_score_copy_ranked_1 <- sort(gene_scores_copy_1, decreasing = TRUE)
+top_10_genes_copy_1 <- names(gene_score_copy_ranked_1[1:10])
+top_10_genes_copy_1
+```
+
+Loading scores PC2
+
+```{r}
+loading_scores_copy_2 <- pca_copy$rotation[,2]
+gene_scores_copy_2 <- abs(loading_scores_copy_2)
+gene_score_copy_ranked_2 <- sort(gene_scores_copy_2, decreasing = TRUE)
+top_10_genes_copy_2 <- names(gene_score_copy_ranked_2[1:10])
+top_10_genes_copy_2
+```
+
+Loading scores PC3
+
+```{r}
+loading_scores_copy_3 <- pca_copy$rotation[,3]
+gene_scores_copy_3 <- abs(loading_scores_copy_3)
+gene_score_copy_ranked_3 <- sort(gene_scores_copy_3, decreasing = TRUE)
+top_10_genes_copy_3 <- names(gene_score_copy_ranked_3[1:10])
+top_10_genes_copy_3
+```
+
+Loading scores PC4
+
+```{r}
+loading_scores_copy_4 <- pca_copy$rotation[,4]
+gene_scores_copy_4 <- abs(loading_scores_copy_4)
+gene_score_copy_ranked_4 <- sort(gene_scores_copy_4, decreasing = TRUE)
+top_10_genes_copy_4 <- names(gene_score_copy_ranked_4[1:10])
+top_10_genes_copy_4
+```
+
+Loading scores PC5
+
+```{r}
+loading_scores_copy_5 <- pca_copy$rotation[,5]
+gene_scores_copy_5 <- abs(loading_scores_copy_5)
+gene_score_copy_ranked_5 <- sort(gene_scores_copy_5, decreasing = TRUE)
+top_10_genes_copy_5 <- names(gene_score_copy_ranked_5[1:10])
+top_10_genes_copy_5
+```
+
+
 ## Further steps:
 
-* Interprete the proportion of variances, maybe plot other PC´s against each other
+* Interprete the proportion of variances, maybe plot other PC??s against each other
 * Interprete plots plus additional plots
 * loading scores for more than ten genes (Attention: in these cases the loading scores just refer to the PC1!!!!)
 * loading scores for PC2, PC3, .... for each matrix
