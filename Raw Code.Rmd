@@ -407,4 +407,16 @@ mutations.mtnd5 = rbind(relevant.mutations$`ACH-000040`, relevant.mutations$`ACH
 mutations.mtnd5= select(mutations.mtnd5, c(2,21, 36))
 mutations.muc16 = rbind(relevant.mutations$`ACH-000036`, relevant.mutations$`ACH-000137`, relevant.mutations$`ACH-000152`, relevant.mutations$`ACH-000208`, relevant.mutations$`ACH-000231`, relevant.mutations$`ACH-000368`, relevant.mutations$`ACH-000376`, relevant.mutations$`ACH-000464`, relevant.mutations$`ACH-000571`, relevant.mutations$`ACH-000738`, relevant.mutations$`ACH-000756`, relevant.mutations$`ACH-000819`)
 mutations.muc16= select(mutations.muc16, c(2,21, 36))
+list.tp53.genes = unique(subset(mutations.tp53))
+genes.tp53 <- c(list.tp53.genes$Hugo_Symbol)
+ceres.tp53.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.tp53),]
+list.ttn.genes = unique(subset(mutations.ttn))
+genes.ttn <- c(list.ttn.genes$Hugo_Symbol)
+ceres.ttn.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.ttn),]
+list.mtnd5.genes = unique(subset(mutations.mtnd5))
+genes.mtnd5 <- c(list.mtnd5.genes$Hugo_Symbol)
+ceres.mtnd5.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.mtnd5),]
+list.muc16.genes = unique(subset(mutations.muc16))
+genes.muc16 <- c(list.muc16.genes$Hugo_Symbol)
+ceres.muc16.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.muc16),]
 ```
