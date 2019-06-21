@@ -1087,27 +1087,61 @@ pca_prob$rotation[top_10_genes_prob_5,5]
 Already done before: TP53, TTN, MT-ND5, MUC16
 
 * Mutation matrices with just the celllines containing one specific DM to determine all other genes, which are mutated too
+  Since all other mutated genes are a few thousand, i extracted the ones, which had "is Deleterious = TRUE"
 
 For TP53:
 ```
 mutations.tp53 = rbind(relevant.mutations$`ACH-000036`,relevant.mutations$`ACH-000040`, relevant.mutations$`ACH-000098`, relevant.mutations$`ACH-000208`, relevant.mutations$`ACH-000215`, relevant.mutations$`ACH-000137`, relevant.mutations$`ACH-000152`, relevant.mutations$`ACH-000591`, relevant.mutations$`ACH-000673`, relevant.mutations$`ACH-000231`, relevant.mutations$`ACH-000368`, relevant.mutations$`ACH-000376`, relevant.mutations$`ACH-000445`, relevant.mutations$`ACH-000464`, relevant.mutations$`ACH-000469`, relevant.mutations$`ACH-000570`, relevant.mutations$`ACH-000571`, relevant.mutations$`ACH-000623`, relevant.mutations$`ACH-000673`, relevant.mutations$`ACH-000738`, relevant.mutations$`ACH-000756`, relevant.mutations$`ACH-000819`, relevant.mutations$`ACH-000128`)
-mutations.tp53= select(mutations.tp53, c(2,21, 36)) //dplyr packgage
+mutations.tp53= select(mutations.tp53, c(2,21, 36))//dplyr packgage
+mutations.tp53 = subset(mutations.tp53, mutations.tp53$isDeleterious == "TRUE")
 ```
 
 For TTN:
 ```
 mutations.ttn = rbind(relevant.mutations$`ACH-000040`, relevant.mutations$`ACH-000098`, relevant.mutations$`ACH-000231`, relevant.mutations$`ACH-000445`, relevant.mutations$`ACH-000464`, relevant.mutations$`ACH-000570`, relevant.mutations$`ACH-000623`, relevant.mutations$`ACH-000738`, relevant.mutations$`ACH-000756`, relevant.mutations$`ACH-000760`, relevant.mutations$`ACH-000819`, relevant.mutations$`ACH-000244`, relevant.mutations$`ACH-000479`, relevant.mutations$`ACH-000631`)
 mutations.ttn= select(mutations.ttn, c(2,21, 36))
+mutations.ttn = subset(mutations.ttn, mutations.ttn$isDeleterious == "TRUE")
 ```
 
 For MT-ND5:
 ```
 mutations.mtnd5 = rbind(relevant.mutations$`ACH-000040`, relevant.mutations$`ACH-000098`, relevant.mutations$`ACH-000075`, relevant.mutations$`ACH-000231`, relevant.mutations$`ACH-000244`, relevant.mutations$`ACH-000368`, relevant.mutations$`ACH-000445`, relevant.mutations$`ACH-000479`, relevant.mutations$`ACH-000570`, relevant.mutations$`ACH-000571`, relevant.mutations$`ACH-000591`, relevant.mutations$`ACH-000621`, relevant.mutations$`ACH-000738`, relevant.mutations$`ACH-000756`, relevant.mutations$`ACH-000819`)
 mutations.mtnd5= select(mutations.mtnd5, c(2,21, 36))
+mutations.mtnd5 = subset(mutations.mtnd5, mutations.mtnd5$isDeleterious == "TRUE")
 ```
 
 For MUC16:
 ```
 mutations.muc16 = rbind(relevant.mutations$`ACH-000036`, relevant.mutations$`ACH-000137`, relevant.mutations$`ACH-000152`, relevant.mutations$`ACH-000208`, relevant.mutations$`ACH-000231`, relevant.mutations$`ACH-000368`, relevant.mutations$`ACH-000376`, relevant.mutations$`ACH-000464`, relevant.mutations$`ACH-000571`, relevant.mutations$`ACH-000738`, relevant.mutations$`ACH-000756`, relevant.mutations$`ACH-000819`)
 mutations.muc16= select(mutations.muc16, c(2,21, 36))
+mutations.muc16 = subset(mutations.muc16, mutations.muc16$isDeleterious == "TRUE")
+```
+
+* Determine the remaining genes and extract them from the CERES matrix to continue working with just them
+
+For TP53:
+```
+list.tp53.genes = unique(subset(mutations.tp53))
+genes.tp53 <- c(list.tp53.genes$Hugo_Symbol)
+ceres.tp53.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.tp53),]
+```
+
+For TTN:
+```
+list.ttn.genes = unique(subset(mutations.ttn))
+genes.ttn <- c(list.ttn.genes$Hugo_Symbol)
+ceres.ttn.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.ttn),]
+```
+For MT-ND5:
+```
+list.mtnd5.genes = unique(subset(mutations.mtnd5))
+genes.mtnd5 <- c(list.mtnd5.genes$Hugo_Symbol)
+ceres.mtnd5.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.mtnd5),]
+```
+
+For MUC16:
+```
+list.muc16.genes = unique(subset(mutations.muc16))
+genes.muc16 <- c(list.muc16.genes$Hugo_Symbol)
+ceres.muc16.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.muc16),]
 ```
