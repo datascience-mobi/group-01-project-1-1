@@ -1075,3 +1075,39 @@ pca_prob$rotation[top_10_genes_prob_5,5]
 * loading scores for PC2, PC3, .... for each matrix
 * Determine which possible 2nd site targets to look at (how many?) for further analyzing
 * Make plots more beautiful
+
+
+
+## "PCA" plus test (David´s idea)
+
+### Data cleanup
+
+* Determine our four most prominent driving mutations
+
+Already done before: TP53, TTN, MT-ND5, MUC16
+
+* Mutation matrices with just the celllines containing one specific DM to determine all other genes, which are mutated too
+
+For TP53:
+```
+mutations.tp53 = rbind(relevant.mutations$`ACH-000036`,relevant.mutations$`ACH-000040`, relevant.mutations$`ACH-000098`, relevant.mutations$`ACH-000208`, relevant.mutations$`ACH-000215`, relevant.mutations$`ACH-000137`, relevant.mutations$`ACH-000152`, relevant.mutations$`ACH-000591`, relevant.mutations$`ACH-000673`, relevant.mutations$`ACH-000231`, relevant.mutations$`ACH-000368`, relevant.mutations$`ACH-000376`, relevant.mutations$`ACH-000445`, relevant.mutations$`ACH-000464`, relevant.mutations$`ACH-000469`, relevant.mutations$`ACH-000570`, relevant.mutations$`ACH-000571`, relevant.mutations$`ACH-000623`, relevant.mutations$`ACH-000673`, relevant.mutations$`ACH-000738`, relevant.mutations$`ACH-000756`, relevant.mutations$`ACH-000819`, relevant.mutations$`ACH-000128`)
+mutations.tp53= select(mutations.tp53, c(2,21, 36)) //dplyr packgage
+```
+
+For TTN:
+```
+mutations.ttn = rbind(relevant.mutations$`ACH-000040`, relevant.mutations$`ACH-000098`, relevant.mutations$`ACH-000231`, relevant.mutations$`ACH-000445`, relevant.mutations$`ACH-000464`, relevant.mutations$`ACH-000570`, relevant.mutations$`ACH-000623`, relevant.mutations$`ACH-000738`, relevant.mutations$`ACH-000756`, relevant.mutations$`ACH-000760`, relevant.mutations$`ACH-000819`, relevant.mutations$`ACH-000244`, relevant.mutations$`ACH-000479`, relevant.mutations$`ACH-000631`)
+mutations.ttn= select(mutations.ttn, c(2,21, 36))
+```
+
+For MT-ND5:
+```
+mutations.mtnd5 = rbind(relevant.mutations$`ACH-000040`, relevant.mutations$`ACH-000098`, relevant.mutations$`ACH-000075`, relevant.mutations$`ACH-000231`, relevant.mutations$`ACH-000244`, relevant.mutations$`ACH-000368`, relevant.mutations$`ACH-000445`, relevant.mutations$`ACH-000479`, relevant.mutations$`ACH-000570`, relevant.mutations$`ACH-000571`, relevant.mutations$`ACH-000591`, relevant.mutations$`ACH-000621`, relevant.mutations$`ACH-000738`, relevant.mutations$`ACH-000756`, relevant.mutations$`ACH-000819`)
+mutations.mtnd5= select(mutations.mtnd5, c(2,21, 36))
+```
+
+For MUC16:
+```
+mutations.muc16 = rbind(relevant.mutations$`ACH-000036`, relevant.mutations$`ACH-000137`, relevant.mutations$`ACH-000152`, relevant.mutations$`ACH-000208`, relevant.mutations$`ACH-000231`, relevant.mutations$`ACH-000368`, relevant.mutations$`ACH-000376`, relevant.mutations$`ACH-000464`, relevant.mutations$`ACH-000571`, relevant.mutations$`ACH-000738`, relevant.mutations$`ACH-000756`, relevant.mutations$`ACH-000819`)
+mutations.muc16= select(mutations.muc16, c(2,21, 36))
+```
