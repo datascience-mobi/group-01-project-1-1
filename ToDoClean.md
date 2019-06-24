@@ -11,6 +11,8 @@ rownames(brain.anno) = brain.anno$DepMap_ID
 brain.anno = brain.anno[, -1]
 ```
 
+
+
 * remove irrelevant cell lines from the other tables as well
 ```
 cell.lines = dput(rownames(brain.anno))
@@ -463,46 +465,323 @@ plot(pca_exp$x[,1], pca_exp$x[,2]) //PC1 plotted against PC2
 pca_exp_var <- pca_exp$sdev^2 //calculate variation each PC accounts for
 pca_exp_var_per <- round(pca_exp_var/sum(pca_exp_var)*100, 1) //convert it into percentage
 barplot(pca_exp_var_per, main = "Proportion of variance", xlab = "Principal component", ylab = "Percent variation")
+```
 
-pca_data_exp <- data.frame(Sample = rownames(pca_exp$x), X = pca_exp$x[,1], Y = pca_exp$x[,2]) //create data frame for ggplot
+* Plotting PC's against each other
+
+*   PC1 against PC2
+```{r}
+pca_data_exp_12 <- data.frame(Sample = rownames(pca_exp$x), X = pca_exp$x[,1], Y = pca_exp$x[,2]) 
+pca_data_exp_12
+pca_exp_plot_12 <- ggplot(data = pca_data_exp_12, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_exp_var_per[1], "%", sep = ""))  + ylab(paste("PC2 -", pca_exp_var_per[2], "%", sep="")) + theme_bw() + ggtitle("PCA expression score")
+pca_exp_plot_12
+```
+
+*   PC1 against PC3
+
+```{r}
+pca_data_exp_13 <- data.frame(Sample = rownames(pca_exp$x), X = pca_exp$x[,1], Y = pca_exp$x[,3]) 
+pca_data_exp_13
+pca_exp_plot_13 <- ggplot(data = pca_data_exp_13, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_exp_var_per[1], "%", sep = ""))  + ylab(paste("PC3 -", pca_exp_var_per[3], "%", sep="")) + theme_bw() + ggtitle("PCA expression score")
+pca_exp_plot_13
+```
+
+* PC1 against PC4:
+
+```{r}
+pca_data_exp_14 <- data.frame(Sample = rownames(pca_exp$x), X = pca_exp$x[,1], Y = pca_exp$x[,4]) 
+pca_data_exp_14
+pca_exp_plot_14 <- ggplot(data = pca_data_exp_14, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_exp_var_per[1], "%", sep = ""))  + ylab(paste("PC4 -", pca_exp_var_per[4], "%", sep="")) + theme_bw() + ggtitle("PCA expression score")
+pca_exp_plot_14
+```
+
+* PC1 against PC5:
+
+```{r}
+pca_data_exp_15 <- data.frame(Sample = rownames(pca_exp$x), X = pca_exp$x[,1], Y = pca_exp$x[,5]) 
+pca_data_exp_15
+pca_exp_plot_15 <- ggplot(data = pca_data_exp_15, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_exp_var_per[1], "%", sep = ""))  + ylab(paste("PC5 -", pca_exp_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA expression score")
+pca_exp_plot_15
+```
+
+* PC2 against PC3:
+
+```{r}
+pca_data_exp_23 <- data.frame(Sample = rownames(pca_exp$x), X = pca_exp$x[,2], Y = pca_exp$x[,3]) 
+pca_data_exp_23
+pca_exp_plot_23 <- ggplot(data = pca_data_exp_23, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC2 -", pca_exp_var_per[2], "%", sep = ""))  + ylab(paste("PC3 -", pca_exp_var_per[3], "%", sep="")) + theme_bw() + ggtitle("PCA expression score")
+pca_exp_plot_23
+```
+
+* PC2 against PC4:
+
+```{r}
+pca_data_exp_24 <- data.frame(Sample = rownames(pca_exp$x), X = pca_exp$x[,2], Y = pca_exp$x[,4]) 
+pca_data_exp_24
+pca_exp_plot_24 <- ggplot(data = pca_data_exp_24, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC2 -", pca_exp_var_per[2], "%", sep = ""))  + ylab(paste("PC4 -", pca_exp_var_per[4], "%", sep="")) + theme_bw() + ggtitle("PCA expression score")
+pca_exp_plot_24
+```
+
+* PC2 against PC5:
+
+```{r}
+pca_data_exp_25 <- data.frame(Sample = rownames(pca_exp$x), X = pca_exp$x[,2], Y = pca_exp$x[,5]) 
+pca_data_exp_25
+pca_exp_plot_25 <- ggplot(data = pca_data_exp_25, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC2 -", pca_exp_var_per[2], "%", sep = ""))  + ylab(paste("PC5 -", pca_exp_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA expression score")
+pca_exp_plot_25
+```
+
+* PC3 against PC4:
+
+```{r}
+pca_data_exp_34 <- data.frame(Sample = rownames(pca_exp$x), X = pca_exp$x[,3], Y = pca_exp$x[,4]) 
+pca_data_exp_34
+pca_exp_plot_34 <- ggplot(data = pca_data_exp_34, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC3 -", pca_exp_var_per[3], "%", sep = ""))  + ylab(paste("PC4 -", pca_exp_var_per[4], "%", sep="")) + theme_bw() + ggtitle("PCA expression score")
+pca_exp_plot_34
+```
+
+* PC3 against PC5:
+
+```{r}
+pca_data_exp_35 <- data.frame(Sample = rownames(pca_exp$x), X = pca_exp$x[,3], Y = pca_exp$x[,5]) 
+pca_data_exp_35
+pca_exp_plot_35 <- ggplot(data = pca_data_exp_35, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC3 -", pca_exp_var_per[3], "%", sep = ""))  + ylab(paste("PC5 -", pca_exp_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA expression score")
+pca_exp_plot_35
+```
+
+* PC4 against PC5:
+
+```{r}
+pca_data_exp_45 <- data.frame(Sample = rownames(pca_exp$x), X = pca_exp$x[,4], Y = pca_exp$x[,5]) 
+pca_data_exp_45
+pca_exp_plot_45 <- ggplot(data = pca_data_exp_45, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC4 -", pca_exp_var_per[4], "%", sep = ""))  + ylab(paste("PC5 -", pca_exp_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA expression score")
+pca_exp_plot_45
+```
+
+* Determine genes with highest variances
+
+
+* Loading scores PC1
+
+```{r}
+loading_scores_exp_1 <- pca_exp$rotation[,1]      
+gene_scores_exp_1 <- abs(loading_scores_exp_1)          
+gene_score_exp_ranked_1 <- sort(gene_scores_exp_1, decreasing = TRUE)
+top_10_genes_exp_1 <- names(gene_score_exp_ranked_1[1:10])
+top_10_genes_exp_1
+pca_exp$rotation[top_10_genes_exp_1,1]
+```
+
+* Loading scores PC2
+
+```{r}
+loading_scores_exp_2 <- pca_exp$rotation[,2]      
+gene_scores_exp_2 <- abs(loading_scores_exp_2)          
+gene_score_exp_ranked_2 <- sort(gene_scores_exp_2, decreasing = TRUE)
+top_10_genes_exp_2 <- names(gene_score_exp_ranked_2[1:10])
+top_10_genes_exp_2
+pca_exp$rotation[top_10_genes_exp_2,2]
+```
+
+```{r}
+pca_data_exp <- data.frame(Sample = rownames(pca_exp$x), X = pca_exp$x[,1], Y = pca_exp$x[,2]) 
 pca_data_exp
-pca_exp_plot <- ggplot(data = pca_data_exp, aes(x=X, y=Y, label = Sample)) //tell ggplot which data to use
-+ geom_point()   // plot dots, with geom.text() sample names are plotted
-+ xlab(paste("PC1 -", pca_exp_var_per[1], "%", sep = ""))  // add labels with percentage
-+ ylab(paste("PC2 -", pca_exp_var_per[2], "%", sep="")) 
-+ theme_bw()  // make background white, without its grey (idc what to use, just an idea)                                                                            
-+ ggtitle("PCA expression") // add title
+pca_exp_plot <- ggplot(data = pca_data_exp, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_exp_var_per[1], "%", sep = ""))  + ylab(paste("PC2 -", pca_exp_var_per[2], "%", sep="")) + theme_bw() + ggtitle("PCA expression score")
 pca_exp_plot
 
-loading_scores_exp <- pca_exp$rotation[,1]      // determine which genes have largest effect on where the samples are plotted 
-gene_scores_exp <- abs(loading_scores_exp)          // make values absolute
+loading_scores_exp <- pca_exp$rotation[,1]      
+gene_scores_exp <- abs(loading_scores_exp)          
 gene_score_exp_ranked <- sort(gene_scores_exp, decreasing = TRUE)
 top_10_genes_exp <- names(gene_score_exp_ranked[1:10])
 top_10_genes_exp
 pca_exp$rotation[top_10_genes_exp,1]
 ```
 
+* Loading scores PC3
+
+```{r}
+loading_scores_exp_3 <- pca_exp$rotation[,3]      
+gene_scores_exp_3 <- abs(loading_scores_exp_3)          
+gene_score_exp_ranked_3 <- sort(gene_scores_exp_3, decreasing = TRUE)
+top_10_genes_exp_3 <- names(gene_score_exp_ranked_3[1:10])
+top_10_genes_exp_3
+pca_exp$rotation[top_10_genes_exp_3,3]
+```
+
+* Loading scores PC4
+
+```{r}
+loading_scores_exp_4 <- pca_exp$rotation[,4]      
+gene_scores_exp_4 <- abs(loading_scores_exp_4)          
+gene_score_exp_ranked_4 <- sort(gene_scores_exp_4, decreasing = TRUE)
+top_10_genes_exp_4 <- names(gene_score_exp_ranked_4[1:10])
+top_10_genes_exp_4
+pca_exp$rotation[top_10_genes_exp,4]
+```
+
+Loading scores PC5
+
+```{r}
+loading_scores_exp_5 <- pca_exp$rotation[,5]      
+gene_scores_exp_5 <- abs(loading_scores_exp_5)          
+gene_score_exp_ranked_5 <- sort(gene_scores_exp_5, decreasing = TRUE)
+top_10_genes_exp_5 <- names(gene_score_exp_ranked_5[1:10])
+top_10_genes_exp_5
+pca_exp$rotation[top_10_genes_exp,5]
+```
+
 ### Copy number matrix
 
-```
-pca_copy <- prcomp(t(copy.clean.w0), scale = TRUE) 
-plot(pca_copy$x[,1], pca_copy$x[,2]) 
-pca_copy_var <- pca_copy$sdev^2 
-pca_copy_var_per <- round(pca_copy_var/sum(pca_copy_var)*100, 1) 
+Barplot with proportional variances
+
+```{r}
+pca_copy <- prcomp(t(copy.clean.w0), scale = TRUE)
+plot(pca_copy$x[,1], pca_copy$x[,2])
+pca_copy_var <- pca_copy$sdev^2
+pca_copy_var_per <- round(pca_copy_var/sum(pca_copy_var)*100, 1)
 barplot(pca_copy_var_per, main = "Proportion of variance", xlab = "Principal component", ylab = "Percent variation")
-
-pca_data_copy <- data.frame(Sample = rownames(pca_copy$x), X = pca_copy$x[,1], Y = pca_copy$x[,2]) 
-pca_data_copy
-pca_copy_plot <- ggplot(data = pca_data_copy, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC1 -", pca_copy_var_per[1], "%", sep = ""))  + ylab(paste("PC2 -", pca_copy_var_per[2], "%", sep="")) + theme_bw() + ggtitle("PCA copy number") 
-pca_copy_plot
-
-loading_scores_copy <- pca_copy$rotation[,1]      
-gene_scores_copy <- abs(loading_scores_copy)          
-gene_score_copy_ranked <- sort(gene_scores_copy, decreasing = TRUE)
-top_10_genes_copy <- names(gene_score_copy_ranked[1:10])
-top_10_genes_copy
-pca_copy$rotation[top_10_genes_copy,1]
 ```
+
+Plotting PC's against each other
+
+Plot PC1 against PC2:
+```{r}
+pca_data_copy_12 <- data.frame(sample = rownames(pca_copy$x), X = pca_copy$x[,1], Y = pca_copy$x[,2])
+pca_data_copy_12
+pca_copy_plot_12 <- ggplot(data = pca_data_copy_12, aes(x=X, y=Y, label = sample)) + geom_point()   + xlab(paste("PC1 -", pca_copy_var_per[1], "%", sep = ""))  + ylab(paste("PC2 -", pca_copy_var_per[2], "%", sep="")) + theme_bw() + ggtitle("PCA copy score")
+pca_copy_plot_12
+```
+
+Plot PC1 against PC3:
+
+```{r}
+pca_data_copy_13 <- data.frame(sample = rownames(pca_copy$x), X = pca_copy$x[,1], Y = pca_copy$x[,3])
+pca_data_copy_13
+pca_copy_plot_13 <- ggplot(data = pca_data_copy_13, aes(x=X, y=Y, label = sample)) + geom_point()   + xlab(paste("PC1 -", pca_copy_var_per[1], "%", sep = ""))  + ylab(paste("PC3 -", pca_copy_var_per[3], "%", sep="")) + theme_bw() + ggtitle("PCA copy score")
+pca_copy_plot_13
+```
+Plot PC1 against PC4:
+
+```{r}
+pca_data_copy_14 <- data.frame(sample = rownames(pca_copy$x), X = pca_copy$x[,1], Y = pca_copy$x[,4])
+pca_data_copy_14
+pca_copy_plot_14 <- ggplot(data = pca_data_copy_14, aes(x=X, y=Y, label = sample)) + geom_point()   + xlab(paste("PC1 -", pca_copy_var_per[1], "%", sep = ""))  + ylab(paste("PC4 -", pca_copy_var_per[4], "%", sep="")) + theme_bw() + ggtitle("PCA copy score")
+pca_copy_plot_14
+```
+Plot PC1 against PC5:
+
+```{r}
+pca_data_copy_15 <- data.frame(sample = rownames(pca_copy$x), X = pca_copy$x[,1], Y = pca_copy$x[,5])
+pca_data_copy_15
+pca_copy_plot_15 <- ggplot(data = pca_data_copy_15, aes(x=X, y=Y, label = sample)) + geom_point()   + xlab(paste("PC1 -", pca_copy_var_per[1], "%", sep = ""))  + ylab(paste("PC5 -", pca_copy_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA copy score")
+pca_copy_plot_15
+```
+
+Plot PC2 against PC3:
+
+```{r}
+pca_data_copy_23 <- data.frame(sample = rownames(pca_copy$x), X = pca_copy$x[,2], Y = pca_copy$x[,3])
+pca_data_copy_23
+pca_copy_plot_23 <- ggplot(data = pca_data_copy_23, aes(x=X, y=Y, label = sample)) + geom_point()   + xlab(paste("PC2 -", pca_copy_var_per[2], "%", sep = ""))  + ylab(paste("PC3 -", pca_copy_var_per[3], "%", sep="")) + theme_bw() + ggtitle("PCA copy score")
+pca_copy_plot_23
+```
+
+Plot PC2 against PC4:
+
+```{r}
+pca_data_copy_24 <- data.frame(sample = rownames(pca_copy$x), X = pca_copy$x[,2], Y = pca_copy$x[,4])
+pca_data_copy_24
+pca_copy_plot_24 <- ggplot(data = pca_data_copy_24, aes(x=X, y=Y, label = sample)) + geom_point()   + xlab(paste("PC2 -", pca_copy_var_per[2], "%", sep = ""))  + ylab(paste("PC4 -", pca_copy_var_per[4], "%", sep="")) + theme_bw() + ggtitle("PCA copy score")
+pca_copy_plot_24
+```
+
+Plot PC2 against PC5:
+
+```{r}
+pca_data_copy_25 <- data.frame(sample = rownames(pca_copy$x), X = pca_copy$x[,2], Y = pca_copy$x[,5])
+pca_data_copy_25
+pca_copy_plot_25 <- ggplot(data = pca_data_copy_25, aes(x=X, y=Y, label = sample)) + geom_point()   + xlab(paste("PC2 -", pca_copy_var_per[2], "%", sep = ""))  + ylab(paste("PC5 -", pca_copy_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA copy score")
+pca_copy_plot_25
+```
+
+Plot PC3 against PC4:
+
+```{r}
+pca_data_copy_34 <- data.frame(sample = rownames(pca_copy$x), X = pca_copy$x[,3], Y = pca_copy$x[,4])
+pca_data_copy_34
+pca_copy_plot_34 <- ggplot(data = pca_data_copy_34, aes(x=X, y=Y, label = sample)) + geom_point()   + xlab(paste("PC3 -", pca_copy_var_per[3], "%", sep = ""))  + ylab(paste("PC4 -", pca_copy_var_per[4], "%", sep="")) + theme_bw() + ggtitle("PCA copy score")
+pca_copy_plot_34
+```
+
+Plot PC3 against PC5:
+
+```{r}
+pca_data_copy_35 <- data.frame(sample = rownames(pca_copy$x), X = pca_copy$x[,3], Y = pca_copy$x[,5])
+pca_data_copy_35
+pca_copy_plot_35 <- ggplot(data = pca_data_copy_35, aes(x=X, y=Y, label = sample)) + geom_point()   + xlab(paste("PC3 -", pca_copy_var_per[3], "%", sep = ""))  + ylab(paste("PC5 -", pca_copy_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA copy score")
+pca_copy_plot_35
+```
+
+Plot PC4 against PC5: 
+
+```{r}
+pca_data_copy_45 <- data.frame(sample = rownames(pca_copy$x), X = pca_copy$x[,4], Y = pca_copy$x[,5])
+pca_data_copy_45
+pca_copy_plot_45 <- ggplot(data = pca_data_copy_45, aes(x=X, y=Y, label = sample)) + geom_point()   + xlab(paste("PC4 -", pca_copy_var_per[4], "%", sep = ""))  + ylab(paste("PC5 -", pca_copy_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA copy score")
+pca_copy_plot_45
+```
+**Determine genes with highest variances
+
+Loading scores PC1
+
+```{r}
+loading_scores_copy_1 <- pca_copy$rotation[,1]
+gene_scores_copy_1 <- abs(loading_scores_copy_1)
+gene_score_copy_ranked_1 <- sort(gene_scores_copy_1, decreasing = TRUE)
+top_10_genes_copy_1 <- names(gene_score_copy_ranked_1[1:10])
+top_10_genes_copy_1
+```
+
+Loading scores PC2
+
+```{r}
+loading_scores_copy_2 <- pca_copy$rotation[,2]
+gene_scores_copy_2 <- abs(loading_scores_copy_2)
+gene_score_copy_ranked_2 <- sort(gene_scores_copy_2, decreasing = TRUE)
+top_10_genes_copy_2 <- names(gene_score_copy_ranked_2[1:10])
+top_10_genes_copy_2
+```
+
+Loading scores PC3
+
+```{r}
+loading_scores_copy_3 <- pca_copy$rotation[,3]
+gene_scores_copy_3 <- abs(loading_scores_copy_3)
+gene_score_copy_ranked_3 <- sort(gene_scores_copy_3, decreasing = TRUE)
+top_10_genes_copy_3 <- names(gene_score_copy_ranked_3[1:10])
+top_10_genes_copy_3
+```
+
+Loading scores PC4
+
+```{r}
+loading_scores_copy_4 <- pca_copy$rotation[,4]
+gene_scores_copy_4 <- abs(loading_scores_copy_4)
+gene_score_copy_ranked_4 <- sort(gene_scores_copy_4, decreasing = TRUE)
+top_10_genes_copy_4 <- names(gene_score_copy_ranked_4[1:10])
+top_10_genes_copy_4
+```
+
+Loading scores PC5
+
+```{r}
+loading_scores_copy_5 <- pca_copy$rotation[,5]
+gene_scores_copy_5 <- abs(loading_scores_copy_5)
+gene_score_copy_ranked_5 <- sort(gene_scores_copy_5, decreasing = TRUE)
+top_10_genes_copy_5 <- names(gene_score_copy_ranked_5[1:10])
+top_10_genes_copy_5
+```
+
 
 ### CERES matrix
 
@@ -658,7 +937,7 @@ pca_prob_var_per <- round(pca_prob_var/sum(pca_prob_var)*100, 1)
 barplot(pca_prob_var_per, main = "Proportion of variance", xlab = "Principal component", ylab = "Percent variation")
 ```
 
-* Plotting PCÂ´s against each other
+* Plotting PCs against each other
 
 Plot PC1 against PC2:
 ```
@@ -738,6 +1017,7 @@ pca_data_prob_45
 pca_prob_plot_45 <- ggplot(data = pca_data_prob_45, aes(x=X, y=Y, label = Sample)) + geom_point()   + xlab(paste("PC4 -", pca_prob_var_per[4], "%", sep = ""))  + ylab(paste("PC5 -", pca_prob_var_per[5], "%", sep="")) + theme_bw() + ggtitle("PCA probability score")
 pca_prob_plot_45
 ```
+
 * Determine genes with highest variances
 
 Loading scores PC1
@@ -788,12 +1068,281 @@ top_10_genes_prob_5 <- names(gene_score_prob_ranked_5[1:10])
 top_10_genes_prob_5
 pca_prob$rotation[top_10_genes_prob_5,5]
 ```
+* Multiple linear regression
+
+```
+mlr.mat = as.data.frame(cbind(rowMeans(exp.clean.w0), rowMeans(copy.clean.w0), rowMeans(ceres.clean.w0), rowMeans(prob.clean.w0)))
+colnames(mlr.mat) = c("expression", "copynumber", "ceres", "probability")
+summary(lm(expression ~ copynumber + ceres + probability, data = mlr.mat)) //r2=0.1563
+summary(lm(copynumber ~ expression + ceres + probability, data = mlr.mat)) //r2=0.003437
+summary(lm(ceres ~ expression + copynumber + probability, data = mlr.mat)) //r2=0.9352
+summary(lm(probability ~ expression + copynumber + ceres, data = mlr.mat)) //r2=0.9358
+
+mlr.mat.0 = as.data.frame(cbind(rowMeans(exp.clean), rowMeans(copy.clean), rowMeans(ceres.clean), rowMeans(prob.clean)))
+summary(lm(expression ~ copynumber + ceres + probability, data = mlr.mat.0)) //r2=0.1934
+summary(lm(copynumber ~ expression + ceres + probability, data = mlr.mat.0)) //r2=0.00411
+summary(lm(ceres ~ expression + copynumber + probability, data = mlr.mat.0)) //r2=0.9243
+summary(lm(probability ~ expression + copynumber + ceres, data = mlr.mat.0)) //r2=0.9249
+```
 
 ## Further steps:
 
-* Interprete the proportion of variances, maybe plot other PCÂ´s against each other
+<<<<<<< HEAD
+=======
+* Interprete the proportion of variances, maybe plot other PC??s against each other
 * Interprete plots plus additional plots
 * loading scores for more than ten genes (Attention: in these cases the loading scores just refer to the PC1!!!!)
 * loading scores for PC2, PC3, .... for each matrix
+>>>>>>> 83a8f5219e2db8dca17addcd0a62522817a6a870
 * Determine which possible 2nd site targets to look at (how many?) for further analyzing
 * Make plots more beautiful
+
+
+
+## "PCA" plus test (David´s idea)
+
+### Data cleanup
+
+* Determine our four most prominent driving mutations
+
+Already done before: TP53, TTN, MT-ND5, MUC16
+
+* Mutation matrices with just the celllines containing one specific DM to determine all other genes, which are mutated too
+  Since all other mutated genes are a few thousand, i extracted the ones, which had "is Deleterious = TRUE"
+
+For TP53:
+```
+mutations.tp53 = rbind(relevant.mutations$`ACH-000036`,relevant.mutations$`ACH-000040`, relevant.mutations$`ACH-000098`, relevant.mutations$`ACH-000208`, relevant.mutations$`ACH-000215`, relevant.mutations$`ACH-000137`, relevant.mutations$`ACH-000152`, relevant.mutations$`ACH-000591`, relevant.mutations$`ACH-000673`, relevant.mutations$`ACH-000231`, relevant.mutations$`ACH-000368`, relevant.mutations$`ACH-000376`, relevant.mutations$`ACH-000445`, relevant.mutations$`ACH-000464`, relevant.mutations$`ACH-000469`, relevant.mutations$`ACH-000570`, relevant.mutations$`ACH-000571`, relevant.mutations$`ACH-000623`, relevant.mutations$`ACH-000673`, relevant.mutations$`ACH-000738`, relevant.mutations$`ACH-000756`, relevant.mutations$`ACH-000819`, relevant.mutations$`ACH-000128`)
+mutations.tp53= select(mutations.tp53, c(2,21, 36))//dplyr packgage
+mutations.tp53 = subset(mutations.tp53, mutations.tp53$isDeleterious == "TRUE")
+```
+
+For TTN:
+```
+mutations.ttn = rbind(relevant.mutations$`ACH-000040`, relevant.mutations$`ACH-000098`, relevant.mutations$`ACH-000231`, relevant.mutations$`ACH-000445`, relevant.mutations$`ACH-000464`, relevant.mutations$`ACH-000570`, relevant.mutations$`ACH-000623`, relevant.mutations$`ACH-000738`, relevant.mutations$`ACH-000756`, relevant.mutations$`ACH-000760`, relevant.mutations$`ACH-000819`, relevant.mutations$`ACH-000244`, relevant.mutations$`ACH-000479`, relevant.mutations$`ACH-000631`)
+mutations.ttn= select(mutations.ttn, c(2,21, 36))
+mutations.ttn = subset(mutations.ttn, mutations.ttn$isDeleterious == "TRUE")
+```
+
+For MT-ND5:
+```
+mutations.mtnd5 = rbind(relevant.mutations$`ACH-000040`, relevant.mutations$`ACH-000098`, relevant.mutations$`ACH-000075`, relevant.mutations$`ACH-000231`, relevant.mutations$`ACH-000244`, relevant.mutations$`ACH-000368`, relevant.mutations$`ACH-000445`, relevant.mutations$`ACH-000479`, relevant.mutations$`ACH-000570`, relevant.mutations$`ACH-000571`, relevant.mutations$`ACH-000591`, relevant.mutations$`ACH-000621`, relevant.mutations$`ACH-000738`, relevant.mutations$`ACH-000756`, relevant.mutations$`ACH-000819`)
+mutations.mtnd5= select(mutations.mtnd5, c(2,21, 36))
+mutations.mtnd5 = subset(mutations.mtnd5, mutations.mtnd5$isDeleterious == "TRUE")
+```
+
+For MUC16:
+```
+mutations.muc16 = rbind(relevant.mutations$`ACH-000036`, relevant.mutations$`ACH-000137`, relevant.mutations$`ACH-000152`, relevant.mutations$`ACH-000208`, relevant.mutations$`ACH-000231`, relevant.mutations$`ACH-000368`, relevant.mutations$`ACH-000376`, relevant.mutations$`ACH-000464`, relevant.mutations$`ACH-000571`, relevant.mutations$`ACH-000738`, relevant.mutations$`ACH-000756`, relevant.mutations$`ACH-000819`)
+mutations.muc16= select(mutations.muc16, c(2,21, 36))
+mutations.muc16 = subset(mutations.muc16, mutations.muc16$isDeleterious == "TRUE")
+```
+
+* Determine the remaining genes and extract them from the CERES matrix to continue working with just them
+
+For TP53:
+```
+list.tp53.genes = unique(subset(mutations.tp53))
+genes.tp53 <- c(list.tp53.genes$Hugo_Symbol)
+ceres.tp53.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.tp53),]
+```
+
+For TTN:
+```
+list.ttn.genes = unique(subset(mutations.ttn))
+genes.ttn <- c(list.ttn.genes$Hugo_Symbol)
+ceres.ttn.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.ttn),]
+```
+For MT-ND5:
+```
+list.mtnd5.genes = unique(subset(mutations.mtnd5))
+genes.mtnd5 <- c(list.mtnd5.genes$Hugo_Symbol)
+ceres.mtnd5.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.mtnd5),]
+```
+
+For MUC16:
+```
+list.muc16.genes = unique(subset(mutations.muc16))
+genes.muc16 <- c(list.muc16.genes$Hugo_Symbol)
+ceres.muc16.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.muc16),]
+```
+
+### Determination of potential second site targets (SSTs) through correlation tests: Is there a correlation between DM and other mutations in the cell?
+
+#### Check data distribution to determine which correlation test to apply
+Parametric correlation tests (e.g. Pearson correlation) need normally distributed data
+If data is not normally distributed apply non-parametric tests (e. g. Spearman correlatiion or Wilcoxon Rank sum test)
+
+Methods to determine the type of distribution: qq-plots (visual determination), Shapiro-Wilk-test
+
+* exemplary qq-plot of CERES scores of all genes of cell line ACH-000036
+
+```{r}
+qqnorm(ceres.tp53.genes$`ACH-000036`, main="QQ-Plot of CERES scores of all genes of cell line ACH-000036")
+qqline(ceres.tp53.genes$`ACH-000036`, datax = FALSE, distribution = qnorm,
+        probs = c(0.25, 0.75), qtype = 7)
+```
+
+Observation: qq-plot shows curve that deviates from a linear curve shape
+Conclusion: CERES scores are not normally distributed
+      
+* Shapiro-Wilk-test
+
+```{r}
+shapiro.test(ceres.tp53.genes$`ACH-000036`) #exemplary for one cell line
+```
+* Result:
+
+Shapiro-Wilk normality test
+
+data:  ceres.tp53.genes$`ACH-000036`
+W = 0.85504, p-value < 2.2e-16
+
+* Interpretation: p-vylue < 0.05 --> CERES scores of all genes of cell line ACH-000036 are not normally distributed
+
+use apply-function to determine distribution of all cell lines
+
+* create a matrix that contains all mutated genes of cell lines
+
+```{r}
+ceres.allDM.genes=rbind(ceres.tp53.genes, ceres.ttn.genes, ceres.mtnd5.genes, ceres.muc16.genes)
+```
+
+
+```{r}
+lapply(ceres.allDM.genes,shapiro.test)
+```
+
+* All cell lines show p-values < 0.05 -> no normal distribution
+
+#### Perform non-parametric tests to determine the correlation of the mutated genes to the driving mutations in order to find potential SSTs
+
+* Pearson correlation
+
+Correlate the CERES scores of every gene across all cell lines belonging to one specific DM to the DM
+
+* Transpose the matrices ceres.DM.genes to ceres.DM.genes_t to make cell lines rows and genes columns
+
+```{r}
+t(ceres.tp53.genes)->ceres.tp53.genes_t
+t(ceres.ttn.genes)->ceres.ttn.genes_t
+t(ceres.muc16.genes)->ceres.muc16.genes_t
+t(ceres.mtnd5.genes)->ceres.mtnd5.genes_t
+
+```
+
+* Select columns (CERES scores of one gene across all cell lines) and calculate correlation to DM (one specific column)
+  Perform for all genes of a matrix using lapply
+  
+* exemplary correlation test for one specific gene
+
+```{r}
+cor(ceres.tp53.genes_t$ABCA13, ceres.tp53.genes_t$TP53, method = "spearman")
+```
+#### Problem: cannot define ceres.tp53.genes_t$TP53 as vector; error: $ operator is invalid for atomic vectors -> how to solve? works fine for the untransposed matrix but problems for the transposed one
+
+* solution: generation of a correlation matrix that includes the correlation coefficients between all genes in the matrix
+```{r}
+cor.ceres.tp53.genes_t<-cor(ceres.tp53.genes_t, method="spearman")
+```
+
+####Problem: resulting correlation matrix is very large and most of the data is not relevant for the correlation between the mutations and the DM because this function calculates the correlation coefficients between all genes but be need only one column that includes all correlation coefficients between all mutated genes and the DM
+
+* solution: extract one specific column
+
+´´´{r}
+cor.ceres.tp.53.only<-cor.ceres.tp53.genes_t[1:734,642]
+´´´
+* cor.ceres.tp.53.only includes correlation coefficients of all genes to TP53
+  for all other matrices analogue
+  
+* TTN
+
+```{r}
+cor.ceres.ttn.genes_t<-cor(ceres.ttn.genes_t, method="spearman")
+cor.ceres.ttn.only<-cor.ceres.ttn.genes_t[1:585,520]
+```
+
+* MUC16
+
+```{r}
+cor.ceres.muc16.genes_t<-cor(ceres.muc16.genes_t, method="spearman")
+cor.ceres.muc16.only<-cor.ceres.muc16.genes_t[1:478,251]
+```
+* MTND5
+
+```{r}
+cor.ceres.mtnd5.genes_t<-cor(ceres.mtnd5.genes_t, method="spearman")
+cor.ceres.mtnd5.only<-cor.ceres.mtnd5.genes_t[1:496,???] \\`MTND5 does not appear in the matrix???
+```
+
+#### Correlation coefficients for all genes and DMs were calculated - next step: determination of p-values to get correlation matrices with significance levels (statistical statements)
+
+* Hmisc package needs to be installed first
+
+```{r}
+install.packages("Hmisc")
+library(Hmisc)
+```
+
+* function rcorr(x, type = c("pearson","spearman")) can be used to compute the significance levels for Spearman and Pearson correlation
+
+
+* calculate significance levels for TP53
+
+```{r}
+sig.cor.ceres.tp53.genes_t<-rcorr(as.matrix(ceres.tp53.genes_t), type="spearman")
+View(sig.cor.ceres.tp53.genes_t$r)
+```
+
+* exact meaning of r, n, P?
+
+* extract relevant column:
+
+```{r}
+sig.cor.ceres.tp53.only<-sig.cor.ceres.tp53.genes_t$r[1:734, 642]
+
+```
+
+* repeat for remaining DMs
+
+* TTN
+
+```{r}
+sig.cor.ceres.ttn.genes_t<-rcorr(as.matrix(ceres.ttn.genes_t), type="spearman")
+View(sig.cor.ceres.ttn.genes_t$r)
+sig.cor.ceres.ttn.only<-sig.cor.ceres.ttn.genes_t$r[1:585,520]
+```
+
+* MUC16
+
+```{r}
+sig.cor.ceres.muc16.genes_t<-rcorr(as.matrix(ceres.muc16.genes_t), type="spearman")
+View(sig.cor.ceres.muc16.genes_t$r)
+sig.cor.ceres.muc16.only<-sig.cor.ceres.muc16.genes_t$r[1:478,251]
+```
+
+* MTND5
+
+```{r}
+sig.cor.ceres.mtnd5.genes_t<-rcorr(as.matrix(ceres.mtnd5.genes_t), type="spearman")
+View(sig.cor.ceres.mtnd5.genes_t$r)
+sig.cor.ceres.mtnd5.only<-sig.cor.ceres.mtnd5.genes_t$r[1:496,???] \\see above
+```
+
+```
+mlr.mat = as.data.frame(cbind(rowMeans(exp.clean.w0), rowMeans(copy.clean.w0), rowMeans(ceres.clean.w0), rowMeans(prob.clean.w0)))
+colnames(mlr.mat) = c("expression", "copynumber", "ceres", "probability")
+summary(lm(expression ~ copynumber + ceres + probability, data = mlr.mat)) //r2=0.1563
+summary(lm(copynumber ~ expression + ceres + probability, data = mlr.mat)) //r2=0.003437
+summary(lm(ceres ~ expression + copynumber + probability, data = mlr.mat)) //r2=0.9352
+summary(lm(probability ~ expression + copynumber + ceres, data = mlr.mat)) //r2=0.9358
+
+mlr.mat.0 = as.data.frame(cbind(rowMeans(exp.clean), rowMeans(copy.clean), rowMeans(ceres.clean), rowMeans(prob.clean)))
+summary(lm(expression ~ copynumber + ceres + probability, data = mlr.mat.0)) //r2=0.1934
+summary(lm(copynumber ~ expression + ceres + probability, data = mlr.mat.0)) //r2=0.00411
+summary(lm(ceres ~ expression + copynumber + probability, data = mlr.mat.0)) //r2=0.9243
+summary(lm(probability ~ expression + copynumber + ceres, data = mlr.mat.0)) //r2=0.9249
+```
+
+#### Follow up: Interpretation of the p-values, maybe Wilcoxon Rank Sum test
