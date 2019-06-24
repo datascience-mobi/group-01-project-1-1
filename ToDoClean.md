@@ -1068,22 +1068,6 @@ top_10_genes_prob_5 <- names(gene_score_prob_ranked_5[1:10])
 top_10_genes_prob_5
 pca_prob$rotation[top_10_genes_prob_5,5]
 ```
-* Multiple linear regression
-
-```
-mlr.mat = as.data.frame(cbind(rowMeans(exp.clean.w0), rowMeans(copy.clean.w0), rowMeans(ceres.clean.w0), rowMeans(prob.clean.w0)))
-colnames(mlr.mat) = c("expression", "copynumber", "ceres", "probability")
-summary(lm(expression ~ copynumber + ceres + probability, data = mlr.mat)) //r2=0.1563
-summary(lm(copynumber ~ expression + ceres + probability, data = mlr.mat)) //r2=0.003437
-summary(lm(ceres ~ expression + copynumber + probability, data = mlr.mat)) //r2=0.9352
-summary(lm(probability ~ expression + copynumber + ceres, data = mlr.mat)) //r2=0.9358
-
-mlr.mat.0 = as.data.frame(cbind(rowMeans(exp.clean), rowMeans(copy.clean), rowMeans(ceres.clean), rowMeans(prob.clean)))
-summary(lm(expression ~ copynumber + ceres + probability, data = mlr.mat.0)) //r2=0.1934
-summary(lm(copynumber ~ expression + ceres + probability, data = mlr.mat.0)) //r2=0.00411
-summary(lm(ceres ~ expression + copynumber + probability, data = mlr.mat.0)) //r2=0.9243
-summary(lm(probability ~ expression + copynumber + ceres, data = mlr.mat.0)) //r2=0.9249
-```
 
 ## Further steps:
 
@@ -1099,7 +1083,7 @@ summary(lm(probability ~ expression + copynumber + ceres, data = mlr.mat.0)) //r
 
 
 
-## "PCA" plus test (David´s idea)
+## "PCA" plus test (David?s idea)
 
 ### Data cleanup
 
@@ -1250,9 +1234,9 @@ cor.ceres.tp53.genes_t<-cor(ceres.tp53.genes_t, method="spearman")
 
 * solution: extract one specific column
 
-´´´{r}
+???{r}
 cor.ceres.tp.53.only<-cor.ceres.tp53.genes_t[1:734,642]
-´´´
+???
 * cor.ceres.tp.53.only includes correlation coefficients of all genes to TP53
   for all other matrices analogue
   
@@ -1329,20 +1313,38 @@ sig.cor.ceres.mtnd5.genes_t<-rcorr(as.matrix(ceres.mtnd5.genes_t), type="spearma
 View(sig.cor.ceres.mtnd5.genes_t$r)
 sig.cor.ceres.mtnd5.only<-sig.cor.ceres.mtnd5.genes_t$r[1:496,???] \\see above
 ```
+## Multiple linear regression
+
+* Calculate mean of expression, copy number, ceres score and probability throughput all cell lines and combine all values in one matrix for multiple linear regression. At first using only matrices without 0 values.
 
 ```
 mlr.mat = as.data.frame(cbind(rowMeans(exp.clean.w0), rowMeans(copy.clean.w0), rowMeans(ceres.clean.w0), rowMeans(prob.clean.w0)))
 colnames(mlr.mat) = c("expression", "copynumber", "ceres", "probability")
+```
+* Perform multiple linear regression and look at results 
+( R^2 values of copynumber and expression don't seem right.)
+```
 summary(lm(expression ~ copynumber + ceres + probability, data = mlr.mat)) //r2=0.1563
 summary(lm(copynumber ~ expression + ceres + probability, data = mlr.mat)) //r2=0.003437
 summary(lm(ceres ~ expression + copynumber + probability, data = mlr.mat)) //r2=0.9352
 summary(lm(probability ~ expression + copynumber + ceres, data = mlr.mat)) //r2=0.9358
+```
+* R^2 values for copynumber and expression of first multiple linear regression don't seem right. May have to do with matrices not containing 0 values?
 
+* Do step one again, this time with matrices containing 0 values.
+```
 mlr.mat.0 = as.data.frame(cbind(rowMeans(exp.clean), rowMeans(copy.clean), rowMeans(ceres.clean), rowMeans(prob.clean)))
+colnames(mlr.mat.0) = c("expression", "copynumber", "ceres", "probability")
+```
+* Perform multiple linear regression again. 
+```
 summary(lm(expression ~ copynumber + ceres + probability, data = mlr.mat.0)) //r2=0.1934
 summary(lm(copynumber ~ expression + ceres + probability, data = mlr.mat.0)) //r2=0.00411
 summary(lm(ceres ~ expression + copynumber + probability, data = mlr.mat.0)) //r2=0.9243
 summary(lm(probability ~ expression + copynumber + ceres, data = mlr.mat.0)) //r2=0.9249
 ```
+* R^2 values for copynumber and expression got better, but not significantly. Values for ceres and probability got worse. 
+
+** What does this mean?
 
 #### Follow up: Interpretation of the p-values, maybe Wilcoxon Rank Sum test
