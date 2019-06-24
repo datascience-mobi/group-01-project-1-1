@@ -1083,7 +1083,7 @@ pca_prob$rotation[top_10_genes_prob_5,5]
 
 
 
-## "PCA" plus test (David?s idea)
+## "PCA" plus test (David's idea)
 
 ### Data cleanup
 
