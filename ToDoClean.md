@@ -1324,10 +1324,10 @@ colnames(mlr.mat) = c("expression", "copynumber", "ceres", "probability")
 * Perform multiple linear regression and look at results 
 ( R^2 values of copynumber and expression don't seem right.)
 ```
-summary(lm(expression ~ copynumber + ceres + probability, data = mlr.mat)) //r2=0.1563
-summary(lm(copynumber ~ expression + ceres + probability, data = mlr.mat)) //r2=0.003437
-summary(lm(ceres ~ expression + copynumber + probability, data = mlr.mat)) //r2=0.9352
-summary(lm(probability ~ expression + copynumber + ceres, data = mlr.mat)) //r2=0.9358
+summary(lm(expression ~ ., data = mlr.mat)) //r2=0.1563
+summary(lm(copynumber ~ ., data = mlr.mat)) //r2=0.003437
+summary(lm(ceres ~ ., data = mlr.mat)) //r2=0.9352
+summary(lm(probability ~ ., data = mlr.mat)) //r2=0.9358
 ```
 * R^2 values for copynumber and expression of first multiple linear regression don't seem right. May have to do with matrices not containing 0 values?
 
@@ -1338,10 +1338,10 @@ colnames(mlr.mat.0) = c("expression", "copynumber", "ceres", "probability")
 ```
 * Perform multiple linear regression again. 
 ```
-summary(lm(expression ~ copynumber + ceres + probability, data = mlr.mat.0)) //r2=0.1934
-summary(lm(copynumber ~ expression + ceres + probability, data = mlr.mat.0)) //r2=0.00411
-summary(lm(ceres ~ expression + copynumber + probability, data = mlr.mat.0)) //r2=0.9243
-summary(lm(probability ~ expression + copynumber + ceres, data = mlr.mat.0)) //r2=0.9249
+summary(lm(expression ~ ., data = mlr.mat.0)) //r2=0.1934
+summary(lm(copynumber ~ ., data = mlr.mat.0)) //r2=0.00411
+summary(lm(ceres ~ ., data = mlr.mat.0)) //r2=0.9243
+summary(lm(probability ~ ., data = mlr.mat.0)) //r2=0.9249
 ```
 * R^2 values for copynumber and expression got better, but not significantly. Values for ceres and probability got worse. 
 
