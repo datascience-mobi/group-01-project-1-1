@@ -1,0 +1,58 @@
+---
+title: "Project 01.01 Report"
+author: "Annika Hein, Amanda Janzen, Nicolai Laufer, Niklas Schwan"
+date: "25/06/2019"
+output: html_document
+---
+# Introduction
+
+In this project we tried to identify genetic interactions and their effects on several Glioblastoma multiforme (GBM) cell lines. 
+
+GBM is a fast growing, malignant brain tumor classified as a grade IV cancer by the World Health Organisation (WHO). It represents about 15% of all brain tumors and most commonly develops in adults aged 45-70. We chose GBM because it falls in the category of cancers with poor diagnosis and also has no effective long-term treatments, which leads to a survival rate of less than 15 months, according to the TCGA (The Cancer Genome Atlas Research Network).
+
+The identification of genomic interactions and their effect on cancer cell survival is very important for the search after a better treatment. Its concept is tied to the fact that cancer is a product of accumulated genomic defects (mutations, copy number changes, etc.). There are a handful of genes that drive the process of oncogenesis, these are called *driver mutations* (DM), all other mutations that don't really have an impact on the oncogenisis are called *passenger mutations*.
+
+The driver mutations are normally highly essential genes for all cells in the human body, making them a bad target for anti-cancer drugs, for they would shut down all cells, not just cancer cells. The alternative to this targeting problem is to find genes that are linked with the driving mutations in the cancer cells, but not in the normal cells. Ideally, the targeting of these so called *second site targets* (SST) would cause the cancer cells to shut down and stop proliferating, while the normal cells would not be subjected to any changes.
+
+Our aim in this project was to find the driver mutations in GBM throughout all cell lines in our data set, compare them to the literature and investigate if there is a dependency between them and any second site targets. In the end the aim was to find a model where we could possibly predict a second site mutation based on the existence of a driving mutation.
+
+# Data cleanup
+
+Once we downloaded the data, we first removed all data that didn't have to do with Glioblastoma.
+
+```
+brain.anno = allDepMapData$annotation[allDepMapData$annotation$Subtype.Disease == "Glioblastoma", ]
+```
+Then we made the cell line identifiers be the rownames in the annotation.
+
+```
+rownames(brain.anno) = brain.anno$DepMap_ID
+brain.anno = brain.anno[, -1]
+```
+The next step was to remove all cell lines that were irrelevant to our project from all the other matrices (expression, copy number, relevant mutations, ceres and probability)
+
+* "operators" package needed for this step, because of "%!in%"
+
+```
+cell.lines = dput(rownames(brain.anno))
+exp.clean = allDepMapData$expression[, -which(colnames(allDepMapData$expression) %!in% cell.lines)]
+copy.clean = allDepMapData$copynumber[, -which(colnames(allDepMapData$copynumber) %!in% cell.lines)]
+relevant.mutations = subset(allDepMapData$mutation, names(allDepMapData$mutation) %in% cell.lines)
+ceres.clean = allDepMapData$kd.ceres[, -which(colnames(allDepMapData$kd.ceres) %!in% cell.lines)]
+prob.clean = allDepMapData$kd.prob[, -which(colnames(allDepMapData$kd.prob) %!in% cell.lines)]
+```
+
+After we separated all glioblastoma cell lines, we removed the NA and all values out of range. The data contained a lot of 0 and negative values, especially the copy number data, where x>=0.
+
+```
+sum(is.na(ceres.clean))
+sum(is.na(prob.clean))
+sum(is.na(copy.clean))
+sum(is.na(exp.clean))
+sum(is.na(relevant.mutations))
+copy.clean = copy.clean[-which(apply(copy.clean, 1, function(x) {sum(is.na(x))}) > 0), ]
+sum(is.na(copy.clean))
+```
+The function sum() was used to show how many NA values were in each matrix.
+
+ceres.clean ->
