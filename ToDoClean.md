@@ -1371,7 +1371,7 @@ exp.regressor = lm(expression ~ ., data = training_set_exp)
 *Predicting the test set results
 
 ```
-exp_pred = predict(exp.regressor, newdata = test_set_exp) 'predict expression based on your testing data (data taht the model did NEVER see and highly useful to evaluate the pef??rformance of the model)
+exp_pred = predict(exp.regressor, newdata = test_set_exp) #predict expression based on your testing data (data taht the model did NEVER see and highly useful to evaluate the performance of the model)
 test_set_exp$Prediction = exp_pred #add predictions to mlr.mat 
 test_set_exp #now a comparison of the Predictions (last column) with the real values for the expression (1st column) is possible 
 ```
@@ -1387,6 +1387,33 @@ test.set.copy = subset(mlr.mat, split.copy == FALSE)
 dim(test.set.copy) 
 ```
 dimension was 2021, which was not expected and does not equal one fifth of mlr.mat
+--> continue with other models, come back to this later.
+
+#For ceres model
+
+*Splitting data into training and test sets
+```
+set.seed(123)
+split.ceres = sample.split(mlr.mat, SplitRatio = 0.8)
+training.set.ceres = subset(mlr.mat, split.ceres == TRUE)
+test.set.ceres = subset(mlr.mat, split.ceres == FALSE)
+dim(test.set.ceres) #2309 --> training/test split successful
+```
+
+*Scaling
+```
+training.set.ceres = scale(training.set.ceres)
+test.set.ceres = scale(test.set.ceres)
+```
+
+*Fitting multiple linear regression to the Training set
+```
+copy.regressor = lm(ceres ~ ., data = as.data.frame(training.set.ceres))
+```
+
+*Predicting test set results
+```
+
 
 
 
