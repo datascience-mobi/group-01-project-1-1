@@ -1439,4 +1439,23 @@ prob_pred = predict(prob.regressor, newdata = test.set.prob)
 test.set.prob$Prediction = prob_pred
 ```
 
+# Visualizing real values against test values
+
+*For expression model
+```
+plot(density(test_set_exp$expression), col = "red")
+lines(density(test_set_exp$Prediction), col = "blue")
+```
+*For ceres model
+```
+plot(density(test.set.ceres$ceres), col = "red")
+lines(density(test.set.ceres$Prediction))
+```
+
+*For probability model
+```
+plot(density(test.set.prob$probability), col = "red")
+lines(density(test.set.prob$Prediction))
+```
+
 #### Follow up: Interpretation of the p-values, maybe Wilcoxon Rank Sum test
