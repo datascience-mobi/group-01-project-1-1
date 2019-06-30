@@ -1345,6 +1345,49 @@ summary(lm(probability ~ ., data = mlr.mat.0)) //r2=0.9249
 ```
 * R^2 values for copynumber and expression got better, but not significantly. Values for ceres and probability got worse. 
 
-** What does this mean?
+# Testing our multiple linear regression model, (package "caTools" required)
+
+#For the expression model:
+
+*Splitting mlr.mat into the training set and test set
+```
+set.seed(123) #initialize the random numbers
+split.exp = sample.split(mlr.mat$expression, SplitRatio = 0.8) #split the mlr.mat into 4/5 Training and 1/5 Testing expression values
+split.exp = as.data.frame(split.exp) #converting split.exp to a data frame for further analysis
+training_set_exp = subset(mlr.mat, split.exp == TRUE) #use labels to get training data
+test_set_exp = subset(mlr.mat, split.exp == FALSE) #dim(test_set_exp) will give you 2309 --> 11545/5*1 = 2309 --> train/test split worked
+``` 
+Feature Scaling can be performed
+```
+training_set_exp = scale(training_set_exp)
+test_set_exp = scale(test_set_exp)
+```
+
+*Fitting multiple linear regression to the Training set
+```
+exp.regressor = lm(expression ~ ., data = training_set_exp)
+```
+
+*Predicting the test set results
+
+```
+exp_pred = predict(exp.regressor, newdata = test_set_exp) 'predict expression based on your testing data (data taht the model did NEVER see and highly useful to evaluate the pef??rformance of the model)
+test_set_exp$Prediction = exp_pred #add predictions to mlr.mat 
+test_set_exp #now a comparison of the Predictions (last column) with the real values for the expression (1st column) is possible 
+```
+*Do the same for other models (copynumber, ceres, probability)
+
+#For copy number model
+```
+set.seed(123)
+split.copy = sample.split(mlr.mat$copynumber, SplitRatio = 0.8
+split.copy = as.data.frame(split.copy)
+training.set.copy = subset(mlr.mat, split.copy == TRUE)
+test.set.copy = subset(mlr.mat, split.copy == FALSE)
+dim(test.set.copy) 
+```
+dimension was 2021, which was not expected and does not equal one fifth of mlr.mat
+
+
 
 #### Follow up: Interpretation of the p-values, maybe Wilcoxon Rank Sum test
