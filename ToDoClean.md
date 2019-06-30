@@ -1380,7 +1380,7 @@ test_set_exp #now a comparison of the Predictions (last column) with the real va
 #For copy number model
 ```
 set.seed(123)
-split.copy = sample.split(mlr.mat$copynumber, SplitRatio = 0.8
+split.copy = sample.split(mlr.mat$copynumber, SplitRatio = 0.8)
 split.copy = as.data.frame(split.copy)
 training.set.copy = subset(mlr.mat, split.copy == TRUE)
 test.set.copy = subset(mlr.mat, split.copy == FALSE)
@@ -1394,7 +1394,7 @@ dimension was 2021, which was not expected and does not equal one fifth of mlr.m
 *Splitting data into training and test sets
 ```
 set.seed(123)
-split.ceres = sample.split(mlr.mat, SplitRatio = 0.8)
+split.ceres = sample.split(mlr.mat$ceres, SplitRatio = 0.8)
 training.set.ceres = subset(mlr.mat, split.ceres == TRUE)
 test.set.ceres = subset(mlr.mat, split.ceres == FALSE)
 dim(test.set.ceres) #2309 --> training/test split successful
@@ -1408,13 +1408,24 @@ test.set.ceres = scale(test.set.ceres)
 
 *Fitting multiple linear regression to the Training set
 ```
-copy.regressor = lm(ceres ~ ., data = as.data.frame(training.set.ceres))
+ceres.regressor = lm(ceres ~ ., data = as.data.frame(training.set.ceres))
 ```
 
 *Predicting test set results
 ```
+ceres_pred = predict(ceres.regressor, newdata = test.set.ceres)
+test.set.ceres$Prediction = ceres_pred
+View(test.set.ceres)
+```
 
+#For probability model
 
-
+*Splitting data into training/test sets
+```
+set.seed(123)
+split.prob = sample.split(mlr.mat$probability, SplitRatio = 0.8)
+training.set.prob = subset(mlr.mat, split.prob ==TRUE)
+test.set.prob = subset(mlr.mat, split.prob == FALSE)
+```
 
 #### Follow up: Interpretation of the p-values, maybe Wilcoxon Rank Sum test
