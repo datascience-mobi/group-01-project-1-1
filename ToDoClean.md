@@ -1428,4 +1428,15 @@ training.set.prob = subset(mlr.mat, split.prob ==TRUE)
 test.set.prob = subset(mlr.mat, split.prob == FALSE)
 ```
 
+*Fitting multiple linear regression to the training set
+```
+prob.regressor = lm(probability ~., data = as.data.frame(training.set.prob))
+```
+
+*Predicting test set results
+```
+prob_pred = predict(prob.regressor, newdata = test.set.prob)
+test.set.prob$Prediction = prob_pred
+```
+
 #### Follow up: Interpretation of the p-values, maybe Wilcoxon Rank Sum test
