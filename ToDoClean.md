@@ -1459,3 +1459,225 @@ lines(density(test.set.prob$Prediction))
 ```
 
 #### Follow up: Interpretation of the p-values, maybe Wilcoxon Rank Sum test
+
+### Determination of potential second site targets (SSTs) through correlation tests: Is there a correlation between DM and other mutations in the cell?
+
+#### Check data distribution to determine which correlation test to apply
+* Parametric correlation tests (e.g. Pearson correlation) need normally distributed data
+* If data is not normally distributed apply non-parametric tests (e. g. Spearman correlation or Wilcoxon Rank sum test)
+
+* Methods to determine the type of distribution: qq-plots (visual determination), Shapiro-Wilk-test
+
+* Exemplary qq-plot of CERES scores of all genes of cell line ACH-000036
+
+```{r}
+qqnorm(ceres.tp53.genes$`ACH-000036`, main="QQ-Plot of CERES scores of all genes of cell line ACH-000036")
+qqline(ceres.tp53.genes$`ACH-000036`, datax = FALSE, distribution = qnorm,
+        probs = c(0.25, 0.75), qtype = 7)
+```
+
+* Observation: qq-plot shows curve that deviates from a linear curve shape
+* Conclusion: CERES scores are not normally distributed
+      
+* Shapiro-Wilk-test
+
+```{r}
+shapiro.test(ceres.tp53.genes$`ACH-000036`) #exemplary for one cell line
+```
+* Result:
+
+Shapiro-Wilk normality test
+
+data:  ceres.tp53.genes$`ACH-000036`
+W = 0.85504, p-value < 2.2e-16
+
+* Interpretation: p-value < 0.05 --> CERES scores of all genes of cell line ACH-000036 are not normally distributed
+
+use apply-function to determine distribution of all cell lines
+
+* create a matrix that contains all mutated genes of cell lines
+
+```{r}
+ceres.allDM.genes=rbind(ceres.tp53.genes, ceres.ttn.genes, ceres.mtnd5.genes, ceres.muc16.genes)
+```
+
+
+```{r}
+lapply(ceres.allDM.genes,shapiro.test)
+```
+
+* Observation: All cell lines show p-values < 0.05
+* Conclusion: No normal distribution
+
+#### Perform non-parametric tests to determine the correlation of the mutated genes to the driving mutations in order to find potential SSTs
+
+* Spearman correlation
+
+* Correlate the CERES scores of every gene across all cell lines belonging to one specific DM to the DM
+
+* Transpose the matrices ceres.DM.genes to ceres.DM.genes_t to make cell lines rows and genes columns
+
+```{r}
+t(ceres.tp53.genes)->ceres.tp53.genes_t
+t(ceres.ttn.genes)->ceres.ttn.genes_t
+t(ceres.muc16.genes)->ceres.muc16.genes_t
+t(ceres.mtnd5.genes)->ceres.mtnd5.genes_t
+
+```
+
+* Select columns (CERES scores of one gene across all cell lines) and calculate correlation to DM (one specific column)
+  Perform for all genes of a matrix using lapply
+  
+* exemplary correlation test for one specific gene
+
+```{r}
+cor(ceres.tp53.genes_t$ABCA13, ceres.tp53.genes_t$TP53, method = "spearman")
+```
+#### Problem: Cannot define ceres.tp53.genes_t$TP53 as vector; error: $ operator is invalid for atomic vectors -> how to solve? works fine for the untransposed matrix but problems for the transposed one
+
+
+* Solution: Generation of a correlation matrix that includes the correlation coefficients between all genes in the matrix
+```{r}
+cor.ceres.tp53.genes_t<-cor(ceres.tp53.genes_t, method="spearman")
+```
+
+####Problem: resulting correlation matrix is very large and most of the data is not relevant for the correlation between the mutations and the DM because this function calculates the correlation coefficients between all genes but be need only one column that includes all correlation coefficients between all mutated genes and the DM
+
+* Solution: Extract one specific column
+
+???{r}
+cor.ceres.tp.53.only<-cor.ceres.tp53.genes_t[1:734,642]
+???
+* cor.ceres.tp.53.only includes correlation coefficients of all genes to TP53
+  for all other matrices analogue
+  
+* TTN
+
+```{r}
+cor.ceres.ttn.genes_t<-cor(ceres.ttn.genes_t, method="spearman")
+cor.ceres.ttn.only<-cor.ceres.ttn.genes_t[1:585,520]
+```
+
+* MUC16
+
+```{r}
+cor.ceres.muc16.genes_t<-cor(ceres.muc16.genes_t, method="spearman")
+cor.ceres.muc16.only<-cor.ceres.muc16.genes_t[1:478,251]
+```
+* MTND5
+
+```{r}
+cor.ceres.mtnd5.genes_t<-cor(ceres.mtnd5.genes_t, method="spearman")
+cor.ceres.mtnd5.only<-cor.ceres.mtnd5.genes_t[1:496,???] \\`MTND5 does not appear in the matrix???
+```
+
+#### Correlation coefficients for all genes and DMs were calculated - next step: determination of p-values to get correlation matrices with significance levels (statistical statements)
+
+* Hmisc package needs to be installed first
+
+```{r}
+install.packages("Hmisc")
+library(Hmisc)
+```
+
+<<<<<<< HEAD
+* Function rcorr(x, type = c("pearson","spearman")) can be used to compute the significance levels for Spearman and Pearson correlation
+=======
+* function rcorr(x, type = c("pearson","spearman")) can be used to compute the significance levels for Spearman and Pearson correlation
+
+>>>>>>> acde25c6f0558dd5272804d55d119e905257a012
+
+* Calculate significance levels for TP53
+
+```{r}
+sig.cor.ceres.tp53.genes_t<-rcorr(as.matrix(ceres.tp53.genes_t), type="spearman")
+View(sig.cor.ceres.tp53.genes_t$r)
+```
+
+* Exact meaning of r, n, P?
+
+* Extract relevant column:
+
+```{r}
+sig.cor.ceres.tp53.only<-sig.cor.ceres.tp53.genes_t$r[1:734, 642]
+
+```
+
+* Repeat for remaining DMs
+
+* TTN
+
+```{r}
+sig.cor.ceres.ttn.genes_t<-rcorr(as.matrix(ceres.ttn.genes_t), type="spearman")
+View(sig.cor.ceres.ttn.genes_t$r)
+sig.cor.ceres.ttn.only<-sig.cor.ceres.ttn.genes_t$r[1:585,520]
+```
+
+* MUC16
+
+```{r}
+sig.cor.ceres.muc16.genes_t<-rcorr(as.matrix(ceres.muc16.genes_t), type="spearman")
+View(sig.cor.ceres.muc16.genes_t$r)
+sig.cor.ceres.muc16.only<-sig.cor.ceres.muc16.genes_t$r[1:478,251]
+```
+
+* MTND5
+
+```{r}
+sig.cor.ceres.mtnd5.genes_t<-rcorr(as.matrix(ceres.mtnd5.genes_t), type="spearman")
+View(sig.cor.ceres.mtnd5.genes_t$r)
+sig.cor.ceres.mtnd5.only<-sig.cor.ceres.mtnd5.genes_t$r[1:496,???] \\see above
+```
+#### Follow up: Interpretation of the p-values, maybe Wilcoxon Rank Sum test if needed --> asked David, Spearman correlation is sufficient
+
+* P-value: is the probability of obtaining a larger (one-sided upper tail), a smaller (one-sided lower tail) or more extreme value (two-sided or two-tailed) value of the test statistics if H0 is valid --> low p-value: H0 is invalid with a high probability
+* We need a significance level alpha to evaluate our p-values in order to identify potential SSTs --> p < ??: H0 is invalid and can be rejected, the observed effect is significant, H1 is statistically proven
+* ?? = 0.05 is often used as a standard value --> we will apply the same value to evaluate our correlation results and to evaluate H0 and H1
+
+#### Formulation of our H0 and H1 hypothesis:
+
+* H0: The correlation of a mutated gene and the DM is not significant --> no potential SST
+* H1: The correlation of a mutated gene and the DM is significant --> potential SST
+
+* Define a threshold for the p-values to identify all the genes that are correlated to the DMs with a high probability
+
+* TP53
+
+```{r}
+sig.cor.ceres.tp53.only[abs(sig.cor.ceres.tp53.only) > 0.05]<- NA \\ only significant p-values remain --> all genes that are NA are no potential SSTs; all genes where H0 cannot be rejected are defined as NA
+sst.tp53<-na.omit(sig.cor.ceres.tp53.only) \\ returns a matrix that contains all potential SSTs that we can compare to literature afterwards
+```
+
+* TTN
+
+```{r}
+sig.cor.ceres.ttn.only[abs(sig.cor.ceres.ttn.only) > 0.05]<- NA
+sst.ttn<-na.omit(sig.cor.ceres.ttn.only)
+```
+
+* MUC16
+
+```{r}
+sig.cor.ceres.muc16.only[abs(sig.cor.ceres.muc16.only) > 0.05] <- NA
+SST.muc16<-na.omit(sig.cor.ceres.muc16.only)
+```
+
+* MTND-5
+
+```{r}
+sig.cor.ceres.mtnd5.only[abs(sig.cor.ceres.mtnd5.only) > 0.05] <- NA
+SST.mtnd5<-na.omit(sig.cor.ceres.mtnd5.only)
+```
+
+#### Follow up: Comparison to literature
+
+* TP53: literature: top plausible SSL pairs with significant impact on overall survival in GBM: 
+    SLC1A5 --> our data:
+    PLK1 --> our data:
+    MDM2: all genes except MDM2 are overexpressed if TP53 is mutated, MDM2 is overexpressed by TP53 wt ??? mutually exclusive --> our data:
+    DBF4: overexpressed in context of GBM
+    TCP1: overexpressed in context of GBM when TP53 is mutated --> our data: 
+    IDH1 mutations are significantly correlated with the drastic overexpression of several known GBM survival genes --> our data: 
+    AKT3 overexpression was found in a significant fraction of breast and prostate cancers and has been reported as a possible oncogene and a     potential glioma survival gene; drastic overexpression of AKT3 is exclusively and significantly associated with IDH1 mutation
+    
+#### Further research and interpretation needed \\ will do it during the following week
