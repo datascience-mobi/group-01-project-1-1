@@ -1348,9 +1348,9 @@ summary(lm(probability ~ ., data = mlr.mat.0)) //r2=0.9249
 
 # Testing our multiple linear regression model, (package "caTools" required)
 
-#For the expression model:
+## For the expression model:
 
-*Splitting mlr.mat into the training set and test set
+* Splitting mlr.mat into the training set and test set
 ```
 set.seed(123) #initialize the random numbers
 split.exp = sample.split(mlr.mat$expression, SplitRatio = 0.8) #split the mlr.mat into 4/5 Training and 1/5 Testing expression values
@@ -1358,27 +1358,27 @@ split.exp = as.data.frame(split.exp) #converting split.exp to a data frame for f
 training_set_exp = subset(mlr.mat, split.exp == TRUE) #use labels to get training data
 test_set_exp = subset(mlr.mat, split.exp == FALSE) #dim(test_set_exp) will give you 2309 --> 11545/5*1 = 2309 --> train/test split worked
 ``` 
-Feature Scaling can be performed
+* Feature Scaling can be performed
 ```
 training_set_exp = scale(training_set_exp)
 test_set_exp = scale(test_set_exp)
 ```
 
-*Fitting multiple linear regression to the Training set
+* Fitting multiple linear regression to the Training set
 ```
 exp.regressor = lm(expression ~ ., data = training_set_exp)
 ```
 
-*Predicting the test set results
+* Predicting the test set results
 
 ```
 exp_pred = predict(exp.regressor, newdata = test_set_exp) #predict expression based on your testing data (data taht the model did NEVER see and highly useful to evaluate the performance of the model)
 test_set_exp$Prediction = exp_pred #add predictions to mlr.mat 
 test_set_exp #now a comparison of the Predictions (last column) with the real values for the expression (1st column) is possible 
 ```
-*Do the same for other models (copynumber, ceres, probability)
+* Do the same for other models (copynumber, ceres, probability)
 
-#For copy number model
+## For copy number model
 ```
 set.seed(123)
 split.copy = sample.split(mlr.mat$copynumber, SplitRatio = 0.8)
@@ -1390,9 +1390,9 @@ dim(test.set.copy)
 dimension was 2021, which was not expected and does not equal one fifth of mlr.mat
 --> continue with other models, come back to this later.
 
-#For ceres model
+## For ceres model
 
-*Splitting data into training and test sets
+* Splitting data into training and test sets
 ```
 set.seed(123)
 split.ceres = sample.split(mlr.mat$ceres, SplitRatio = 0.8)
@@ -1401,27 +1401,27 @@ test.set.ceres = subset(mlr.mat, split.ceres == FALSE)
 dim(test.set.ceres) #2309 --> training/test split successful
 ```
 
-*Scaling
+* Scaling
 ```
 training.set.ceres = scale(training.set.ceres)
 test.set.ceres = scale(test.set.ceres)
 ```
 
-*Fitting multiple linear regression to the Training set
+* Fitting multiple linear regression to the Training set
 ```
 ceres.regressor = lm(ceres ~ ., data = as.data.frame(training.set.ceres))
 ```
 
-*Predicting test set results
+* Predicting test set results
 ```
 ceres_pred = predict(ceres.regressor, newdata = test.set.ceres)
 test.set.ceres$Prediction = ceres_pred
 View(test.set.ceres)
 ```
 
-#For probability model
+## For probability model
 
-*Splitting data into training/test sets
+* Splitting data into training/test sets
 ```
 set.seed(123)
 split.prob = sample.split(mlr.mat$probability, SplitRatio = 0.8)
@@ -1429,31 +1429,31 @@ training.set.prob = subset(mlr.mat, split.prob ==TRUE)
 test.set.prob = subset(mlr.mat, split.prob == FALSE)
 ```
 
-*Fitting multiple linear regression to the training set
+* Fitting multiple linear regression to the training set
 ```
 prob.regressor = lm(probability ~., data = as.data.frame(training.set.prob))
 ```
 
-*Predicting test set results
+* Predicting test set results
 ```
 prob_pred = predict(prob.regressor, newdata = test.set.prob)
 test.set.prob$Prediction = prob_pred
 ```
 
-# Visualizing real values against test values
+## Visualizing real values against test values
 
-*For expression model
+* For expression model
 ```
 plot(density(test_set_exp$expression), col = "red")
 lines(density(test_set_exp$Prediction), col = "blue")
 ```
-*For ceres model
+* For ceres model
 ```
 plot(density(test.set.ceres$ceres), col = "red")
 lines(density(test.set.ceres$Prediction))
 ```
 
-*For probability model
+* For probability model
 ```
 plot(density(test.set.prob$probability), col = "red")
 lines(density(test.set.prob$Prediction))
