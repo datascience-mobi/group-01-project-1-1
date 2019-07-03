@@ -1201,7 +1201,7 @@ lapply(ceres.allDM.genes,shapiro.test)
 
 #### Perform non-parametric tests to determine the correlation of the mutated genes to the driving mutations in order to find potential SSTs
 
-* Pearson correlation
+* Spearman correlation
 
 Correlate the CERES scores of every gene across all cell lines belonging to one specific DM to the DM
 
@@ -1234,9 +1234,10 @@ cor.ceres.tp53.genes_t<-cor(ceres.tp53.genes_t, method="spearman")
 
 * solution: extract one specific column
 
-???{r}
+```{r}
 cor.ceres.tp.53.only<-cor.ceres.tp53.genes_t[1:734,642]
-???
+```
+
 * cor.ceres.tp.53.only includes correlation coefficients of all genes to TP53
   for all other matrices analogue
   
@@ -1671,13 +1672,22 @@ SST.mtnd5<-na.omit(sig.cor.ceres.mtnd5.only)
 
 #### Follow up: Comparison to literature
 
-* TP53: literature: top plausible SSL pairs with significant impact on overall survival in GBM: 
-    SLC1A5 --> our data:
-    PLK1 --> our data:
-    MDM2: all genes except MDM2 are overexpressed if TP53 is mutated, MDM2 is overexpressed by TP53 wt ??? mutually exclusive --> our data:
-    DBF4: overexpressed in context of GBM
-    TCP1: overexpressed in context of GBM when TP53 is mutated --> our data: 
-    IDH1 mutations are significantly correlated with the drastic overexpression of several known GBM survival genes --> our data: 
-    AKT3 overexpression was found in a significant fraction of breast and prostate cancers and has been reported as a possible oncogene and a     potential glioma survival gene; drastic overexpression of AKT3 is exclusively and significantly associated with IDH1 mutation
+* TP53:
+    Szczurek, Ewa; Misra, Navodit; Vingron, Martin: Synthetic sickness or lethality points at candidate combination therapy targets in glioblastoma
     
-#### Further research and interpretation needed \\ will do it during the following week
+    PLK-1: well-known interaction between TP53 and PLK-1 --> our data: does not show a significant correlation between TP53 and PLK-1 because PLK-1 does not appear in the remianing mutated genes --> explanation: ???
+    
+    SLC1A5: one of the top plausible SSL pairs with significant impact on overall survival in GBM when knock-down --> our data: SLC16A5
+SLC27A6, SLC34A1, SLC3A2, SLC6A9 appear to be significantly coorelated to TP 53 mutation (variants of SLC1A5? or completely different genes?)
+
+    Masica, David L.; Karchin, Rachel:Correlation of Somatic Mutation and Expression Identifies Genes Important in Human Glioblastoma 
+    
+    MDM2: all genes except MDM2 are overexpressed if TP53 is mutated, MDM2 is overexpressed by TP53 wt ??? mutually exclusive --> our data: no significant correlation between MDM2 and TP53 --> we tested our data set for overexpressions 
+    DBF4: DBF4 over-expression has been specifically linked to TP53 status --> our data: does not show a signiicant correlation between DBF4 and TP53
+    
+    TCP1: overexpressed in context of GBM when TP53 is mutated --> our data: no significant correlation between TCP1 and TP53 in our data
+    
+    BUB3 HSPA14, TFAM , GFTP1, DERL1, SND1, ALDH1B1, RECK, UGHD, AOF2 (LSD1), GADD45G and CERK (ceramide kinase) could be other SSTs according to literature but through our investigation we were not able to verify these potential SST
+    
+* TTN: no potential SSTs according to literature --> potential reason: no typical DM; same problem appears for MT-ND5 and MUC16
+#### Follow up: Other option: compare possible SSTs through all cell lines and eliminate the ones that appear in more than one cell line because they are not specifically linked to one specific DM. For the remaining ones we will check literature if they are part of the same pathway as the DM or interact with proteins that are effected by the DM and look for possible drugs
