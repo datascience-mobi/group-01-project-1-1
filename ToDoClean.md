@@ -1463,23 +1463,25 @@ lines(density(test.set.prob$Prediction))
 ## Visualizing real values against test values with ggplot
 
 * Melting data
-```
+```{r}
 plot.ceres.m <- melt(test.set.ceres$ceres)
 a <- melt(test.set.ceres$Prediction)
 colnames(plot.ceres.m) <- "CERES"
 rownames(plot.ceres.m) = rownames(test.set.ceres)
 colnames(a) <- "Prediction"
 plot.ceres.m <- cbind(plot.ceres.m,a)
+plottingData.ceres <- melt(plot.ceres.m)
 ```
 * Do this for exp and prob
 
-```
+```{r}
 plot.exp.m <- melt(test_set_exp$expression)
 a <- melt(test_set_exp$Prediction)
 colnames(plot.exp.m) <- "Expression"
 rownames(plot.exp.m) = rownames(plot.ceres.m)
 colnames(a) <- "Prediction"
 plot.exp.m <- cbind(plot.exp.m,a)
+plottingData.exp <- melt(plot.exp.m)
 
 plot.prob.m <- melt(test.set.prob$probability)
 a <- melt(test.set.prob$Prediction)
@@ -1487,18 +1489,55 @@ colnames(plot.prob.m) <- "Probability"
 rownames(plot.prob.m) = rownames(test.set.prob)
 colnames(a) <- "Prediction"
 plot.prob.m <- cbind(plot.prob.m,a)
+plottingData.prob <- melt(plot.prob.m)
 ```
 
-*Plot
-```
-exp_plot <- ggplot(data = plot.exp.m, aes(x=Expression,y=Prediction)) + geom_point() + labs(title = "Comparison test and real values for Expression")
+*Plotting
+```{r}
+exp_plot <- ggplot(data = plottingData.exp, aes(x=value, fill=variable)) + 
+  geom_density(alpha=.3) +
+  ggtitle(paste0("Performance evaluation Lin.Reg. expression")) +
+  ylab("Density") +
+  xlab("Expression values") +
+  theme_bw(base_size = 7) +
+  theme(legend.position="bottom",
+        legend.direction="horizontal",
+        plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        legend.title= element_blank(),
+        axis.title.x = element_blank(),
+        strip.text.y = element_text(angle = 0))
 
-prob_plot <- ggplot(data = plot.prob.m, aes(x=Probability,y=Prediction)) + geom_point() + labs(title = "Comparison test and real values for Probability")
+prob_plot <- ggplot(data = plottingData.prob, aes(x=value, fill=variable)) + 
+    geom_density(alpha=.3) +
+     ggtitle(paste0("Performance evaluation Lin.Reg. probability")) +
+     ylab("Density") +
+     xlab("Probability values") +
+    theme_bw(base_size = 7) +
+     theme(legend.position="bottom",
+           legend.direction="horizontal",
+           plot.title = element_text(hjust = 0.5),           axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+           legend.title= element_blank(),
+           axis.title.x = element_blank(),
+           strip.text.y = element_text(angle = 0))
 
-ceres_plot <- ggplot(data = plot.ceres.m, aes(x=CERES,y=Prediction)) + geom_point() + labs(title = "Comparison test and real values for CERES score")
+ceres_plot <- ggplot(data = plottingData.ceres, aes(x=value, fill=variable)) + 
+  geom_density(alpha=.3) +
+  ggtitle(paste0("Performance evaluation Lin.Reg. CERES score")) +
+  ylab("Density") +
+  xlab("CERES score values") +
+  theme_bw(base_size = 7) +
+  theme(legend.position="bottom",
+        legend.direction="horizontal",
+        plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        legend.title= element_blank(),
+        axis.title.x = element_blank(),
+        strip.text.y = element_text(angle = 0))
 ```
 Observation: No plot for copynumber because training/test split did not work.
 
+Looking at the grapchis it becomes clear that the expression model does not work. The CERES model and the probability model are both similar in the aspects that the form of the probability prediction is almost the same as the real CERES values. And the curve predicting the CERES values is almost the same as
 
 #### Follow up: Interpretation of the p-values, maybe Wilcoxon Rank Sum test
 

@@ -18,20 +18,20 @@ Our aim in this project was to find the driver mutations in GBM throughout all c
 
 # Data cleanup
 
-* Once we downloaded the data, we first removed all data that didn't have to do with Glioblastoma.
+Once we downloaded the data, we first removed all data that didn't have to do with Glioblastoma.
 
 ```
 brain.anno = allDepMapData$annotation[allDepMapData$annotation$Subtype.Disease == "Glioblastoma", ]
 ```
-* Then we made the cell line identifiers be the rownames in the annotation.
+Then we made the cell line identifiers be the rownames in the annotation.
 
 ```
 rownames(brain.anno) = brain.anno$DepMap_ID
 brain.anno = brain.anno[, -1]
 ```
-* The next step was to remove all cell lines that were irrelevant to our project from all the other matrices (expression, copy number, relevant mutations, ceres and probability)
+The next step was to remove all cell lines that were irrelevant to our project from all the other matrices (expression, copy number, relevant mutations, ceres and probability)
 
-** "operators" package needed for this step, because of "%!in%"
+Package "operators" needed.
 
 ```
 cell.lines = dput(rownames(brain.anno))
@@ -42,7 +42,7 @@ ceres.clean = allDepMapData$kd.ceres[, -which(colnames(allDepMapData$kd.ceres) %
 prob.clean = allDepMapData$kd.prob[, -which(colnames(allDepMapData$kd.prob) %!in% cell.lines)]
 ```
 
-* After we separated all glioblastoma cell lines, we removed the NA and all values out of range. The data contained a lot of 0 and negative values, especially the copy number data, where x>=0.
+After we separated all glioblastoma cell lines, we removed the NA and all values out of range. The data contained a lot of 0 and negative values, especially the copy number data, where x>=0.
 
 ```
 sum(is.na(ceres.clean))
@@ -55,27 +55,27 @@ sum(is.na(copy.clean))
 ```
 The function sum() was used to show how many NA values were in each matrix.
 
-ceres.clean -> 0
-prob.clean -> 0 
-copy.clean -> 1780
-exp.clean -> 0
-relevant.mutations -> 0, but looking directly in the matrix we can see NA values.
+* ceres.clean -> 0
+* prob.clean -> 0 
+* copy.clean -> 1780
+* exp.clean -> 0
+* relevant.mutations -> 0, but looking directly in the matrix we can see NA values.
 
 ```
 copy.clean = copy.clean[-which(apply(copy.clean, 1, function(x) {sum(is.na(x))}) > 0), ]
 sum(is.na(copy.clean))
 ```
 
-copy.clean -> 0
+* copy.clean -> 0
 
-* The next cleanup target was probability matrix. It should only contain values between 0 and 1, which is the case.
+The next cleanup target was probability matrix. It should only contain values between 0 and 1, which is the case.
 
 ```
 sum(prob.clean < 0) //0
 sum(prob.clean > 1) //0
 ``` 
 
-* Checking for values = 0
+Checking for values = 0
 
 ```
 sum(ceres.clean == 0) 
@@ -89,7 +89,7 @@ prob.clean -> 80
 copy.clean -> 0
 exp.clean -> 644705
 
-* Scan for outliers via boxplots and threshold or remove them if necessary.
+Scan for outliers via boxplots and threshold or remove them if necessary.
 
 Two values were identified an outliers, then thresholded and removed them.
 
@@ -99,7 +99,7 @@ ceres.transf[ceres.clean > 3] = 3 //thresholding
 ceres.transf = ceres.clean[-which(ceres.clean > 3), ] //removing
 ```
 
-* Organising all matrices for further work. 
+Organising all matrices for further work. 
 
 We compared the gene data availability between all data sets to get the same dimensions and also made all data nominal in the annotation.
 
@@ -136,7 +136,7 @@ exp.clean = exp.clean[order(rownames(exp.clean)), order(colnames(exp.clean))]
 copy.clean = copy.clean[order(rownames(copy.clean)), order(colnames(copy.clean))]
 ```
 
-* In order to find all most commonly mutated genes among all relevant cell lines, we made a list with all commonly mutated genes and also combined all mutation matrices into one.
+In order to find all most commonly mutated genes among all relevant cell lines, we made a list with all commonly mutated genes and also combined all mutation matrices into one.
 
 ```
 #common.genes = as.data.frame(table(c(relevant.mutations$`ACH-000036`$Hugo_Symbol,relevant.mutations$`ACH-000040`$Hugo_Symbol, relevant.mutations$`ACH-000075`$Hugo_Symbol, relevant.mutations$`ACH-000098`$Hugo_Symbol, relevant.mutations$`ACH-000208`$Hugo_Symbol, relevant.mutations$`ACH-000215`$Hugo_Symbol, relevant.mutations$`ACH-000137`$Hugo_Symbol, relevant.mutations$`ACH-000152`$Hugo_Symbol, relevant.mutations$`ACH-000591`$Hugo_Symbol, relevant.mutations$`ACH-000673`$Hugo_Symbol, relevant.mutations$`ACH-000231`$Hugo_Symbol, relevant.mutations$`ACH-000244`$Hugo_Symbol, relevant.mutations$`ACH-000760`$Hugo_Symbol, relevant.mutations$`ACH-000368`$Hugo_Symbol, relevant.mutations$`ACH-000376`$Hugo_Symbol, relevant.mutations$`ACH-000445`$Hugo_Symbol, relevant.mutations$`ACH-000464`$Hugo_Symbol, relevant.mutations$`ACH-000469`$Hugo_Symbol, relevant.mutations$`ACH-000479`$Hugo_Symbol, relevant.mutations$`ACH-000570`$Hugo_Symbol, relevant.mutations$`ACH-000571`$Hugo_Symbol, relevant.mutations$`ACH-000623`$Hugo_Symbol, relevant.mutations$`ACH-000631`$Hugo_Symbol, relevant.mutations$`ACH-000738`$Hugo_Symbol, relevant.mutations$`ACH-000756`$Hugo_Symbol, relevant.mutations$`ACH-000819`$Hugo_Symbol, relevant.mutations$`ACH-000128`$Hugo_Symbol, relevant.mutations$`ACH-000887`$Hugo_Symbol)))#
@@ -147,13 +147,14 @@ common.genes = as.matrix(table(c(relevant.mutations.combi$Hugo_Symbol)))
 summary(common.genes)
 ```
 
-Commonly mutated genes: 
- - MT-ND5 (mitochondrially encoded NADH: ubiquinone oxireductase core subunit 5): 32
- - TTN (titin, large abundant protein of striated muscle): 26
- - MUC16 (mucin): 23
- - MT-CYB (mitochondrially encoded cytochrome b): 18
- - PTEN (phosphatase and tensin homolog): 17
- - other: 10096
+Commonly mutated genes:
+
+* MT-ND5 (mitochondrially encoded NADH: ubiquinone oxireductase core subunit 5): 32
+* TTN (titin, large abundant protein of striated muscle): 26
+* MUC16 (mucin): 23
+* MT-CYB (mitochondrially encoded cytochrome b): 18
+* PTEN (phosphatase and tensin homolog): 17
+* other: 10096
  
 ```
 rownames(common.genes) = common.genes$Var1
@@ -164,7 +165,7 @@ common.genes.c = common.genes.c[c(6, 11, 10, 7, 4, 9, 3, 2, 1, 8),]
 barplot_commongenes <- barplot(common.genes.c, beside = T, names.arg = rownames(common.genes.c), ylab = "Frequency", main = "Most common gene mutations", las = 2)
 ```
 
-* Combine the mutation matrices of the GBM cell lines, extract the relevant columns "Hugo_Symbol", "IsDeleterious" and "DepMap_ID"
+Combine the mutation matrices of the GBM cell lines, extract the relevant columns "Hugo_Symbol", "IsDeleterious" and "DepMap_ID"  
 Package dplyr needed for this step
 
 ```
@@ -173,9 +174,9 @@ mutations.all = rbind(relevant.mutations$`ACH-000036`,relevant.mutations$`ACH-00
 mutations.all= select(mutations.all, c(2,21, 36))
 ```
 
-* After that, we determined the GBM cells lines, which contained our four most prominent driver mutations (DM). We then extracted the cell lines which contain one specific mutation (MT-ND5, MUC16, TP53 and TTN) and determined the mean expression, copy number (CN), CERES score and probability of all genes over these cell lines.
+After that, we determined the GBM cells lines, which contained our four most prominent driver mutations (DM). We then extracted the cell lines which contain one specific mutation (MT-ND5, MUC16, TP53 and TTN) and determined the mean expression, copy number (CN), CERES score and probability of all genes over these cell lines.
 
-For MT-ND5:
+* For MT-ND5:
 ```
 list.mtnd5 = unique(subset(mutations.all, mutations.all$Hugo_Symbol == "MT-ND5"))
 cells.mtnd5 = c(list.mtnd5$DepMap_ID)
@@ -185,7 +186,7 @@ mtnd5.ceres.mean = as.matrix(c(rowMeans(ceres.mtnd5)))
 mtnd5.prob.mean = as.matrix(c(rowMeans(prob.mtnd5)))
 ```
 
-For MUC16:
+* For MUC16:
 ```
 list.muc16 = unique(subset(mutations.all, mutations.all$Hugo_Symbol == "MUC16"))
 cells.muc16 = c(list.muc16$DepMap_ID)
@@ -194,7 +195,7 @@ muc16.copy.mean = as.matrix(c(rowMeans(copy.muc16)))
 muc16.ceres.mean = as.matrix(c(rowMeans(ceres.muc16)))
 muc16.prob.mean = as.matrix(c(rowMeans(prob.muc16)))
 ```
-For TP53:
+* For TP53:
 ```
 list.tp53 = unique(subset(mutations.all, mutations.all$Hugo_Symbol == "TP53"))
 cells.tp53 = c(list.tp53$DepMap_ID)
@@ -204,7 +205,7 @@ tp53.ceres.mean = as.matrix(c(rowMeans(ceres.tp53)))
 tp53.prob.mean = as.matrix(c(rowMeans(prob.tp53)))
 ```
 
-For TTN:
+* For TTN:
 ```
 list.ttn = unique(subset(mutations.all, mutations.all$Hugo_Symbol == "TTN"))
 cells.ttn = c(list.ttn$DepMap_ID)
@@ -216,7 +217,7 @@ ttn.prob.mean = as.matrix(c(rowMeans(prob.ttn)))
 
 # Data visualization
 
-* We did boxplots for visualization of whole expression and CN matrices as well as MT-ND5 expression and CN. Also heatmaps for whole mutation, CN, expression, CERES and probability matrices (with and without 0 values).
+We did boxplots for visualization of whole expression and CN matrices as well as MT-ND5 expression and CN. Also heatmaps for whole mutation, CN, expression, CERES and probability matrices (with and without 0 values).
 Packages: pheatmap, grid
 
 Expression matrix (only a few overexpressed genes, a lot of deleted genes) :
@@ -237,9 +238,11 @@ Code for other matrices analogous to the one for the expression matrix.
 Observations: for CERES and probability matrix only a few genes seemed to be essential.
 
 # Data reduction
+
 ## Additional cleanup beforehand
 
-* Rows containing 0 in matrices were removed, and gene data availability was compared again to ensure all matrices had the same dimension.
+
+Rows containing 0 in matrices were removed, and gene data availability was compared again to ensure all matrices had the same dimension.
 
 ```
 sum(exp.clean == 0)
@@ -273,7 +276,9 @@ rm(gene.data.ex)
 dimensions: 11545x28
 
 # Principal component analysis (PCA)
+
 ## Data cleanup
+
 
 The first step was to determine our four most prominent driving mutations, which we had already done before. 
 Most prominent DMs: TP53, TTN, MT-ND5, MUC16
@@ -300,7 +305,9 @@ ceres.tp53.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.tp53),]
 
 ## Determining potential second site targets (SSTs) through correlation tests: Is there a correlation between DM and other mutations in the cell? 
 
+
 ### Checking data distribution in order to determine which correlation test to apply
+
 
 Parametric correlation tests (e.g. Pearson correlation) need normally distributed data. If that is not the case, apply non-parametric tests (e.g. Spearman correlation or Wilcoxon Rank sum test).
 
@@ -318,21 +325,26 @@ qqline(ceres.tp53.genes$`ACH-000036`, datax = FALSE, distribution = qnorm,
 Observation: qq-plot shows curve that deviates from a linear curve. 
 Conclusion: CERES scores are not normally distributed. 
 
+
 ### Shapiro-Wilk-Test (exemplary for one cell line)
+
 
 ```
 shapiro.test(ceres.tp53.genes$`ACH-000036`)
 ```
 
 #### Results: 
+
 data: ceres.tp53.genes$ACH-000036 W = 0.85504, p-value < 2.2e-16
 
 #### Interpretation: 
+
 p-value < 0.05 --> CERES scores of all genes of cell line ACH-000036 are not normally distributed.
 
 #### Using apply-function to determine the distribution of all cell lines.
 
-* create a matrix that contains all mutated genes of cell lines
+
+Creating a matrix that contains all mutated genes of cell lines
 ```
 ceres.allDM.genes=rbind(ceres.tp53.genes, ceres.ttn.genes, ceres.mtnd5.genes, ceres.muc16.genes)
 ```
@@ -341,9 +353,12 @@ lapply(ceres.allDM.genes,shapiro.test)
 ```
 
 #### Results:
+
 All cell lines show p-values < 0.05 --> no normal distribution.
 
+
 ### Perform non-parametric tests to determine the correlation of the mutated genes to the DMs in order to find potential SSTs.
+
 
 #### Spearman correlation
 
@@ -358,11 +373,125 @@ t(ceres.muc16.genes)->ceres.muc16.genes_t
 t(ceres.mtnd5.genes)->ceres.mtnd5.genes_t
 ```
 
-We then selected the columns (CERES score of on gene across all cell lines) and calculated the correlation to the DM (one specific column). We oerformed this for all genes in the matrix using lapply.
+We then selected the columns (CERES score of on gene across all cell lines) and calculated the correlation to the DM (one specific column). We performed this for all genes in the matrix using lapply.
 
-Examplary correlation test for one specific gene:
+Exemplary correlation test for one specific gene:
 ```
 cor(ceres.tp53.genes_t$ABCA13, ceres.tp53.genes_t$TP53, method = "spearman")
 ```
+It was necessary to generate a correlation matrix including the correlation coefficients between all genes in the matrix, in order to solve an error in the last step.
+
+```
+cor.ceres.tp53.genes_t<-cor(ceres.tp53.genes_t, method="spearman")
+```
+
+We then extracted one specific column from this matrix because it was very large and contained a lot of information that was irrelevant for us.
+
+```
+cor.ceres.tp.53.only<-cor.ceres.tp53.genes_t[1:734,642]
+```
+cor.ceres.tp.53.only includes correlation coefficients of all genes to TP53. The matrices for the other DMs were created using an analogous method.
+
+#### Determination of p-values to get correlation matrices with significance levels (statistical statements)
+
+
+Packages: Hmisc
+
+The function rcorr(x, type = c("pearson", "spearman")) can be used to compute the significance levels for Spearman an Pearson correlations. 
+
+We calculated the significance levels for TP53:
+```
+sig.cor.ceres.tp53.genes_t<-rcorr(as.matrix(ceres.tp53.genes_t), type="spearman")
+View(sig.cor.ceres.tp53.genes_t$r)
+```
+
+Extracted the relevant column:
+```
+sig.cor.ceres.tp53.only<-sig.cor.ceres.tp53.genes_t$r[1:734, 642]
+```
+
+And did the same for the other DMs.
+
+#### P-values and hypothesis testing
+
+
+A p-value is the probability of obtaining a larger (one-sided upper tail), a smaller (one-sided lower tail) or a more extreme value (two-sided or two-tailed) value of the statistics if H0 is valid. Following this logic, a low p-value means that H0 is invalid with a high probability.
+
+We need a significance level alpha to evaluate our p-values in order to identify potential SSTs --> p < ?? : H0 is invalid and can be rejected, the observed effect is significant and H1 is statistically proven.
+
+?? = 0.05 is often used as a standard value. We chose to apply the same value to evaluate our correlation results as well as H0 and H1.
+
+#### Formulating our H0 and H1 hypothesis:
+
+
+* H0: The correlation of a mutated gene and the DM is not significant --> not potential SST
+
+* H1: The correlation of a mutated gene and the DM is significant --> potential SST
+
+We defined a threshold for the p-values to identify all the genes that are correlated to the DMs with a high probability.
+
+* TP53
+```
+sig.cor.ceres.tp53.only[abs(sig.cor.ceres.tp53.only) > 0.05]<- NA
+``` 
+Only significant p-values remain --> all genes that are NA are no potential SSTs; all genes where H0 cannot be rejected are defined as NA
+```
+sst.tp53<-na.omit(sig.cor.ceres.tp53.only)
+```
+Returns a matrix that contains all potential SSTs that we can compare to literature afterwards
+
+* TTN
+```
+sig.cor.ceres.ttn.only[abs(sig.cor.ceres.ttn.only) > 0.05]<- NA
+sst.ttn<-na.omit(sig.cor.ceres.ttn.only)
+```
+
+* MUC16
+```
+sig.cor.ceres.muc16.only[abs(sig.cor.ceres.muc16.only) > 0.05] <- NA
+SST.muc16<-na.omit(sig.cor.ceres.muc16.only)
+```
+
+* MT-ND5
+```
+sig.cor.ceres.mtnd5.only[abs(sig.cor.ceres.mtnd5.only) > 0.05] <- NA
+SST.mtnd5<-na.omit(sig.cor.ceres.mtnd5.only)
+```
+
+
+### Comparison to literature
+
+#### For TP53: 
+
+Paper: Synthetic sickness or lethality points at candidate combination therapy targets in glioblastoma.  (Szczurek, Ewa; Misra, Navodit; Vingron, Martin)
+
+* PLK-1: well-known interaction between PLK-1 and TP53, which is not present in our data. It does not show a significant correlation between TP53 and PLK-1 because PLK-1 does not appear in the remaining mutated genes. 
+
+* SLC1A5: one of the top plausible SSL pairs with significant impact on overall survival in GBM when knock-down.  SLC16A5, SLC27A6, SLC34A1, SLC3A2 and SLC6A9 appear to be significantly correlated to the TP53 mutation. Are these genes maybe variants of SLC1A5? Or are they completely different genes?
+
+Paper: Correlation of Somatic Mutation and Expression Identifies Genes Important in Human Glioblastoma. (Masica, David L.; Karchin, Rachel)
+
+* MDM2: all genes except MDM2 are overexpressed if TP53 is mutated, but it is overexpressed by TP53 wt. Our data does not show a significant correlation between MDM2 and TP53.
+
+We then tested our data for over-expressions:
+
+* DBF4: DBF4 over-expressions have been specifically linked to linked to TP53 status. Our data does not show a significant correlation between DBF4 and TP53.
+
+* TCP1: Overexpressed in context of GBM when TP53 is mutated. Our data shows no significant correlation between TCP1 and TP53.
+
+* BUB3, HSPA14, TFAM, GFTP1, DERL1, SND1, ALDH1B1, RECK, UGHD, AOF2 (LSD1), GADD45G and CERK (ceramide kinase) could be other SSTs  according to literature, but through our investigation we were not able to verify these potential SST.
+
+#### For our other DMs
+
+There are no potential SSTs for TTN, MT-ND5 and MUC16 according to literature, because these are not common driving mutations. 
+
+
+
+
+
+
+
+
+
 
 
