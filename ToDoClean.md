@@ -1497,6 +1497,8 @@ prob_plot <- ggplot(data = plot.prob.m, aes(x=Probability,y=Prediction)) + geom_
 
 ceres_plot <- ggplot(data = plot.ceres.m, aes(x=CERES,y=Prediction)) + geom_point() + labs(title = "Comparison test and real values for CERES score")
 ```
+Observation: No plot for copynumber because training/test split did not work.
+
 
 #### Follow up: Interpretation of the p-values, maybe Wilcoxon Rank Sum test
 
