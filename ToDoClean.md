@@ -1459,6 +1459,45 @@ plot(density(test.set.prob$probability), col = "red")
 lines(density(test.set.prob$Prediction))
 ```
 
+
+## Visualizing real values against test values with ggplot
+
+* Melting data
+```
+plot.ceres.m <- melt(test.set.ceres$ceres)
+a <- melt(test.set.ceres$Prediction)
+colnames(plot.ceres.m) <- "CERES"
+rownames(plot.ceres.m) = rownames(test.set.ceres)
+colnames(a) <- "Prediction"
+plot.ceres.m <- cbind(plot.ceres.m,a)
+```
+* Do this for exp and prob
+
+```
+plot.exp.m <- melt(test_set_exp$expression)
+a <- melt(test_set_exp$Prediction)
+colnames(plot.exp.m) <- "Expression"
+rownames(plot.exp.m) = rownames(plot.ceres.m)
+colnames(a) <- "Prediction"
+plot.exp.m <- cbind(plot.exp.m,a)
+
+plot.prob.m <- melt(test.set.prob$probability)
+a <- melt(test.set.prob$Prediction)
+colnames(plot.prob.m) <- "Probability"
+rownames(plot.prob.m) = rownames(test.set.prob)
+colnames(a) <- "Prediction"
+plot.prob.m <- cbind(plot.prob.m,a)
+```
+
+*Plot
+```
+exp_plot <- ggplot(data = plot.exp.m, aes(x=Expression,y=Prediction)) + geom_point() + labs(title = "Comparison test and real values for Expression")
+
+prob_plot <- ggplot(data = plot.prob.m, aes(x=Probability,y=Prediction)) + geom_point() + labs(title = "Comparison test and real values for Probability")
+
+ceres_plot <- ggplot(data = plot.ceres.m, aes(x=CERES,y=Prediction)) + geom_point() + labs(title = "Comparison test and real values for CERES score")
+```
+
 #### Follow up: Interpretation of the p-values, maybe Wilcoxon Rank Sum test
 
 ### Determination of potential second site targets (SSTs) through correlation tests: Is there a correlation between DM and other mutations in the cell?
