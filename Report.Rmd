@@ -562,7 +562,7 @@ test_set_exp #now a comparison of the Predictions (last column) with the real va
 
 To better visualize and evaluate our models we plotted the predicted values against the real values for expression, CERES score and probability.
 
-For the expression model:
+For the CERES score model:
 ```{r}
 plot.ceres.m <- melt(test.set.ceres$ceres)
 a <- melt(test.set.ceres$Prediction)
@@ -587,6 +587,65 @@ ceres_plot <- ggplot(data = plottingData.ceres, aes(x=value, fill=variable)) +
         strip.text.y = element_text(angle = 0))
 ```
 
-For the CERES model:
+For the expression model:
+
+```{r}
+plot.exp.m <- melt(test_set_exp$expression)
+a <- melt(test_set_exp$Prediction)
+colnames(plot.exp.m) <- "Expression"
+rownames(plot.exp.m) = rownames(plot.ceres.m)
+colnames(a) <- "Prediction"
+plot.exp.m <- cbind(plot.exp.m,a)
+plottingData.exp <- melt(plot.exp.m)
+
+exp_plot <- ggplot(data = plottingData.exp, aes(x=value, fill=variable)) + 
+  geom_density(alpha=.3) +
+  ggtitle(paste0("Performance evaluation Lin.Reg. expression")) +
+  ylab("Density") +
+  xlab("Expression values") +
+  theme_bw(base_size = 7) +
+  theme(legend.position="bottom",
+        legend.direction="horizontal",
+        plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        legend.title= element_blank(),
+        axis.title.x = element_blank(),
+        strip.text.y = element_text(angle = 0))
+
+```
+
+For the probability model:
+```{r}
+plot.prob.m <- melt(test.set.prob$probability)
+a <- melt(test.set.prob$Prediction)
+colnames(plot.prob.m) <- "Probability"
+rownames(plot.prob.m) = rownames(test.set.prob)
+colnames(a) <- "Prediction"
+plot.prob.m <- cbind(plot.prob.m,a)
+plottingData.prob <- melt(plot.prob.m)
+
+prob_plot <- ggplot(data = plottingData.prob, aes(x=value, fill=variable)) + 
+    geom_density(alpha=.3) +
+     ggtitle(paste0("Performance evaluation Lin.Reg. probability")) +
+     ylab("Density") +
+     xlab("Probability values") +
+    theme_bw(base_size = 7) +
+     theme(legend.position="bottom",
+           legend.direction="horizontal",
+           plot.title = element_text(hjust = 0.5),           axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+           legend.title= element_blank(),
+           axis.title.x = element_blank(),
+           strip.text.y = element_text(angle = 0))
+```
+
+Observation: No plot for copynumber because training/test split did not work.
+
+Looking at the expression graph, it becomes clear that the model does not work. The CERES model and the probability model are both similar in the sense that the curves are better that the curve for the expression model. This however does not mean that the models are good for predicting CERES scores and knock down probability.
+
+
+
+
+
+
 
 
