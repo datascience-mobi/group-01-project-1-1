@@ -264,7 +264,7 @@ Observations: for CERES and probability matrix only a few genes seemed to be ess
 
 Rows containing 0 in matrices were removed, and gene data availability was compared again to ensure all matrices had the same dimension.
 
-```{r}
+```
 sum(exp.clean == 0)
 exp.clean.w0 <- exp.clean[!(apply(exp.clean, 1, function(y) any(y == 0))),]
 sum(exp.clean.w0 == 0)
