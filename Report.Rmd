@@ -20,12 +20,13 @@ Our aim in this project was to find the driver mutations in GBM throughout all c
 
 Once we downloaded the data, we first removed all data that didn't have to do with Glioblastoma.
 
-```
+```{r}
+allDepMapData = readRDS("/Users/Amanda/Desktop/DepMap19Q1_allData.RDS")
 brain.anno = allDepMapData$annotation[allDepMapData$annotation$Subtype.Disease == "Glioblastoma", ]
 ```
 Then we made the cell line identifiers be the rownames in the annotation.
 
-```
+```{r}
 rownames(brain.anno) = brain.anno$DepMap_ID
 brain.anno = brain.anno[, -1]
 ```
@@ -33,7 +34,8 @@ The next step was to remove all cell lines that were irrelevant to our project f
 
 Package "operators" needed.
 
-```
+```{r}
+library("operators")
 cell.lines = dput(rownames(brain.anno))
 exp.clean = allDepMapData$expression[, -which(colnames(allDepMapData$expression) %!in% cell.lines)]
 copy.clean = allDepMapData$copynumber[, -which(colnames(allDepMapData$copynumber) %!in% cell.lines)]
@@ -44,7 +46,7 @@ prob.clean = allDepMapData$kd.prob[, -which(colnames(allDepMapData$kd.prob) %!in
 
 After we separated all glioblastoma cell lines, we removed the NA and all values out of range. The data contained a lot of 0 and negative values, especially the copy number data, where x>=0.
 
-```
+```{r}
 sum(is.na(ceres.clean))
 sum(is.na(prob.clean))
 sum(is.na(copy.clean))
@@ -61,7 +63,7 @@ The function sum() was used to show how many NA values were in each matrix.
 * exp.clean -> 0
 * relevant.mutations -> 0, but looking directly in the matrix we can see NA values.
 
-```
+```{r}
 copy.clean = copy.clean[-which(apply(copy.clean, 1, function(x) {sum(is.na(x))}) > 0), ]
 sum(is.na(copy.clean))
 ```
@@ -70,9 +72,9 @@ sum(is.na(copy.clean))
 
 The next cleanup target was probability matrix. It should only contain values between 0 and 1, which is the case.
 
-```
-sum(prob.clean < 0) //0
-sum(prob.clean > 1) //0
+```{r}
+sum(prob.clean < 0) 
+sum(prob.clean > 1) 
 ``` 
 
 Checking for values = 0
@@ -93,17 +95,16 @@ Scan for outliers via boxplots and threshold or remove them if necessary.
 
 Two values were identified an outliers, then thresholded and removed them.
 
-```
-boxplot(ceres.clean) //two values identified as outliers
-ceres.transf[ceres.clean > 3] = 3 //thresholding
-ceres.transf = ceres.clean[-which(ceres.clean > 3), ] //removing
+```{r}
+boxplot(ceres.clean) 
+ceres.transf = ceres.clean[-which(ceres.clean > 3), ] 
 ```
 
 Organising all matrices for further work. 
 
 We compared the gene data availability between all data sets to get the same dimensions and also made all data nominal in the annotation.
 
-```
+```{r}
 dim(copy.clean) == dim(exp.clean)
 gene.data.co = c(rownames(copy.clean))
 gene.data.ex = c(rownames(exp.clean))
@@ -129,7 +130,7 @@ dimensions: 16970x28
 
 We also put the gene names and cell lines in alphabetical order
 
-```
+```{r}
 ceres.clean = ceres.clean[order(rownames(ceres.clean)), order(colnames(ceres.clean))]
 prob.clean = prob.clean[order(rownames(prob.clean)), order(colnames(prob.clean))]
 exp.clean = exp.clean[order(rownames(exp.clean)), order(colnames(exp.clean))]
@@ -138,7 +139,7 @@ copy.clean = copy.clean[order(rownames(copy.clean)), order(colnames(copy.clean))
 
 In order to find all most commonly mutated genes among all relevant cell lines, we made a list with all commonly mutated genes and also combined all mutation matrices into one.
 
-```
+```{r}
 #common.genes = as.data.frame(table(c(relevant.mutations$`ACH-000036`$Hugo_Symbol,relevant.mutations$`ACH-000040`$Hugo_Symbol, relevant.mutations$`ACH-000075`$Hugo_Symbol, relevant.mutations$`ACH-000098`$Hugo_Symbol, relevant.mutations$`ACH-000208`$Hugo_Symbol, relevant.mutations$`ACH-000215`$Hugo_Symbol, relevant.mutations$`ACH-000137`$Hugo_Symbol, relevant.mutations$`ACH-000152`$Hugo_Symbol, relevant.mutations$`ACH-000591`$Hugo_Symbol, relevant.mutations$`ACH-000673`$Hugo_Symbol, relevant.mutations$`ACH-000231`$Hugo_Symbol, relevant.mutations$`ACH-000244`$Hugo_Symbol, relevant.mutations$`ACH-000760`$Hugo_Symbol, relevant.mutations$`ACH-000368`$Hugo_Symbol, relevant.mutations$`ACH-000376`$Hugo_Symbol, relevant.mutations$`ACH-000445`$Hugo_Symbol, relevant.mutations$`ACH-000464`$Hugo_Symbol, relevant.mutations$`ACH-000469`$Hugo_Symbol, relevant.mutations$`ACH-000479`$Hugo_Symbol, relevant.mutations$`ACH-000570`$Hugo_Symbol, relevant.mutations$`ACH-000571`$Hugo_Symbol, relevant.mutations$`ACH-000623`$Hugo_Symbol, relevant.mutations$`ACH-000631`$Hugo_Symbol, relevant.mutations$`ACH-000738`$Hugo_Symbol, relevant.mutations$`ACH-000756`$Hugo_Symbol, relevant.mutations$`ACH-000819`$Hugo_Symbol, relevant.mutations$`ACH-000128`$Hugo_Symbol, relevant.mutations$`ACH-000887`$Hugo_Symbol)))#
 
 relevant.mutations.combi = do.call(rbind, lapply(which(names(allDepMapData$mutation) %in% cell.lines), function(a) allDepMapData$mutation[[a]]))
@@ -156,11 +157,12 @@ Commonly mutated genes:
 * PTEN (phosphatase and tensin homolog): 17
 * other: 10096
  
-```
-rownames(common.genes) = common.genes$Var1
-common.genes$Var1 = NULL
+```{r}
+common.genes = as.matrix(common.genes)
+#rownames(common.genes) = common.genes$Var1
+#common.genes$Var1 = NULL
 barplot(common.genes, beside = T, names.arg = rownames(common.genes), las = 2)
-common.genes.c = subset(common.genes, common.genes$Freq >11)
+common.genes.c = subset(common.genes, common.genes >11)
 common.genes.c = common.genes.c[c(6, 11, 10, 7, 4, 9, 3, 2, 1, 8),]
 barplot_commongenes <- barplot(common.genes.c, beside = T, names.arg = rownames(common.genes.c), ylab = "Frequency", main = "Most common gene mutations", las = 2)
 ```
@@ -168,18 +170,22 @@ barplot_commongenes <- barplot(common.genes.c, beside = T, names.arg = rownames(
 Combine the mutation matrices of the GBM cell lines, extract the relevant columns "Hugo_Symbol", "IsDeleterious" and "DepMap_ID"  
 Package dplyr needed for this step
 
-```
+```{r}
+library(dplyr)
 mutations.all = rbind(relevant.mutations$`ACH-000036`,relevant.mutations$`ACH-000040`, relevant.mutations$`ACH-000075`, relevant.mutations$`ACH-000098`, relevant.mutations$`ACH-000208`, relevant.mutations$`ACH-000215`, relevant.mutations$`ACH-000137`, relevant.mutations$`ACH-000152`, relevant.mutations$`ACH-000591`, relevant.mutations$`ACH-000673`, relevant.mutations$`ACH-000231`, relevant.mutations$`ACH-000244`, relevant.mutations$`ACH-000760`, relevant.mutations$`ACH-000368`, relevant.mutations$`ACH-000376`, relevant.mutations$`ACH-000445`, relevant.mutations$`ACH-000464`, relevant.mutations$`ACH-000469`, relevant.mutations$`ACH-000479`, relevant.mutations$`ACH-000570`, relevant.mutations$`ACH-000571`, relevant.mutations$`ACH-000623`, relevant.mutations$`ACH-000631`, relevant.mutations$`ACH-000738`, relevant.mutations$`ACH-000756`, relevant.mutations$`ACH-000819`, relevant.mutations$`ACH-000128`, relevant.mutations$`ACH-000887`$Hugo_Symbol)
-
-mutations.all= select(mutations.all, c(2,21, 36))
+mutations.all = select_(mutations.all, c(2,21, 36))
 ```
 
 After that, we determined the GBM cells lines, which contained our four most prominent driver mutations (DM). We then extracted the cell lines which contain one specific mutation (MT-ND5, MUC16, TP53 and TTN) and determined the mean expression, copy number (CN), CERES score and probability of all genes over these cell lines.
 
 * For MT-ND5:
-```
+```{r}
 list.mtnd5 = unique(subset(mutations.all, mutations.all$Hugo_Symbol == "MT-ND5"))
 cells.mtnd5 = c(list.mtnd5$DepMap_ID)
+exp.mtnd5 = exp.clean[,which(colnames(exp.clean) %in% cells.mtnd5)]
+copy.mtnd5 = copy.clean[,which(colnames(copy.clean) %in% cells.mtnd5)]
+ceres.mtnd5 = ceres.clean[,which(colnames(ceres.clean) %in% cells.mtnd5)]
+prob.mtnd5 = prob.clean[,which(colnames(prob.clean) %in% cells.mtnd5)]
 mtnd5.exp.mean = as.matrix(c(rowMeans(exp.mtnd5)))
 mtnd5.copy.mean = as.matrix(c(rowMeans(copy.mtnd5)))
 mtnd5.ceres.mean = as.matrix(c(rowMeans(ceres.mtnd5)))
@@ -187,18 +193,26 @@ mtnd5.prob.mean = as.matrix(c(rowMeans(prob.mtnd5)))
 ```
 
 * For MUC16:
-```
+```{r}
 list.muc16 = unique(subset(mutations.all, mutations.all$Hugo_Symbol == "MUC16"))
 cells.muc16 = c(list.muc16$DepMap_ID)
+exp.muc16 = exp.clean[,which(colnames(exp.clean) %in% cells.muc16)]
+copy.muc16 = copy.clean[,which(colnames(copy.clean) %in% cells.muc16)]
+ceres.muc16 = ceres.clean[,which(colnames(ceres.clean) %in% cells.muc16)]
+prob.muc16 = prob.clean[,which(colnames(prob.clean) %in% cells.muc16)]
 muc16.exp.mean = as.matrix(c(rowMeans(exp.muc16)))
 muc16.copy.mean = as.matrix(c(rowMeans(copy.muc16)))
 muc16.ceres.mean = as.matrix(c(rowMeans(ceres.muc16)))
 muc16.prob.mean = as.matrix(c(rowMeans(prob.muc16)))
 ```
 * For TP53:
-```
+```{r}
 list.tp53 = unique(subset(mutations.all, mutations.all$Hugo_Symbol == "TP53"))
 cells.tp53 = c(list.tp53$DepMap_ID)
+exp.tp53 = exp.clean[,which(colnames(exp.clean) %in% cells.tp53)]
+copy.tp53 = copy.clean[,which(colnames(copy.clean) %in% cells.tp53)]
+ceres.tp53 = ceres.clean[,which(colnames(ceres.clean) %in% cells.tp53)]
+prob.tp53 = prob.clean[,which(colnames(prob.clean) %in% cells.tp53)]
 tp53.exp.mean = as.matrix(c(rowMeans(exp.tp53)))
 tp53.copy.mean = as.matrix(c(rowMeans(copy.tp53)))
 tp53.ceres.mean = as.matrix(c(rowMeans(ceres.tp53)))
@@ -206,9 +220,13 @@ tp53.prob.mean = as.matrix(c(rowMeans(prob.tp53)))
 ```
 
 * For TTN:
-```
+```{r}
 list.ttn = unique(subset(mutations.all, mutations.all$Hugo_Symbol == "TTN"))
 cells.ttn = c(list.ttn$DepMap_ID)
+exp.ttn = exp.clean[,which(colnames(exp.clean) %in% cells.ttn)]
+copy.ttn = copy.clean[,which(colnames(copy.clean) %in% cells.ttn)]
+ceres.ttn = ceres.clean[,which(colnames(ceres.clean) %in% cells.ttn)]
+prob.ttn = prob.clean[,which(colnames(prob.clean) %in% cells.ttn)]
 ttn.exp.mean = as.matrix(c(rowMeans(exp.ttn)))
 ttn.copy.mean = as.matrix(c(rowMeans(copy.ttn)))
 ttn.ceres.mean = as.matrix(c(rowMeans(ceres.ttn)))
@@ -221,17 +239,19 @@ We did boxplots for visualization of whole expression and CN matrices as well as
 Packages: pheatmap, grid
 
 Expression matrix (only a few overexpressed genes, a lot of deleted genes) :
-```
+```{r}
+library(pheatmap)
+library(grid)
 setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
-pheatmap(exp.clean, show_rownames = F)
+#pheatmap(exp.clean, show_rownames = F)
 setHook("grid.newpage", NULL, "replace")
-grid.text("celllines", y=-0.07, gp=gpar(fontsize=16))
+grid.text("cell lines", y=-0.07, gp=gpar(fontsize=16))
 grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
 
 setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
-pheatmap(exp.clean.w0, show_rownames = F)
+#pheatmap(exp.clean.w0, show_rownames = F)
 setHook("grid.newpage", NULL, "replace")
-grid.text("celllines", y=-0.07, gp=gpar(fontsize=16))
+grid.text("cell lines", y=-0.07, gp=gpar(fontsize=16))
 grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
 ```
 Code for other matrices analogous to the one for the expression matrix. 
@@ -244,7 +264,7 @@ Observations: for CERES and probability matrix only a few genes seemed to be ess
 
 Rows containing 0 in matrices were removed, and gene data availability was compared again to ensure all matrices had the same dimension.
 
-```
+```{r}
 sum(exp.clean == 0)
 exp.clean.w0 <- exp.clean[!(apply(exp.clean, 1, function(y) any(y == 0))),]
 sum(exp.clean.w0 == 0)
@@ -286,9 +306,9 @@ Most prominent DMs: TP53, TTN, MT-ND5, MUC16
 After that we separated the cell lines from the mutation matrix which contained one specific mutation. This was done in order to determine other genes that were also mutated in the presence of this specific DM. Since there were a few thousand mutated genes for each DM, the ones were "IsDeleterious = TRUE" were extracted.
 
 For TP53:
-```
+```{r}
 mutations.tp53 = rbind(relevant.mutations$`ACH-000036`,relevant.mutations$`ACH-000040`, relevant.mutations$`ACH-000098`, relevant.mutations$`ACH-000208`, relevant.mutations$`ACH-000215`, relevant.mutations$`ACH-000137`, relevant.mutations$`ACH-000152`, relevant.mutations$`ACH-000591`, relevant.mutations$`ACH-000673`, relevant.mutations$`ACH-000231`, relevant.mutations$`ACH-000368`, relevant.mutations$`ACH-000376`, relevant.mutations$`ACH-000445`, relevant.mutations$`ACH-000464`, relevant.mutations$`ACH-000469`, relevant.mutations$`ACH-000570`, relevant.mutations$`ACH-000571`, relevant.mutations$`ACH-000623`, relevant.mutations$`ACH-000673`, relevant.mutations$`ACH-000738`, relevant.mutations$`ACH-000756`, relevant.mutations$`ACH-000819`, relevant.mutations$`ACH-000128`)
-mutations.tp53= select(mutations.tp53, c(2,21, 36))//dplyr packgage
+mutations.tp53 = select(mutations.tp53, c(2,21, 36))
 mutations.tp53 = subset(mutations.tp53, mutations.tp53$isDeleterious == "TRUE")
 ```
 
@@ -297,7 +317,7 @@ The same steps were done like this for all other prominent mutations (TTN, MT-ND
 After that we detemrined the remaining genes and extracted them from the CERES matrix in order to continue working just with them.
 
 Same method used for all mutations mentioned above. Example for TP53:
-```
+```{r}
 list.tp53.genes = unique(subset(mutations.tp53))
 genes.tp53 <- c(list.tp53.genes$Hugo_Symbol)
 ceres.tp53.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.tp53),]
@@ -316,7 +336,7 @@ Methods to determine the type of distribution: qq-plots (visual determination), 
 * exemplary qq-plot of CERES scores of all genes of cell line ACH-000036
 
 
-```
+```{r}
 qqnorm(ceres.tp53.genes$`ACH-000036`, main="QQ-Plot of CERES scores of all genes of cell line ACH-000036")
 qqline(ceres.tp53.genes$`ACH-000036`, datax = FALSE, distribution = qnorm,
         probs = c(0.25, 0.75), qtype = 7)
@@ -329,7 +349,7 @@ Conclusion: CERES scores are not normally distributed.
 ### Shapiro-Wilk-Test (exemplary for one cell line)
 
 
-```
+```{r}
 shapiro.test(ceres.tp53.genes$`ACH-000036`)
 ```
 
@@ -345,10 +365,10 @@ p-value < 0.05 --> CERES scores of all genes of cell line ACH-000036 are not nor
 
 
 Creating a matrix that contains all mutated genes of cell lines
-```
+```{r}
 ceres.allDM.genes=rbind(ceres.tp53.genes, ceres.ttn.genes, ceres.mtnd5.genes, ceres.muc16.genes)
 ```
-```
+```{r}
 lapply(ceres.allDM.genes,shapiro.test)
 ```
 
@@ -366,7 +386,7 @@ We used this test to correlate the CERES scores of every gene across all cell li
 
 In order for this to work we transposed all matrices to make cell lines rows and genes columns.
 
-```
+```{r}
 t(ceres.tp53.genes)->ceres.tp53.genes_t
 t(ceres.ttn.genes)->ceres.ttn.genes_t
 t(ceres.muc16.genes)->ceres.muc16.genes_t
@@ -376,18 +396,18 @@ t(ceres.mtnd5.genes)->ceres.mtnd5.genes_t
 We then selected the columns (CERES score of on gene across all cell lines) and calculated the correlation to the DM (one specific column). We performed this for all genes in the matrix using lapply.
 
 Exemplary correlation test for one specific gene:
-```
+```{r}
 cor(ceres.tp53.genes_t$ABCA13, ceres.tp53.genes_t$TP53, method = "spearman")
 ```
 It was necessary to generate a correlation matrix including the correlation coefficients between all genes in the matrix, in order to solve an error in the last step.
 
-```
+```{r}
 cor.ceres.tp53.genes_t<-cor(ceres.tp53.genes_t, method="spearman")
 ```
 
 We then extracted one specific column from this matrix because it was very large and contained a lot of information that was irrelevant for us.
 
-```
+```{r}
 cor.ceres.tp.53.only<-cor.ceres.tp53.genes_t[1:734,642]
 ```
 cor.ceres.tp.53.only includes correlation coefficients of all genes to TP53. The matrices for the other DMs were created using an analogous method.
@@ -400,13 +420,13 @@ Packages: Hmisc
 The function rcorr(x, type = c("pearson", "spearman")) can be used to compute the significance levels for Spearman an Pearson correlations. 
 
 We calculated the significance levels for TP53:
-```
+```{r}
 sig.cor.ceres.tp53.genes_t<-rcorr(as.matrix(ceres.tp53.genes_t), type="spearman")
 View(sig.cor.ceres.tp53.genes_t$r)
 ```
 
 Extracted the relevant column:
-```
+```{r}
 sig.cor.ceres.tp53.only<-sig.cor.ceres.tp53.genes_t$r[1:734, 642]
 ```
 
@@ -431,29 +451,29 @@ We need a significance level alpha to evaluate our p-values in order to identify
 We defined a threshold for the p-values to identify all the genes that are correlated to the DMs with a high probability.
 
 * TP53
-```
+```{r}
 sig.cor.ceres.tp53.only[abs(sig.cor.ceres.tp53.only) > 0.05]<- NA
 ``` 
 Only significant p-values remain --> all genes that are NA are no potential SSTs; all genes where H0 cannot be rejected are defined as NA
-```
+```{r}
 sst.tp53<-na.omit(sig.cor.ceres.tp53.only)
 ```
 Returns a matrix that contains all potential SSTs that we can compare to literature afterwards
 
 * TTN
-```
+```{r}
 sig.cor.ceres.ttn.only[abs(sig.cor.ceres.ttn.only) > 0.05]<- NA
 sst.ttn<-na.omit(sig.cor.ceres.ttn.only)
 ```
 
 * MUC16
-```
+```{r}
 sig.cor.ceres.muc16.only[abs(sig.cor.ceres.muc16.only) > 0.05] <- NA
 SST.muc16<-na.omit(sig.cor.ceres.muc16.only)
 ```
 
 * MT-ND5
-```
+```{r}
 sig.cor.ceres.mtnd5.only[abs(sig.cor.ceres.mtnd5.only) > 0.05] <- NA
 SST.mtnd5<-na.omit(sig.cor.ceres.mtnd5.only)
 ```
@@ -486,12 +506,87 @@ We then tested our data for over-expressions:
 There are no potential SSTs for TTN, MT-ND5 and MUC16 according to literature, because these are not common driving mutations. 
 
 
+# Multiple linear regression
 
+## Creating a model
 
+With a multiple linear regression we intended to create a model which could predict a SST deriving from a DM. This turned out not to work and we decided to create a model for each expression, copy number, CERES score and probability, each based on the other values.
 
+We calculated the mean of expression, copy number, CERES score and probability throughout all cell lines and combined all values in a matrix. We then performed the multiple linear regression.
 
+```{r}
+mlr.mat = as.data.frame(cbind(rowMeans(exp.clean.w0), rowMeans(copy.clean.w0), rowMeans(ceres.clean.w0), rowMeans(prob.clean.w0)))
+colnames(mlr.mat) = c("expression", "copynumber", "ceres", "probability")
 
+summary(lm(expression ~ ., data = mlr.mat)) 
+summary(lm(copynumber ~ ., data = mlr.mat))
+summary(lm(ceres ~ ., data = mlr.mat)) 
+summary(lm(probability ~ ., data = mlr.mat)) 
+```
+* expression -> r^2 = 0.1563
+* copynumber -> r^2 = 0.003437
+* CERES score -> r^2 = 0.9352
+* probability -> r^2 = 0.9358
 
+## Testing our multiple linear regression model
 
+Packages: caTools
+
+The intent with this testing was to use values the model had never seen before and to compare them with the real values. All steps showed below were performed with all models. Exemplary showing steps with expression model.
+
+First we splitted the multiple linear regression matrix into 4/5 training set and 1/5 testing set. 
+```{r}
+library(caTools)
+set.seed(123) #initialize the random numbers
+split.exp = sample.split(mlr.mat$expression, SplitRatio = 0.8) #split the mlr.mat into 4/5 Training and 1/5 Testing expression values
+split.exp = as.data.frame(split.exp) #converting split.exp to a data frame for further analysis
+training_set_exp = subset(mlr.mat, split.exp == TRUE) #use labels to get training data
+test_set_exp = subset(mlr.mat, split.exp == FALSE) #dim(test_set_exp) will give you 2309 --> 11545/5*1 = 2309 --> train/test split worked
+```
+
+Observation: the training/test set splitting did not work for the copy number matrix.
+
+We then fitted the multiple linear regression to the training set.
+```{r}
+exp.regressor = lm(expression ~ ., data = training_set_exp)
+```
+
+Then we predicted the test results based on data that our model had never seen before. This is very useful to evaluate the performance of the model.
+```{r}
+exp_pred = predict(exp.regressor, newdata = test_set_exp) 
+test_set_exp$Prediction = exp_pred #add predictions to mlr.mat 
+test_set_exp #now a comparison of the Predictions (last column) with the real values for the expression (1st column) is possible 
+```
+
+## Visualizing real values against test values
+
+To better visualize and evaluate our models we plotted the predicted values against the real values for expression, CERES score and probability.
+
+For the expression model:
+```{r}
+plot.ceres.m <- melt(test.set.ceres$ceres)
+a <- melt(test.set.ceres$Prediction)
+colnames(plot.ceres.m) <- "CERES"
+rownames(plot.ceres.m) = rownames(test.set.ceres)
+colnames(a) <- "Prediction"
+plot.ceres.m <- cbind(plot.ceres.m,a)
+plottingData.ceres <- melt(plot.ceres.m)
+
+ceres_plot <- ggplot(data = plottingData.ceres, aes(x=value, fill=variable)) + 
+  geom_density(alpha=.3) +
+  ggtitle(paste0("Performance evaluation Lin.Reg. CERES score")) +
+  ylab("Density") +
+  xlab("CERES score values") +
+  theme_bw(base_size = 7) +
+  theme(legend.position="bottom",
+        legend.direction="horizontal",
+        plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        legend.title= element_blank(),
+        axis.title.x = element_blank(),
+        strip.text.y = element_text(angle = 0))
+```
+
+For the CERES model:
 
 

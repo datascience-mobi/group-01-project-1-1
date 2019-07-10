@@ -726,9 +726,75 @@ SST.mtnd5&lt;-na.omit(sig.cor.ceres.mtnd5.only)</code></pre>
 </div>
 <div id="for-our-other-dms" class="section level4">
 <h4>For our other DMs</h4>
-<p>There are no potential SSTs for TTN, MT-ND5 and MUC16</p>
+<p>There are no potential SSTs for TTN, MT-ND5 and MUC16 according to literature, because these are not common driving mutations.</p>
 </div>
 </div>
+</div>
+</div>
+<div id="multiple-linear-regression" class="section level1">
+<h1>Multiple linear regression</h1>
+<div id="creating-a-model" class="section level2">
+<h2>Creating a model</h2>
+<p>With a multiple linear regression we intended to create a model which could predict a SST deriving from a DM. This turned out not to work and we decided to create a model for each expression, copy number, CERES score and probability, each based on the other values.</p>
+<p>We calculated the mean of expression, copy number, CERES score and probability throughout all cell lines and combined all values in a matrix. We then performed the multiple linear regression.</p>
+<pre><code>mlr.mat = as.data.frame(cbind(rowMeans(exp.clean.w0), rowMeans(copy.clean.w0), rowMeans(ceres.clean.w0), rowMeans(prob.clean.w0)))
+colnames(mlr.mat) = c(&quot;expression&quot;, &quot;copynumber&quot;, &quot;ceres&quot;, &quot;probability&quot;)
+
+summary(lm(expression ~ ., data = mlr.mat)) 
+summary(lm(copynumber ~ ., data = mlr.mat))
+summary(lm(ceres ~ ., data = mlr.mat)) 
+summary(lm(probability ~ ., data = mlr.mat)) </code></pre>
+<ul>
+<li>expression -&gt; r^2 = 0.1563</li>
+<li>copynumber -&gt; r^2 = 0.003437</li>
+<li>CERES score -&gt; r^2 = 0.9352</li>
+<li>probability -&gt; r^2 = 0.9358</li>
+</ul>
+</div>
+<div id="testing-our-multiple-linear-regression-model" class="section level2">
+<h2>Testing our multiple linear regression model</h2>
+<p>Packages: caTools</p>
+<p>The intent with this testing was to use values the model had never seen before and to compare them with the real values. All steps showed below were performed with all models. Exemplary showing steps with expression model.</p>
+<p>First we splitted the multiple linear regression matrix into 4/5 training set and 1/5 testing set.</p>
+<pre><code>set.seed(123) #initialize the random numbers
+split.exp = sample.split(mlr.mat$expression, SplitRatio = 0.8) #split the mlr.mat into 4/5 Training and 1/5 Testing expression values
+split.exp = as.data.frame(split.exp) #converting split.exp to a data frame for further analysis
+training_set_exp = subset(mlr.mat, split.exp == TRUE) #use labels to get training data
+test_set_exp = subset(mlr.mat, split.exp == FALSE) #dim(test_set_exp) will give you 2309 --&gt; 11545/5*1 = 2309 --&gt; train/test split worked</code></pre>
+<p>Observation: the training/test set splitting did not work for the copy number matrix.</p>
+<p>We then fitted the multiple linear regression to the training set.</p>
+<pre><code>exp.regressor = lm(expression ~ ., data = training_set_exp)</code></pre>
+<p>Then we predicted the test results based on data that our model had never seen before. This is very useful to evaluate the performance of the model.</p>
+<pre><code>exp_pred = predict(exp.regressor, newdata = test_set_exp) 
+test_set_exp$Prediction = exp_pred #add predictions to mlr.mat 
+test_set_exp #now a comparison of the Predictions (last column) with the real values for the expression (1st column) is possible </code></pre>
+</div>
+<div id="visualizing-real-values-against-test-values" class="section level2">
+<h2>Visualizing real values against test values</h2>
+<p>To better visualize and evaluate our models we plotted the predicted values against the real values for expression, CERES score and probability.</p>
+<p>For the expression model:</p>
+<pre><code>plot.ceres.m &lt;- melt(test.set.ceres$ceres)
+a &lt;- melt(test.set.ceres$Prediction)
+colnames(plot.ceres.m) &lt;- &quot;CERES&quot;
+rownames(plot.ceres.m) = rownames(test.set.ceres)
+colnames(a) &lt;- &quot;Prediction&quot;
+plot.ceres.m &lt;- cbind(plot.ceres.m,a)
+plottingData.ceres &lt;- melt(plot.ceres.m)
+
+ceres_plot &lt;- ggplot(data = plottingData.ceres, aes(x=value, fill=variable)) + 
+  geom_density(alpha=.3) +
+  ggtitle(paste0(&quot;Performance evaluation Lin.Reg. CERES score&quot;)) +
+  ylab(&quot;Density&quot;) +
+  xlab(&quot;CERES score values&quot;) +
+  theme_bw(base_size = 7) +
+  theme(legend.position=&quot;bottom&quot;,
+        legend.direction=&quot;horizontal&quot;,
+        plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        legend.title= element_blank(),
+        axis.title.x = element_blank(),
+        strip.text.y = element_text(angle = 0))</code></pre>
+<p>For the CERES model:</p>
 </div>
 </div>
 
