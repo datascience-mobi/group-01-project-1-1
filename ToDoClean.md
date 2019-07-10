@@ -1537,7 +1537,7 @@ ceres_plot <- ggplot(data = plottingData.ceres, aes(x=value, fill=variable)) +
 ```
 Observation: No plot for copynumber because training/test split did not work.
 
-Looking at the graphs it becomes clear that the expression model does not work. The CERES model and the probability model are both similar in the aspects that the form of the probability prediction is almost the same as the real CERES values. And the curve predicting the CERES values is almost the same as
+Looking at the expression graph, it becomes clear that the model does not work. The CERES model and the probability model are both similar in the sense that the curves are better that the curve for the expression model. This however does not mean that the models are good for predicting CERES scores and knock down probability.
 
 #### Follow up: Interpretation of the p-values, maybe Wilcoxon Rank Sum test
 
