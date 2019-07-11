@@ -14,7 +14,7 @@ The identification of genomic interactions and their effect on cancer cell survi
 
 The driver mutations are normally highly essential genes for all cells in the human body, making them a bad target for anti-cancer drugs, for they would shut down all cells, not just cancer cells. The alternative to this targeting problem is to find genes that are linked with the driving mutations in the cancer cells, but not in the normal cells. Ideally, the targeting of these so called *second site targets* (SST) would cause the cancer cells to shut down and stop proliferating, while the normal cells would not be subjected to any changes.
 
-Our aim in this project was to find the driver mutations in GBM throughout all cell lines in our data set, compare them to the literature and investigate if there is a dependency between them and any second site targets. In the end the aim was to find a model where we could possibly predict a second site mutation based on the existence of a driving mutation.
+Our aim in this project was to find the driver mutations in GBM throughout all cell lines in our data set, compare them to the literature and investigate if there is a dependency between them and any second site targets. In the end the aim was to find a model where we could possibly predict either the expression, copy number, CERES score or the probability of stopping cell proliferation targeting one specific gene.
 
 # Data cleanup
 
@@ -148,14 +148,6 @@ common.genes = as.matrix(table(c(relevant.mutations.combi$Hugo_Symbol)))
 summary(common.genes)
 ```
 
-Commonly mutated genes:
-
-* MT-ND5 (mitochondrially encoded NADH: ubiquinone oxireductase core subunit 5): 32
-* TTN (titin, large abundant protein of striated muscle): 26
-* MUC16 (mucin): 23
-* MT-CYB (mitochondrially encoded cytochrome b): 18
-* PTEN (phosphatase and tensin homolog): 17
-* other: 10096
  
 ```{r}
 common.genes = as.matrix(common.genes)
@@ -166,6 +158,16 @@ common.genes.c = subset(common.genes, common.genes >11)
 common.genes.c = common.genes.c[c(6, 11, 10, 7, 4, 9, 3, 2, 1, 8),]
 barplot_commongenes <- barplot(common.genes.c, beside = T, names.arg = rownames(common.genes.c), ylab = "Frequency", main = "Most common gene mutations", las = 2)
 ```
+
+Commonly mutated genes:
+
+* MT-ND5 (mitochondrially encoded NADH: ubiquinone oxireductase core subunit 5): 32
+* TTN (titin, large abundant protein of striated muscle): 26
+* MUC16 (mucin): 23
+* MT-CYB (mitochondrially encoded cytochrome b): 18
+* PTEN (phosphatase and tensin homolog): 17
+* other mutations: 10096
+
 
 Combine the mutation matrices of the GBM cell lines, extract the relevant columns "Hugo_Symbol", "IsDeleterious" and "DepMap_ID"  
 Package dplyr needed for this step
@@ -240,16 +242,17 @@ Packages: pheatmap, grid
 
 Expression matrix (only a few overexpressed genes, a lot of deleted genes) :
 ```{r}
+
 library(pheatmap)
 library(grid)
 setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
-#pheatmap(exp.clean, show_rownames = F)
+pheatmap(exp.clean, show_rownames = F)
 setHook("grid.newpage", NULL, "replace")
 grid.text("cell lines", y=-0.07, gp=gpar(fontsize=16))
 grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
 
 setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
-#pheatmap(exp.clean.w0, show_rownames = F)
+pheatmap(exp.clean.w0, show_rownames = F)
 setHook("grid.newpage", NULL, "replace")
 grid.text("cell lines", y=-0.07, gp=gpar(fontsize=16))
 grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
@@ -564,6 +567,8 @@ To better visualize and evaluate our models we plotted the predicted values agai
 
 For the CERES score model:
 ```{r}
+library(reshape2)
+library(ggplot2)
 plot.ceres.m <- melt(test.set.ceres$ceres)
 a <- melt(test.set.ceres$Prediction)
 colnames(plot.ceres.m) <- "CERES"
@@ -585,6 +590,8 @@ ceres_plot <- ggplot(data = plottingData.ceres, aes(x=value, fill=variable)) +
         legend.title= element_blank(),
         axis.title.x = element_blank(),
         strip.text.y = element_text(angle = 0))
+
+ceres_plot
 ```
 
 For the expression model:
@@ -612,6 +619,7 @@ exp_plot <- ggplot(data = plottingData.exp, aes(x=value, fill=variable)) +
         axis.title.x = element_blank(),
         strip.text.y = element_text(angle = 0))
 
+exp_plot
 ```
 
 For the probability model:
@@ -636,6 +644,8 @@ prob_plot <- ggplot(data = plottingData.prob, aes(x=value, fill=variable)) +
            legend.title= element_blank(),
            axis.title.x = element_blank(),
            strip.text.y = element_text(angle = 0))
+
+prob_plot
 ```
 
 Observation: No plot for copynumber because training/test split did not work.
