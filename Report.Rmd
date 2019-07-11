@@ -526,12 +526,18 @@ summary(lm(copynumber ~ ., data = mlr.mat))
 summary(lm(ceres ~ ., data = mlr.mat)) 
 summary(lm(probability ~ ., data = mlr.mat)) 
 ```
+To evaluate our model we looked at the R-squared value. R squared is a statistical measure of how close the data are to the fitted regression line. It is also known as the coefficient of multiple determination for multiple linear regression. 
+
+The definition of R-squared is the percentage of the response variable variation that is explained by a linear model. It is always between 0% and 100%. 0% means that the model explains none of the variability around its mean and 100% indicates that the model explains all the variability of the response data around its mean.
+
 * expression -> r^2 = 0.1563
 * copynumber -> r^2 = 0.003437
 * CERES score -> r^2 = 0.9352
 * probability -> r^2 = 0.9358
 
-## Testing our multiple linear regression model
+As we can see, the model for expression is not that great, having a R-squared value of 15,63%. The models for CERES score and probability look promising because of the values of 93,52% and 93,58%. The copy number model does not look good at all with a R-squared value of 0,34%.
+
+## Training and testing our multiple linear regression model
 
 Packages: caTools
 
@@ -547,7 +553,7 @@ training_set_exp = subset(mlr.mat, split.exp == TRUE) #use labels to get trainin
 test_set_exp = subset(mlr.mat, split.exp == FALSE) #dim(test_set_exp) will give you 2309 --> 11545/5*1 = 2309 --> train/test split worked
 ```
 
-Observation: the training/test set splitting did not work for the copy number matrix.
+Observation: the training/test set splitting did not work for the copy number matrix. The dimensions of the test set were not right. We had 2541 values instead of the 2309 we needed, which represent one fifth of the original multiple lineaar regression matrix.
 
 We then fitted the multiple linear regression to the training set.
 ```{r}
@@ -563,40 +569,12 @@ test_set_exp #now a comparison of the Predictions (last column) with the real va
 
 ## Visualizing real values against test values
 
-To better visualize and evaluate our models we plotted the predicted values against the real values for expression, CERES score and probability.
+To better visualize and evaluate our models we plotted the predicted values against the real values for expression, CERES score and probability. There is no plot for the copy number prediction because the splitting into training/test sets did not work.
 
-For the CERES score model:
+For the expression model:
 ```{r}
 library(reshape2)
 library(ggplot2)
-plot.ceres.m <- melt(test.set.ceres$ceres)
-a <- melt(test.set.ceres$Prediction)
-colnames(plot.ceres.m) <- "CERES"
-rownames(plot.ceres.m) = rownames(test.set.ceres)
-colnames(a) <- "Prediction"
-plot.ceres.m <- cbind(plot.ceres.m,a)
-plottingData.ceres <- melt(plot.ceres.m)
-
-ceres_plot <- ggplot(data = plottingData.ceres, aes(x=value, fill=variable)) + 
-  geom_density(alpha=.3) +
-  ggtitle(paste0("Performance evaluation Lin.Reg. CERES score")) +
-  ylab("Density") +
-  xlab("CERES score values") +
-  theme_bw(base_size = 7) +
-  theme(legend.position="bottom",
-        legend.direction="horizontal",
-        plot.title = element_text(hjust = 0.5),
-        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
-        legend.title= element_blank(),
-        axis.title.x = element_blank(),
-        strip.text.y = element_text(angle = 0))
-
-ceres_plot
-```
-
-For the expression model:
-
-```{r}
 plot.exp.m <- melt(test_set_exp$expression)
 a <- melt(test_set_exp$Prediction)
 colnames(plot.exp.m) <- "Expression"
@@ -621,6 +599,36 @@ exp_plot <- ggplot(data = plottingData.exp, aes(x=value, fill=variable)) +
 
 exp_plot
 ```
+We see that the predicted values and the real values do not match. This was already expected judging by the R-squared value our model gave us. We cannot use our model to predict expressions values.
+
+
+For the CERES score model:
+```{r}
+plot.ceres.m <- melt(test.set.ceres$ceres)
+a <- melt(test.set.ceres$Prediction)
+colnames(plot.ceres.m) <- "CERES"
+rownames(plot.ceres.m) = rownames(test.set.ceres)
+colnames(a) <- "Prediction"
+plot.ceres.m <- cbind(plot.ceres.m,a)
+plottingData.ceres <- melt(plot.ceres.m)
+
+ceres_plot <- ggplot(data = plottingData.ceres, aes(x=value, fill=variable)) + 
+  geom_density(alpha=.3) +
+  ggtitle(paste0("Performance evaluation Lin.Reg. CERES score")) +
+  ylab("Density") +
+  xlab("CERES score values") +
+  theme_bw(base_size = 7) +
+  theme(legend.position="bottom",
+        legend.direction="horizontal",
+        plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        legend.title= element_blank(),
+        axis.title.x = element_blank(),
+        strip.text.y = element_text(angle = 0))
+
+ceres_plot
+```
+The R-squared value for the CERES score model was very promising, but judging by the visualization it is not so good. Both real and predicted values peak in the same region, around 0.0, but they have very different densities and do not match. 
 
 For the probability model:
 ```{r}
@@ -647,11 +655,10 @@ prob_plot <- ggplot(data = plottingData.prob, aes(x=value, fill=variable)) +
 
 prob_plot
 ```
+Looking at both curves we see the same problem we had with the CERES score model. The R-squared value looked promising but after training and testing our model, the result was not good. The curves show that the predicted and real values are not similar, which proves our model to be not that good. 
 
-Observation: No plot for copynumber because training/test split did not work.
 
-Looking at the expression graph, it becomes clear that the model does not work. The CERES model and the probability model are both similar in the sense that the curves are better that the curve for the expression model. This however does not mean that the models are good for predicting CERES scores and knock down probability.
-
+# Conlusion
 
 
 
