@@ -196,18 +196,18 @@ Commonly mutated genes:
   Gene, which encodes for Titin/Connectin, which is responsible for the passive elasticity of muscles.
   Variations are associated with several forms of myopathy.
   
-3. TP53: 24 mutations
+*3. TP53: 24 mutations*
   Tumorsuppressorgene, which encodes for p53, which plays a role in regulation or progression through the cell cycle, apoptosis and genomic stability. 
   Variations are directly associated with cancer formation.
   
-4. MUC16: 23 mutations
+*4. MUC16: 23 mutations*
   Gene, which encodes for the cancer antigen CA-125/mucin 16, a highly glycosylated protein. It has found application as tumor marker, since it plays a role in advancing tumogenesis and tumor           proliferation by several different mechanisms (Imuuneevasion, metastatic invasion, induced motility and chemotherapy resistance).
 
 5. MT-CYB: 18 mutations
   Gene, which encodes for cytochrome b, a subunit of the respiratory chain protein ubiquinol cytochrome c reductase.
   Variations result in mitochondrial deficiencies and associated disorders, including exericise intolerance and cardiomyopathy.
   
-6. PTEN: 17 mutations
+*6. PTEN: 17 mutations*
   Tumorsuppressorgene, which encodes for phosphatase and tensin homolog. The enzyme is involved in regulation of the cellcycle, preventing cells from growing and dividing too      much.
   Variations resullt in increased cell proliferation and reduced cell death. Frequent genetic inactivation of PTEN occurs in glioblastoma.
   
@@ -251,22 +251,22 @@ grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
 ```
 ## Conclusion
 
-1. We have identified the most common mutated genes in our data. *Three out of the six most common mutations are directly associated with cancer     developement (TP53, MUC-16 and PTEN)*.
+1. We have identified the most common mutated genes in our data. *Three out of the six most common mutations are directly associated with cancer developement (TP53, MUC-16 and PTEN)*.
 
 2. We visualized the gene´s distribution for all four matrices:
-  a. The majority of the genes shows normal to moderate expression levels. However, a *few genes are highly overexpressed* (marked in red). 
+  a. The majority of the genes shows normal to moderate expression levels. However, *few genes are highly overexpressed* (marked in red). 
   b. All genes seem to have copy number levels between minus five and five. Genes, which differ significantly, are not identifiable through this distribution.
-  c. The majority of genes show no significant
+  c. The majority of genes show no significant knockdown scores. However, *few genes have significantly smaller CERES scores, which makes them essential for cell survival* (marked in blue).
+  d. The majority of genes has low probability scores and is therefore not of interest. However, *few genes have probability scores up to one, which makes them important for cell survivability* (marked in red).
+
 
 # Data reduction
 
-The first step was to determine our four most prominent driving mutations, which we had already done before. 
-Most prominent DMs: TP53, TTN, MT-ND5, MUC16
+In order to just continue with the necessary data, we need to reduce our dataset. Since we already determined our most common mutations, we now isolate all celllines, which contain one of those specific mutations, from the mutation matrix. Our aim is to identify all other genes that were also mutated in the presence of this specific driving mutation (DM). Since there were a few thousand mutated genes for each DM, the ones were "IsDeleterious = TRUE" were extracted.
 
-After that we separated the cell lines from the mutation matrix which contained one specific mutation. This was done in order to determine other genes that were also mutated in the presence of this specific DM. Since there were a few thousand mutated genes for each DM, the ones were "IsDeleterious = TRUE" were extracted.
 Package dplyr needed for this step
 
-For TP53:
+This step was carried out for our four most common DM (TP53, TTN, MT-ND5 and MUC-16). The example shows the method carried out for TP53:
 ```{r}
 library(dplyr)
 mutations.tp53 = rbind(relevant.mutations$`ACH-000036`,relevant.mutations$`ACH-000040`, relevant.mutations$`ACH-000098`, relevant.mutations$`ACH-000208`, relevant.mutations$`ACH-000215`, relevant.mutations$`ACH-000137`, relevant.mutations$`ACH-000152`, relevant.mutations$`ACH-000591`, relevant.mutations$`ACH-000673`, relevant.mutations$`ACH-000231`, relevant.mutations$`ACH-000368`, relevant.mutations$`ACH-000376`, relevant.mutations$`ACH-000445`, relevant.mutations$`ACH-000464`, relevant.mutations$`ACH-000469`, relevant.mutations$`ACH-000570`, relevant.mutations$`ACH-000571`, relevant.mutations$`ACH-000623`, relevant.mutations$`ACH-000673`, relevant.mutations$`ACH-000738`, relevant.mutations$`ACH-000756`, relevant.mutations$`ACH-000819`, relevant.mutations$`ACH-000128`)
@@ -274,17 +274,18 @@ mutations.tp53 = select(mutations.tp53, c(2,21, 36))
 mutations.tp53 = subset(mutations.tp53, mutations.tp53$isDeleterious == "TRUE")
 ```
 
-The same steps were done like this for all other prominent mutations (TTN, MT-ND5, MUC16).
 
-After that we detemrined the remaining genes and extracted them from the CERES matrix in order to continue working just with them.
+Next we extracted those remaining genes for each DM from the CERES matrix in order to just continue working with them
 
-Same method used for all mutations mentioned above. Example for TP53:
+The same method was carried out for all mutations mentioned above. Example for TP53:
 ```{r}
 list.tp53.genes = unique(subset(mutations.tp53))
 genes.tp53 <- c(list.tp53.genes$Hugo_Symbol)
 ceres.tp53.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.tp53),]
 ```
 
+The next step would be to determine whether there is a correlation between the presence of a specific DM and the essentiality of a second mutated gene.
+ 
 ## Determining potential second site targets (SSTs) through correlation tests: Is there a correlation between DM and other mutations in the cell? 
 
 
