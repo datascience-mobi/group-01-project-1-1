@@ -4,6 +4,7 @@ author: "Annika Hein, Amanda Janzen, Nicolai Laufer, Niklas Schwan"
 date: "25/06/2019"
 output: html_document
 ---
+
 # Introduction
 
 In this project we tried to identify genetic interactions and their effects on several Glioblastoma multiforme (GBM) cell lines. 
@@ -24,13 +25,15 @@ Once we downloaded the data, we first removed all data that didn't have to do wi
 allDepMapData = readRDS("/Users/Amanda/Desktop/DepMap19Q1_allData.RDS")
 brain.anno = allDepMapData$annotation[allDepMapData$annotation$Subtype.Disease == "Glioblastoma", ]
 ```
-Then we made the cell line identifiers be the rownames in the annotation.
+
+* make cell line identifier be the rownames in annotation
 
 ```{r}
 rownames(brain.anno) = brain.anno$DepMap_ID
 brain.anno = brain.anno[, -1]
 ```
-The next step was to remove all cell lines that were irrelevant to our project from all the other matrices (expression, copy number, relevant mutations, ceres and probability)
+
+The next step was to remove all cell lines that were irrelevant to our project from all the other matrices (expression, copy number, relevant mutations, ceres and probability).
 
 Package "operators" needed.
 
@@ -44,7 +47,9 @@ ceres.clean = allDepMapData$kd.ceres[, -which(colnames(allDepMapData$kd.ceres) %
 prob.clean = allDepMapData$kd.prob[, -which(colnames(allDepMapData$kd.prob) %!in% cell.lines)]
 ```
 
-After we separated all glioblastoma cell lines, we removed the NA and all values out of range. The data contained a lot of 0 and negative values, especially the copy number data, where x>=0.
+After isolating the relevant cell lines, we checked our matrices for NA values, outliers as well as values x = 0 and removed them.
+
+1a. Checking for NA values in all matrices.
 
 ```{r}
 sum(is.na(ceres.clean))
@@ -52,16 +57,17 @@ sum(is.na(prob.clean))
 sum(is.na(copy.clean))
 sum(is.na(exp.clean))
 sum(is.na(relevant.mutations))
-copy.clean = copy.clean[-which(apply(copy.clean, 1, function(x) {sum(is.na(x))}) > 0), ]
-sum(is.na(copy.clean))
 ```
+
 The function sum() was used to show how many NA values were in each matrix.
 
 * ceres.clean -> 0
 * prob.clean -> 0 
 * copy.clean -> 1780
 * exp.clean -> 0
-* relevant.mutations -> 0, but looking directly in the matrix we can see NA values.
+* relevant.mutations -> 0, but looking directly in the matrix we can see several NA values.
+
+1b. Removing NA values from copy number matrix.
 
 ```{r}
 copy.clean = copy.clean[-which(apply(copy.clean, 1, function(x) {sum(is.na(x))}) > 0), ]
@@ -70,39 +76,48 @@ sum(is.na(copy.clean))
 
 * copy.clean -> 0
 
-The next cleanup target was probability matrix. It should only contain values between 0 and 1, which is the case.
 
-```{r}
-sum(prob.clean < 0) 
-sum(prob.clean > 1) 
-``` 
+2. Scan for outliers via boxplots and threshold or remove them if necessary.
 
-Checking for values = 0
-
-```
-sum(ceres.clean == 0) 
-sum(prob.clean == 0) 
-sum(copy.clean == 0) 
-sum(exp.clean == 0)
-```
-
-ceres.clean -> 28
-prob.clean -> 80
-copy.clean -> 0
-exp.clean -> 644705
-
-Scan for outliers via boxplots and threshold or remove them if necessary.
-
-Two values were identified an outliers, then thresholded and removed them.
+* Two values were identified an outliers, then thresholded and removed them.
 
 ```{r}
 boxplot(ceres.clean) 
 ceres.transf = ceres.clean[-which(ceres.clean > 3), ] 
 ```
 
-Organising all matrices for further work. 
+3a. Then we checked all matrices for containing values x = 0.
 
-We compared the gene data availability between all data sets to get the same dimensions and also made all data nominal in the annotation.
+```{r}
+sum(ceres.clean == 0) 
+sum(prob.clean == 0) 
+sum(copy.clean == 0) 
+sum(exp.clean == 0)
+```
+
+* ceres.clean -> 28
+* prob.clean -> 80
+* copy.clean -> 0
+* exp.clean -> 644705
+
+3b. Rows containing 0 in matrices were removed. 
+
+```{r}
+exp.clean <- exp.clean[!(apply(exp.clean, 1, function(y) any(y == 0))),]
+sum(exp.clean == 0)
+
+copy.clean <- copy.clean[!(apply(copy.clean, 1, function(y) any(y == 0))),]
+sum(copy.clean == 0)
+
+ceres.clean <- ceres.clean[!(apply(ceres.clean, 1, function(y) any(y == 0))),]
+sum(ceres.clean == 0)
+
+prob.clean <- prob.clean[!(apply(prob.clean, 1, function(y) any(y == 0))),]
+sum(prob.clean == 0)
+```
+
+
+Next we compared gene data availability to ensure all matrices have the same dimension.
 
 ```{r}
 dim(copy.clean) == dim(exp.clean)
@@ -113,12 +128,20 @@ copy.clean = copy.clean[-which(rownames(copy.clean) %!in% gene.data.ex),]
 genes.clean = rownames(exp.clean)
 ceres.clean = ceres.clean[-which(rownames(ceres.clean) %!in% genes.clean),]
 prob.clean = prob.clean[-which(rownames(prob.clean) %!in% genes.clean),]
-genes.clean = rownames(ceres.clean)
+genes.clean = rownames(prob.clean)
 exp.clean = exp.clean[-which(rownames(exp.clean) %!in% genes.clean),]
 copy.clean = copy.clean[-which(rownames(copy.clean) %!in% genes.clean),]
+ceres.clean = ceres.clean[-which(rownames(ceres.clean) %!in% genes.clean),]
 rm(gene.data.co)
 rm(gene.data.ex)
+```
 
+The final dimension: 11545x28
+
+
+Make all data nominal in the annotation.
+
+```{r}
 brain.anno$CCLE_Name = factor(brain.anno$CCLE_Name)
 brain.anno$Aliases = factor(brain.anno$Aliases)
 brain.anno$Primary.Disease = factor(brain.anno$Primary.Disease)
@@ -126,9 +149,8 @@ brain.anno$Subtype.Disease = factor(brain.anno$Subtype.Disease)
 brain.anno$Subtype.Gender = factor(brain.anno$Gender)
 brain.anno$Subtype.Source = factor(brain.anno$Source)
 ```
-dimensions: 16970x28
 
-We also put the gene names and cell lines in alphabetical order
+At last putting gene names and cell lines in alphabetical order.
 
 ```{r}
 ceres.clean = ceres.clean[order(rownames(ceres.clean)), order(colnames(ceres.clean))]
@@ -137,7 +159,12 @@ exp.clean = exp.clean[order(rownames(exp.clean)), order(colnames(exp.clean))]
 copy.clean = copy.clean[order(rownames(copy.clean)), order(colnames(copy.clean))]
 ```
 
-In order to find all most commonly mutated genes among all relevant cell lines, we made a list with all commonly mutated genes and also combined all mutation matrices into one.
+
+# Data visualization
+
+## Identification of driving mutations
+
+In order to find all most commonly mutated genes among all relevant cell lines, we merged all mutation matrices.
 
 ```{r}
 #common.genes = as.data.frame(table(c(relevant.mutations$`ACH-000036`$Hugo_Symbol,relevant.mutations$`ACH-000040`$Hugo_Symbol, relevant.mutations$`ACH-000075`$Hugo_Symbol, relevant.mutations$`ACH-000098`$Hugo_Symbol, relevant.mutations$`ACH-000208`$Hugo_Symbol, relevant.mutations$`ACH-000215`$Hugo_Symbol, relevant.mutations$`ACH-000137`$Hugo_Symbol, relevant.mutations$`ACH-000152`$Hugo_Symbol, relevant.mutations$`ACH-000591`$Hugo_Symbol, relevant.mutations$`ACH-000673`$Hugo_Symbol, relevant.mutations$`ACH-000231`$Hugo_Symbol, relevant.mutations$`ACH-000244`$Hugo_Symbol, relevant.mutations$`ACH-000760`$Hugo_Symbol, relevant.mutations$`ACH-000368`$Hugo_Symbol, relevant.mutations$`ACH-000376`$Hugo_Symbol, relevant.mutations$`ACH-000445`$Hugo_Symbol, relevant.mutations$`ACH-000464`$Hugo_Symbol, relevant.mutations$`ACH-000469`$Hugo_Symbol, relevant.mutations$`ACH-000479`$Hugo_Symbol, relevant.mutations$`ACH-000570`$Hugo_Symbol, relevant.mutations$`ACH-000571`$Hugo_Symbol, relevant.mutations$`ACH-000623`$Hugo_Symbol, relevant.mutations$`ACH-000631`$Hugo_Symbol, relevant.mutations$`ACH-000738`$Hugo_Symbol, relevant.mutations$`ACH-000756`$Hugo_Symbol, relevant.mutations$`ACH-000819`$Hugo_Symbol, relevant.mutations$`ACH-000128`$Hugo_Symbol, relevant.mutations$`ACH-000887`$Hugo_Symbol)))#
@@ -153,7 +180,7 @@ summary(common.genes)
 common.genes = as.matrix(common.genes)
 #rownames(common.genes) = common.genes$Var1
 #common.genes$Var1 = NULL
-barplot(common.genes, beside = T, names.arg = rownames(common.genes), las = 2)
+barplot(common.genes, beside = T, names.arg = rownames(common.genes),  ylab = "Frequency", main = "All mutated genes", las = 2)
 common.genes.c = subset(common.genes, common.genes >11)
 common.genes.c = common.genes.c[c(6, 11, 10, 7, 4, 9, 3, 2, 1, 8),]
 barplot_commongenes <- barplot(common.genes.c, beside = T, names.arg = rownames(common.genes.c), ylab = "Frequency", main = "Most common gene mutations", las = 2)
@@ -161,155 +188,87 @@ barplot_commongenes <- barplot(common.genes.c, beside = T, names.arg = rownames(
 
 Commonly mutated genes:
 
-* MT-ND5 (mitochondrially encoded NADH: ubiquinone oxireductase core subunit 5): 32
-* TTN (titin, large abundant protein of striated muscle): 26
-* MUC16 (mucin): 23
-* MT-CYB (mitochondrially encoded cytochrome b): 18
-* PTEN (phosphatase and tensin homolog): 17
-* other mutations: 10096
+1. MT-ND5: 32 mutations
+  Mitochondrial gene, which encodes NADH-ubiquinone oxidoreductase chain 5 (ND5). ND5 is a subunit of NADH dehydrogenase, the largest complex of the electron transport chain.
+  Variations are associated with mitochondrail encephalomypathy, stroke-like episodes as well as Leighs syndrome and Leber´s hereditary optic neuropathy.
+  
+2. TTN: 26 mutations
+  Gene, which encodes for Titin/Connectin, which is responsible for the passive elasticity of muscles.
+  Variations are associated with several forms of myopathy.
+  
+3. TP53: 24 mutations
+  Tumorsuppressorgene, which encodes for p53, which plays a role in regulation or progression through the cell cycle, apoptosis and genomic stability. 
+  Variations are directly associated with cancer formation.
+  
+4. MUC16: 23 mutations
+  Gene, which encodes for the cancer antigen CA-125/mucin 16, a highly glycosylated protein. It has found application as tumor marker, since it plays a role in advancing tumogenesis and tumor           proliferation by several different mechanisms (Imuuneevasion, metastatic invasion, induced motility and chemotherapy resistance).
+
+5. MT-CYB: 18 mutations
+  Gene, which encodes for cytochrome b, a subunit of the respiratory chain protein ubiquinol cytochrome c reductase.
+  Variations result in mitochondrial deficiencies and associated disorders, including exericise intolerance and cardiomyopathy.
+  
+6. PTEN: 17 mutations
+  Tumorsuppressorgene, which encodes for phosphatase and tensin homolog. The enzyme is involved in regulation of the cellcycle, preventing cells from growing and dividing too      much.
+  Variations resullt in increased cell proliferation and reduced cell death. Frequent genetic inactivation of PTEN occurs in glioblastoma.
+  
+7. Other mutations: 10096
 
 
-Combine the mutation matrices of the GBM cell lines, extract the relevant columns "Hugo_Symbol", "IsDeleterious" and "DepMap_ID"  
-Package dplyr needed for this step
 
-```{r}
-library(dplyr)
-mutations.all = rbind(relevant.mutations$`ACH-000036`,relevant.mutations$`ACH-000040`, relevant.mutations$`ACH-000075`, relevant.mutations$`ACH-000098`, relevant.mutations$`ACH-000208`, relevant.mutations$`ACH-000215`, relevant.mutations$`ACH-000137`, relevant.mutations$`ACH-000152`, relevant.mutations$`ACH-000591`, relevant.mutations$`ACH-000673`, relevant.mutations$`ACH-000231`, relevant.mutations$`ACH-000244`, relevant.mutations$`ACH-000760`, relevant.mutations$`ACH-000368`, relevant.mutations$`ACH-000376`, relevant.mutations$`ACH-000445`, relevant.mutations$`ACH-000464`, relevant.mutations$`ACH-000469`, relevant.mutations$`ACH-000479`, relevant.mutations$`ACH-000570`, relevant.mutations$`ACH-000571`, relevant.mutations$`ACH-000623`, relevant.mutations$`ACH-000631`, relevant.mutations$`ACH-000738`, relevant.mutations$`ACH-000756`, relevant.mutations$`ACH-000819`, relevant.mutations$`ACH-000128`, relevant.mutations$`ACH-000887`$Hugo_Symbol)
-mutations.all = select_(mutations.all, c(2,21, 36))
-```
+## Data distribution
 
-After that, we determined the GBM cells lines, which contained our four most prominent driver mutations (DM). We then extracted the cell lines which contain one specific mutation (MT-ND5, MUC16, TP53 and TTN) and determined the mean expression, copy number (CN), CERES score and probability of all genes over these cell lines.
+We visualized the gene´s distribution in all matrices by using heatmaps.
 
-* For MT-ND5:
-```{r}
-list.mtnd5 = unique(subset(mutations.all, mutations.all$Hugo_Symbol == "MT-ND5"))
-cells.mtnd5 = c(list.mtnd5$DepMap_ID)
-exp.mtnd5 = exp.clean[,which(colnames(exp.clean) %in% cells.mtnd5)]
-copy.mtnd5 = copy.clean[,which(colnames(copy.clean) %in% cells.mtnd5)]
-ceres.mtnd5 = ceres.clean[,which(colnames(ceres.clean) %in% cells.mtnd5)]
-prob.mtnd5 = prob.clean[,which(colnames(prob.clean) %in% cells.mtnd5)]
-mtnd5.exp.mean = as.matrix(c(rowMeans(exp.mtnd5)))
-mtnd5.copy.mean = as.matrix(c(rowMeans(copy.mtnd5)))
-mtnd5.ceres.mean = as.matrix(c(rowMeans(ceres.mtnd5)))
-mtnd5.prob.mean = as.matrix(c(rowMeans(prob.mtnd5)))
-```
+Packages used: pheatmap, grid
 
-* For MUC16:
-```{r}
-list.muc16 = unique(subset(mutations.all, mutations.all$Hugo_Symbol == "MUC16"))
-cells.muc16 = c(list.muc16$DepMap_ID)
-exp.muc16 = exp.clean[,which(colnames(exp.clean) %in% cells.muc16)]
-copy.muc16 = copy.clean[,which(colnames(copy.clean) %in% cells.muc16)]
-ceres.muc16 = ceres.clean[,which(colnames(ceres.clean) %in% cells.muc16)]
-prob.muc16 = prob.clean[,which(colnames(prob.clean) %in% cells.muc16)]
-muc16.exp.mean = as.matrix(c(rowMeans(exp.muc16)))
-muc16.copy.mean = as.matrix(c(rowMeans(copy.muc16)))
-muc16.ceres.mean = as.matrix(c(rowMeans(ceres.muc16)))
-muc16.prob.mean = as.matrix(c(rowMeans(prob.muc16)))
-```
-* For TP53:
-```{r}
-list.tp53 = unique(subset(mutations.all, mutations.all$Hugo_Symbol == "TP53"))
-cells.tp53 = c(list.tp53$DepMap_ID)
-exp.tp53 = exp.clean[,which(colnames(exp.clean) %in% cells.tp53)]
-copy.tp53 = copy.clean[,which(colnames(copy.clean) %in% cells.tp53)]
-ceres.tp53 = ceres.clean[,which(colnames(ceres.clean) %in% cells.tp53)]
-prob.tp53 = prob.clean[,which(colnames(prob.clean) %in% cells.tp53)]
-tp53.exp.mean = as.matrix(c(rowMeans(exp.tp53)))
-tp53.copy.mean = as.matrix(c(rowMeans(copy.tp53)))
-tp53.ceres.mean = as.matrix(c(rowMeans(ceres.tp53)))
-tp53.prob.mean = as.matrix(c(rowMeans(prob.tp53)))
-```
-
-* For TTN:
-```{r}
-list.ttn = unique(subset(mutations.all, mutations.all$Hugo_Symbol == "TTN"))
-cells.ttn = c(list.ttn$DepMap_ID)
-exp.ttn = exp.clean[,which(colnames(exp.clean) %in% cells.ttn)]
-copy.ttn = copy.clean[,which(colnames(copy.clean) %in% cells.ttn)]
-ceres.ttn = ceres.clean[,which(colnames(ceres.clean) %in% cells.ttn)]
-prob.ttn = prob.clean[,which(colnames(prob.clean) %in% cells.ttn)]
-ttn.exp.mean = as.matrix(c(rowMeans(exp.ttn)))
-ttn.copy.mean = as.matrix(c(rowMeans(copy.ttn)))
-ttn.ceres.mean = as.matrix(c(rowMeans(ceres.ttn)))
-ttn.prob.mean = as.matrix(c(rowMeans(prob.ttn)))
-```
-
-# Data visualization
-
-We did boxplots for visualization of whole expression and CN matrices as well as MT-ND5 expression and CN. Also heatmaps for whole mutation, CN, expression, CERES and probability matrices (with and without 0 values).
-Packages: pheatmap, grid
-
-Expression matrix (only a few overexpressed genes, a lot of deleted genes) :
 ```{r}
 
 library(pheatmap)
 library(grid)
 setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
-pheatmap(exp.clean, show_rownames = F)
+pheatmap(exp.clean, main = "Distribution of expression values",  show_rownames = F)
 setHook("grid.newpage", NULL, "replace")
 grid.text("cell lines", y=-0.07, gp=gpar(fontsize=16))
 grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
 
 setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
-pheatmap(exp.clean.w0, show_rownames = F)
+pheatmap(copy.clean, main = "Distribution of copy number values", show_rownames = F)
 setHook("grid.newpage", NULL, "replace")
-grid.text("cell lines", y=-0.07, gp=gpar(fontsize=16))
+grid.text("celllines", y=-0.07, gp=gpar(fontsize=16))
+grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
+
+setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
+pheatmap(ceres.clean, main = "Distribution of CERES values", show_rownames = F)
+setHook("grid.newpage", NULL, "replace")
+grid.text("celllines", y=-0.07, gp=gpar(fontsize=16))
+grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
+
+setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
+pheatmap(prob.clean, main = "Distribution of probability values", show_rownames = F)
+setHook("grid.newpage", NULL, "replace")
+grid.text("celllines", y=-0.07, gp=gpar(fontsize=16))
 grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
 ```
-Code for other matrices analogous to the one for the expression matrix. 
-Observations: for CERES and probability matrix only a few genes seemed to be essential.
+## Conclusion
+
+1. We have identified the most common mutated genes in our data. *Three out of the six most common mutations are directly associated with cancer     developement (TP53, MUC-16 and PTEN)*.
+
+2. We visualized the gene´s distribution for all four matrices:
+  a. The majority of the genes shows normal to moderate expression levels. However, a *few genes are highly overexpressed* (marked in red). 
+  b. All genes seem to have copy number levels between minus five and five. Genes, which differ significantly, are not identifiable through this distribution.
+  c. The majority of genes show no significant
 
 # Data reduction
-
-## Additional cleanup beforehand
-
-
-Rows containing 0 in matrices were removed, and gene data availability was compared again to ensure all matrices had the same dimension.
-
-```{r}
-sum(exp.clean == 0)
-exp.clean.w0 <- exp.clean[!(apply(exp.clean, 1, function(y) any(y == 0))),]
-sum(exp.clean.w0 == 0)
-
-sum(copy.clean == 0)
-copy.clean.w0 <- copy.clean[!(apply(copy.clean, 1, function(y) any(y == 0))),]
-sum(copy.clean.w0 == 0)
-
-sum(ceres.clean == 0)
-ceres.clean.w0 <- ceres.clean[!(apply(ceres.clean, 1, function(y) any(y == 0))),]
-sum(ceres.clean.w0 == 0)
-
-sum(prob.clean == 0)
-prob.clean.w0 <- prob.clean[!(apply(prob.clean, 1, function(y) any(y == 0))),]
-sum(prob.clean.w0 == 0)
-
-dim(copy.clean.w0) == dim(exp.clean.w0)
-gene.data.ex = c(rownames(exp.clean.w0))
-copy.clean.w0 = copy.clean.w0[-which(rownames(copy.clean.w0) %!in% gene.data.ex),]
-genes.clean.w0 = rownames(exp.clean.w0)
-ceres.clean.w0 = ceres.clean.w0[-which(rownames(ceres.clean.w0) %!in% genes.clean.w0),]
-prob.clean.w0 = prob.clean.w0[-which(rownames(prob.clean.w0) %!in% genes.clean.w0),]
-genes.clean.w0 = rownames(prob.clean.w0)
-exp.clean.w0 = exp.clean.w0[-which(rownames(exp.clean.w0) %!in% genes.clean.w0),]
-copy.clean.w0 = copy.clean.w0[-which(rownames(copy.clean.w0) %!in% genes.clean.w0),]
-ceres.clean.w0 = ceres.clean.w0[-which(rownames(ceres.clean.w0) %!in% genes.clean.w0),]
-rm(gene.data.ex)
-```
-dimensions: 11545x28
-
-# Principal component analysis (PCA)
-
-## Data cleanup
-
 
 The first step was to determine our four most prominent driving mutations, which we had already done before. 
 Most prominent DMs: TP53, TTN, MT-ND5, MUC16
 
 After that we separated the cell lines from the mutation matrix which contained one specific mutation. This was done in order to determine other genes that were also mutated in the presence of this specific DM. Since there were a few thousand mutated genes for each DM, the ones were "IsDeleterious = TRUE" were extracted.
+Package dplyr needed for this step
 
 For TP53:
 ```{r}
+library(dplyr)
 mutations.tp53 = rbind(relevant.mutations$`ACH-000036`,relevant.mutations$`ACH-000040`, relevant.mutations$`ACH-000098`, relevant.mutations$`ACH-000208`, relevant.mutations$`ACH-000215`, relevant.mutations$`ACH-000137`, relevant.mutations$`ACH-000152`, relevant.mutations$`ACH-000591`, relevant.mutations$`ACH-000673`, relevant.mutations$`ACH-000231`, relevant.mutations$`ACH-000368`, relevant.mutations$`ACH-000376`, relevant.mutations$`ACH-000445`, relevant.mutations$`ACH-000464`, relevant.mutations$`ACH-000469`, relevant.mutations$`ACH-000570`, relevant.mutations$`ACH-000571`, relevant.mutations$`ACH-000623`, relevant.mutations$`ACH-000673`, relevant.mutations$`ACH-000738`, relevant.mutations$`ACH-000756`, relevant.mutations$`ACH-000819`, relevant.mutations$`ACH-000128`)
 mutations.tp53 = select(mutations.tp53, c(2,21, 36))
 mutations.tp53 = subset(mutations.tp53, mutations.tp53$isDeleterious == "TRUE")
