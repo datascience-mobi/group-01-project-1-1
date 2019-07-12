@@ -67,7 +67,7 @@ The function sum() was used to show how many NA values were in each matrix.
 * exp.clean -> 0
 * relevant.mutations -> 0, but looking directly in the matrix we can see several NA values.
 
-1b. Removing NA values from copy number matrix.
+2. Removing NA values from copy number matrix.
 
 ```{r}
 copy.clean = copy.clean[-which(apply(copy.clean, 1, function(x) {sum(is.na(x))}) > 0), ]
@@ -77,7 +77,7 @@ sum(is.na(copy.clean))
 * copy.clean -> 0
 
 
-2. Scan for outliers via boxplots and threshold or remove them if necessary.
+3. Scan for outliers via boxplots and threshold or remove them if necessary.
 
 * Two values were identified an outliers, then thresholded and removed them.
 
@@ -86,7 +86,7 @@ boxplot(ceres.clean)
 ceres.transf = ceres.clean[-which(ceres.clean > 3), ] 
 ```
 
-3a. Then we checked all matrices for containing values x = 0.
+4. Then we checked all matrices for containing values x = 0.
 
 ```{r}
 sum(ceres.clean == 0) 
@@ -100,7 +100,7 @@ sum(exp.clean == 0)
 * copy.clean -> 0
 * exp.clean -> 644705
 
-3b. Rows containing 0 in matrices were removed. 
+5. Rows containing 0 in matrices were removed. 
 
 ```{r}
 exp.clean <- exp.clean[!(apply(exp.clean, 1, function(y) any(y == 0))),]
