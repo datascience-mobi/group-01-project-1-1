@@ -398,34 +398,38 @@ t(ceres.pten.genes) -> ceres.pten.genes_t
 t(ceres.muc16.genes) -> ceres.muc16.genes_t
 ```
 
-In the next step we generated a correlation matrix including the correlation coefficients between all genes in the matrix and isolated the correlation coefficients between all genes and our DM.
+In the next step we generated a correlation matrix including the correlation coefficients between all genes in the matrix and isolated the correlation coefficients between all genes and our specific DM.
 
 ```{r}
 cor.ceres.tp53.genes_t <-cor(ceres.tp53.genes_t, method="spearman")
 cor.ceres.tp.53.only <-cor.ceres.tp53.genes_t[1:734,642]
+
+cor.ceres.muc16.genes_t<-cor(ceres.muc16.genes_t, method="spearman")
+cor.ceres.muc16.only<-cor.ceres.muc16.genes_t[1:478,251]
+
+cor.ceres.pten.genes_t<-cor(ceres.pten.genes_t, method="spearman")
+cor.ceres.pten.only<-cor.ceres.pten.genes_t[1:505,328]
 ```
 
-The matrices for the other DMs were created using an analogous method.
 
-#### Determination of p-values to get correlation matrices with significance levels (statistical statements)
+### Determination of p-values to get correlation matrices with significance levels (statistical statements)
 
+The function rcorr(x, type = c("pearson", "spearman")) can be used to compute the significance levels for Spearman and Pearson correlations. 
 
-Packages: Hmisc
+Packages used: Hmisc
 
-The function rcorr(x, type = c("pearson", "spearman")) can be used to compute the significance levels for Spearman an Pearson correlations. 
-
-We calculated the significance levels for TP53:
+We calculated the significance levels for TP53 and extracted the relevant column:
 ```{r}
+library(Hmisc)
 sig.cor.ceres.tp53.genes_t<-rcorr(as.matrix(ceres.tp53.genes_t), type="spearman")
-View(sig.cor.ceres.tp53.genes_t$r)
-```
-
-Extracted the relevant column:
-```{r}
 sig.cor.ceres.tp53.only<-sig.cor.ceres.tp53.genes_t$r[1:734, 642]
-```
 
-And did the same for the other DMs.
+sig.cor.ceres.muc16.genes_t<-rcorr(as.matrix(ceres.muc16.genes_t), type="spearman")
+sig.cor.ceres.muc16.only<-sig.cor.ceres.muc16.genes_t$r[1:478,251]
+
+sig.cor.ceres.pten.genes_t<-rcorr(as.matrix(ceres.pten.genes_t), type="spearman")
+sig.cor.ceres.pten.only<-sig.cor.ceres.pten.genes_t$r[1:505,328]
+```
 
 #### P-values and hypothesis testing
 
@@ -439,7 +443,7 @@ We need a significance level alpha to evaluate our p-values in order to identify
 #### Formulating our H0 and H1 hypothesis:
 
 
-* H0: The correlation of a mutated gene and the DM is not significant --> not potential SST
+* H0: The correlation of a mutated gene and the DM is not significant --> no potential SST
 
 * H1: The correlation of a mutated gene and the DM is significant --> potential SST
 
@@ -449,28 +453,27 @@ We defined a threshold for the p-values to identify all the genes that are corre
 ```{r}
 sig.cor.ceres.tp53.only[abs(sig.cor.ceres.tp53.only) > 0.05]<- NA
 ``` 
+
 Only significant p-values remain --> all genes that are NA are no potential SSTs; all genes where H0 cannot be rejected are defined as NA
+
 ```{r}
-sst.tp53<-na.omit(sig.cor.ceres.tp53.only)
+SST.tp53<-na.omit(sig.cor.ceres.tp53.only)
 ```
+
 Returns a matrix that contains all potential SSTs that we can compare to literature afterwards
 
-* TTN
-```{r}
-sig.cor.ceres.ttn.only[abs(sig.cor.ceres.ttn.only) > 0.05]<- NA
-sst.ttn<-na.omit(sig.cor.ceres.ttn.only)
-```
-
 * MUC16
+
 ```{r}
 sig.cor.ceres.muc16.only[abs(sig.cor.ceres.muc16.only) > 0.05] <- NA
 SST.muc16<-na.omit(sig.cor.ceres.muc16.only)
 ```
 
-* MT-ND5
+* PTEN
+
 ```{r}
-sig.cor.ceres.mtnd5.only[abs(sig.cor.ceres.mtnd5.only) > 0.05] <- NA
-SST.mtnd5<-na.omit(sig.cor.ceres.mtnd5.only)
+sig.cor.ceres.pten.only[abs(sig.cor.ceres.pten.only) > 0.05] <- NA
+SST.pten<-na.omit(sig.cor.ceres.pten.only)
 ```
 
 
