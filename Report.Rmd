@@ -187,7 +187,7 @@ common.genes.c = common.genes.c[c(6, 11, 10, 7, 4, 9, 3, 2, 1, 8),]
 barplot_commongenes <- barplot(common.genes.c, beside = T, names.arg = rownames(common.genes.c), ylab = "Frequency", main = "Most common gene mutations", las = 2)
 ```
 
-Commonly mutated genes:
+### Commonly mutated genes:
 
 1. MT-ND5: 32 mutations
   Mitochondrial gene, which encodes NADH-ubiquinone oxidoreductase chain 5 (ND5). ND5 is a subunit of NADH dehydrogenase, the largest complex of the electron transport chain.
