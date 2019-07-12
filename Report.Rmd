@@ -47,6 +47,15 @@ ceres.clean = allDepMapData$kd.ceres[, -which(colnames(allDepMapData$kd.ceres) %
 prob.clean = allDepMapData$kd.prob[, -which(colnames(allDepMapData$kd.prob) %!in% cell.lines)]
 ```
 
+Putting gene names and cell lines in alphabetical order.
+
+```{r}
+ceres.clean = ceres.clean[order(rownames(ceres.clean)), order(colnames(ceres.clean))]
+prob.clean = prob.clean[order(rownames(prob.clean)), order(colnames(prob.clean))]
+exp.clean = exp.clean[order(rownames(exp.clean)), order(colnames(exp.clean))]
+copy.clean = copy.clean[order(rownames(copy.clean)), order(colnames(copy.clean))]
+```
+
 After isolating the relevant cell lines, we checked our matrices for NA values, outliers as well as values x = 0 and removed them.
 
 1a. Checking for NA values in all matrices.
@@ -100,24 +109,9 @@ sum(exp.clean == 0)
 * copy.clean -> 0
 * exp.clean -> 644705
 
-5. Rows containing 0 in matrices were removed. 
+We then decided to generate the matrices with and without x = 0 values.
 
-```{r}
-exp.clean <- exp.clean[!(apply(exp.clean, 1, function(y) any(y == 0))),]
-sum(exp.clean == 0)
-
-copy.clean <- copy.clean[!(apply(copy.clean, 1, function(y) any(y == 0))),]
-sum(copy.clean == 0)
-
-ceres.clean <- ceres.clean[!(apply(ceres.clean, 1, function(y) any(y == 0))),]
-sum(ceres.clean == 0)
-
-prob.clean <- prob.clean[!(apply(prob.clean, 1, function(y) any(y == 0))),]
-sum(prob.clean == 0)
-```
-
-
-Next we compared gene data availability to ensure all matrices have the same dimension.
+Matrices with x = 0 vaues:
 
 ```{r}
 dim(copy.clean) == dim(exp.clean)
@@ -128,14 +122,46 @@ copy.clean = copy.clean[-which(rownames(copy.clean) %!in% gene.data.ex),]
 genes.clean = rownames(exp.clean)
 ceres.clean = ceres.clean[-which(rownames(ceres.clean) %!in% genes.clean),]
 prob.clean = prob.clean[-which(rownames(prob.clean) %!in% genes.clean),]
-genes.clean = rownames(prob.clean)
+genes.clean = rownames(ceres.clean)
 exp.clean = exp.clean[-which(rownames(exp.clean) %!in% genes.clean),]
 copy.clean = copy.clean[-which(rownames(copy.clean) %!in% genes.clean),]
-ceres.clean = ceres.clean[-which(rownames(ceres.clean) %!in% genes.clean),]
 rm(gene.data.co)
 rm(gene.data.ex)
 ```
+The final dimensions: 16970x28
+  
+  
+For the matrices without x = 0 values, we removed those: 
 
+```{r}
+exp.clean.w0 <- exp.clean[!(apply(exp.clean, 1, function(y) any(y == 0))),]
+sum(exp.clean.w0 == 0)
+
+copy.clean.w0 <- copy.clean[!(apply(copy.clean, 1, function(y) any(y == 0))),]
+sum(copy.clean.w0 == 0)
+
+ceres.clean.w0 <- ceres.clean[!(apply(ceres.clean, 1, function(y) any(y == 0))),]
+sum(ceres.clean.w0 == 0)
+
+prob.clean.w0 <- prob.clean[!(apply(prob.clean, 1, function(y) any(y == 0))),]
+sum(prob.clean.w0 == 0)
+```
+
+Next we compared gene data availability to ensure all matrices have the same dimension.
+
+```{r}
+dim(copy.clean.w0) == dim(exp.clean.w0)
+gene.data.ex = c(rownames(exp.clean.w0))
+copy.clean.w0 = copy.clean.w0[-which(rownames(copy.clean.w0) %!in% gene.data.ex),]
+genes.clean.w0 = rownames(exp.clean.w0)
+ceres.clean.w0 = ceres.clean.w0[-which(rownames(ceres.clean.w0) %!in% genes.clean.w0),]
+prob.clean.w0 = prob.clean.w0[-which(rownames(prob.clean.w0) %!in% genes.clean.w0),]
+genes.clean.w0 = rownames(prob.clean.w0)
+exp.clean.w0 = exp.clean.w0[-which(rownames(exp.clean.w0) %!in% genes.clean.w0),]
+copy.clean.w0 = copy.clean.w0[-which(rownames(copy.clean.w0) %!in% genes.clean.w0),]
+ceres.clean.w0 = ceres.clean.w0[-which(rownames(ceres.clean.w0) %!in% genes.clean.w0),]
+rm(gene.data.ex)
+```
 The final dimension: 11545x28
 
 
@@ -149,16 +175,6 @@ brain.anno$Subtype.Disease = factor(brain.anno$Subtype.Disease)
 brain.anno$Subtype.Gender = factor(brain.anno$Gender)
 brain.anno$Subtype.Source = factor(brain.anno$Source)
 ```
-
-At last putting gene names and cell lines in alphabetical order.
-
-```{r}
-ceres.clean = ceres.clean[order(rownames(ceres.clean)), order(colnames(ceres.clean))]
-prob.clean = prob.clean[order(rownames(prob.clean)), order(colnames(prob.clean))]
-exp.clean = exp.clean[order(rownames(exp.clean)), order(colnames(exp.clean))]
-copy.clean = copy.clean[order(rownames(copy.clean)), order(colnames(copy.clean))]
-```
-
 
 # Data visualization
 
@@ -270,9 +286,6 @@ grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
 
 # Data reduction
 
-<<<<<<< HEAD
-In order to just continue with the necessary data, we need to reduce our dataset. Since we already determined our most common mutations, which are realted to cancer (TP53, PTEN, MUC-16), we now isolate all celllines, which contain one of those specific mutations, from the mutation matrix. Our aim is to identify all other genes that were also mutated in the presence of this specific driving mutation (DM). Since there were a few thousand mutated genes for each DM, the ones were "IsDeleterious = TRUE" were extracted.
-
 In order to just continue with the necessary data, we need to reduce our dataset. Since we already determined our most common mutations, we now isolate all celllines from the mutation matrix, which contain one of those specific mutations. Our aim is to identify all other genes that were also mutated in the presence of this specific driving mutation (DM). Since there were a few thousand mutated genes for each DM, the ones with "IsDeleterious = TRUE" were extracted.
 
 
@@ -316,8 +329,7 @@ Our next goal is to determine whether there is a correlation between the presenc
 
 ## Checking data distribution in order to determine which correlation test to apply
 
-
-Parametric correlation tests (e.g. Pearson correlation) need normally distributed data. If that is not the case, apply non-parametric tests (e.g. Spearman correlation or Wilcoxon Rank sum test).
+Parametric correlation tests (e.g. Pearson correlation) need normally distributed data. If that is not the case, we need to apply non-parametric tests (e.g. Spearman correlation or Wilcoxon Rank sum test).
 
 Methods to determine the type of distribution: qq-plots (visual determination), Shapiro-Wilk-test.
 
@@ -334,71 +346,66 @@ Observation: qq-plot shows curve that deviates from a linear curve.
 Conclusion: CERES scores are not normally distributed. 
 
 
-### Shapiro-Wilk-Test (exemplary for one cell line)
+## Shapiro-Wilk-Test (exemplary for one cell line)
 
+H0 hypothesis: data is normally distributed
+H1 hypothesis: data is not normally distributed
 
 ```{r}
 shapiro.test(ceres.tp53.genes$`ACH-000036`)
 ```
 
-#### Results: 
+### Results: 
 
-data: ceres.tp53.genes$ACH-000036 W = 0.85504, p-value < 2.2e-16
+Data: ceres.tp53.genes$ACH-000036 
+W = 0.85504, 
+p-value < 2.2e-16
 
-#### Interpretation: 
+### Interpretation: 
 
-p-value < 0.05 --> CERES scores of all genes of cell line ACH-000036 are not normally distributed.
+p-value < 0.05 
+--> H0 hypothesis can be rejected and H1 is statistically proven
+--> CERES scores of all genes of cell line ACH-000036 are not normally distributed
 
-#### Using apply-function to determine the distribution of all cell lines.
 
+## Shapiro-Wilk-Test: using apply-function to determine the distribution of all cell lines
 
 Creating a matrix that contains all mutated genes of cell lines
+
 ```{r}
-ceres.allDM.genes=rbind(ceres.tp53.genes, ceres.ttn.genes, ceres.mtnd5.genes, ceres.muc16.genes)
-```
-```{r}
+ceres.allDM.genes=rbind(ceres.tp53.genes, ceres.pten.genes, ceres.muc16.genes)
 lapply(ceres.allDM.genes,shapiro.test)
 ```
 
-#### Results:
+### Results:
 
-All cell lines show p-values < 0.05 --> no normal distribution.
-
-
-### Perform non-parametric tests to determine the correlation of the mutated genes to the DMs in order to find potential SSTs.
+All cell lines show p-values < 0.05 
+--> no normally distributed data
 
 
-#### Spearman correlation
+## Performing non-parametric tests to determine the correlation of the mutated genes to the DMs in order to find potential SSTs
 
-We used this test to correlate the CERES scores of every gene across all cell lines belonging to one specific DM to the DM.
+
+### Spearman correlation
+
+We used this test to correlate the CERES scores of every gene across all cell lines belonging to one specific DM to the specific DM.
 
 In order for this to work we transposed all matrices to make cell lines rows and genes columns.
 
 ```{r}
-t(ceres.tp53.genes)->ceres.tp53.genes_t
-t(ceres.ttn.genes)->ceres.ttn.genes_t
-t(ceres.muc16.genes)->ceres.muc16.genes_t
-t(ceres.mtnd5.genes)->ceres.mtnd5.genes_t
+t(ceres.tp53.genes) -> ceres.tp53.genes_t
+t(ceres.pten.genes) -> ceres.pten.genes_t
+t(ceres.muc16.genes) -> ceres.muc16.genes_t
 ```
 
-We then selected the columns (CERES score of on gene across all cell lines) and calculated the correlation to the DM (one specific column). We performed this for all genes in the matrix using lapply.
-
-Exemplary correlation test for one specific gene:
-```{r}
-cor(ceres.tp53.genes_t$ABCA13, ceres.tp53.genes_t$TP53, method = "spearman")
-```
-It was necessary to generate a correlation matrix including the correlation coefficients between all genes in the matrix, in order to solve an error in the last step.
+In the next step we generated a correlation matrix including the correlation coefficients between all genes in the matrix and isolated the correlation coefficients between all genes and our DM.
 
 ```{r}
-cor.ceres.tp53.genes_t<-cor(ceres.tp53.genes_t, method="spearman")
+cor.ceres.tp53.genes_t <-cor(ceres.tp53.genes_t, method="spearman")
+cor.ceres.tp.53.only <-cor.ceres.tp53.genes_t[1:734,642]
 ```
 
-We then extracted one specific column from this matrix because it was very large and contained a lot of information that was irrelevant for us.
-
-```{r}
-cor.ceres.tp.53.only<-cor.ceres.tp53.genes_t[1:734,642]
-```
-cor.ceres.tp.53.only includes correlation coefficients of all genes to TP53. The matrices for the other DMs were created using an analogous method.
+The matrices for the other DMs were created using an analogous method.
 
 #### Determination of p-values to get correlation matrices with significance levels (statistical statements)
 
