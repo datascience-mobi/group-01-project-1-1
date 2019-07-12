@@ -240,11 +240,7 @@ Our result doesn´t confirm the observations made in the literature, but that´s n
 
 ## Data distribution
 
-<<<<<<< HEAD
-We visualized the gene?s distribution in all matrices by using heatmaps.
-=======
 We visualized the gene´s distribution in all matrices using heatmaps.
->>>>>>> 9251ba3f23ea013e64550cc07e2952ff6a7ae1e7
 
 Packages used: pheatmap, grid
 
@@ -281,13 +277,8 @@ grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
 
 1. We have identified the most common mutated genes in our data. **Three out of the six most common mutations are directly associated with cancer developement (TP53, MUC-16 and PTEN)**. PTEN and TP53 are also two of the most prominent genetic alterations in GBM, mentioned by scientific papers.
 
-<<<<<<< HEAD
-2. We visualized the gene?s distribution for all four matrices:
-  a. The majority of the genes shows normal to moderate expression levels. However, *few genes are highly overexpressed* (marked in red). 
-=======
 2. We visualized the gene´s distribution for all four matrices:
   a. The majority of the genes shows normal to moderate expression levels. However, **few genes are highly overexpressed** (marked in red). 
->>>>>>> 9251ba3f23ea013e64550cc07e2952ff6a7ae1e7
   b. All genes seem to have copy number levels between minus five and five. Genes, which differ significantly, are not identifiable through this distribution.
   c. The majority of genes show no significant knockdown scores. However, **few genes have significantly smaller CERES scores, which makes them essential for cell survival** (marked in blue).
   d. The majority of genes has low probability scores and is therefore not of interest. However, **few genes have probability scores up to one, which makes them important for cell survivability** (marked in red).
@@ -296,7 +287,6 @@ grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
 # Data reduction
 
 In order to just continue with the necessary data, we need to reduce our dataset. Since we already determined our most common mutations, we now isolate all celllines from the mutation matrix, which contain one of those specific mutations. Our aim is to identify all other genes that were also mutated in the presence of this specific driving mutation (DM). Since there were a few thousand mutated genes for each DM, the ones with "IsDeleterious = TRUE" were extracted.
-
 
 * Package dplyr needed for this step
 
