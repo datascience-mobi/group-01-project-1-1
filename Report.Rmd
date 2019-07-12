@@ -477,9 +477,9 @@ SST.pten<-na.omit(sig.cor.ceres.pten.only)
 ```
 
 
-### Comparison to literature
+## Comparison to literature
 
-#### For TP53: 
+### For TP53: 
 
 Paper: Synthetic sickness or lethality points at candidate combination therapy targets in glioblastoma.  (Szczurek, Ewa; Misra, Navodit; Vingron, Martin)
 
@@ -499,7 +499,7 @@ We then tested our data for over-expressions:
 
 * BUB3, HSPA14, TFAM, GFTP1, DERL1, SND1, ALDH1B1, RECK, UGHD, AOF2 (LSD1), GADD45G and CERK (ceramide kinase) could be other SSTs  according to literature, but through our investigation we were not able to verify these potential SST.
 
-#### For our other DMs
+### For our other DMs
 
 There are no potential SSTs for TTN, MT-ND5 and MUC16 according to literature, because these are not common driving mutations. 
 
