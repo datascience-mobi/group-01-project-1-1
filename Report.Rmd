@@ -286,7 +286,8 @@ ceres.tp53.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.tp53),]
 ```
 
 The next step would be to determine whether there is a correlation between the presence of a specific DM and the essentiality of a second mutated gene.
- 
+
+
 ## Determining potential second site targets (SSTs) through correlation tests: Is there a correlation between DM and other mutations in the cell? 
 
 
