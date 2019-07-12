@@ -167,23 +167,18 @@ copy.clean = copy.clean[order(rownames(copy.clean)), order(colnames(copy.clean))
 In order to find all most commonly mutated genes among all relevant cell lines, we merged all mutation matrices.
 
 ```{r}
-#common.genes = as.data.frame(table(c(relevant.mutations$`ACH-000036`$Hugo_Symbol,relevant.mutations$`ACH-000040`$Hugo_Symbol, relevant.mutations$`ACH-000075`$Hugo_Symbol, relevant.mutations$`ACH-000098`$Hugo_Symbol, relevant.mutations$`ACH-000208`$Hugo_Symbol, relevant.mutations$`ACH-000215`$Hugo_Symbol, relevant.mutations$`ACH-000137`$Hugo_Symbol, relevant.mutations$`ACH-000152`$Hugo_Symbol, relevant.mutations$`ACH-000591`$Hugo_Symbol, relevant.mutations$`ACH-000673`$Hugo_Symbol, relevant.mutations$`ACH-000231`$Hugo_Symbol, relevant.mutations$`ACH-000244`$Hugo_Symbol, relevant.mutations$`ACH-000760`$Hugo_Symbol, relevant.mutations$`ACH-000368`$Hugo_Symbol, relevant.mutations$`ACH-000376`$Hugo_Symbol, relevant.mutations$`ACH-000445`$Hugo_Symbol, relevant.mutations$`ACH-000464`$Hugo_Symbol, relevant.mutations$`ACH-000469`$Hugo_Symbol, relevant.mutations$`ACH-000479`$Hugo_Symbol, relevant.mutations$`ACH-000570`$Hugo_Symbol, relevant.mutations$`ACH-000571`$Hugo_Symbol, relevant.mutations$`ACH-000623`$Hugo_Symbol, relevant.mutations$`ACH-000631`$Hugo_Symbol, relevant.mutations$`ACH-000738`$Hugo_Symbol, relevant.mutations$`ACH-000756`$Hugo_Symbol, relevant.mutations$`ACH-000819`$Hugo_Symbol, relevant.mutations$`ACH-000128`$Hugo_Symbol, relevant.mutations$`ACH-000887`$Hugo_Symbol)))#
-
 relevant.mutations.combi = do.call(rbind, lapply(which(names(allDepMapData$mutation) %in% cell.lines), function(a) allDepMapData$mutation[[a]]))
 common.genes = as.matrix(table(c(relevant.mutations.combi$Hugo_Symbol)))
-
-summary(common.genes)
 ```
 
 Next we plotted all the mutated genes as well as the most frequent ones by using barplots.
 
 ```{r}
 common.genes = as.matrix(common.genes)
-#rownames(common.genes) = common.genes$Var1
-#common.genes$Var1 = NULL
-barplot(common.genes, beside = T, names.arg = rownames(common.genes),  ylab = "Frequency", main = "All mutated genes", las = 2)
+barplot(common.genes, beside = T, names.arg = NULL,  ylab = "Frequency", main = "All mutated genes", las = 2)
 common.genes.c = subset(common.genes, common.genes >11)
 common.genes.c = common.genes.c[c(6, 11, 10, 7, 4, 9, 3, 2, 1, 8),]
+common.genes.c
 barplot_commongenes <- barplot(common.genes.c, beside = T, names.arg = rownames(common.genes.c), ylab = "Frequency", main = "Most common gene mutations", las = 2)
 ```
 
@@ -209,8 +204,8 @@ barplot_commongenes <- barplot(common.genes.c, beside = T, names.arg = rownames(
   Variations result in mitochondrial deficiencies and associated disorders, including exericise intolerance and cardiomyopathy.
   
 *6. PTEN: 17 mutations*
-  Tumorsuppressorgene, which encodes for phosphatase and tensin homolog. The enzyme is involved in regulation of the cellcycle, preventing cells from growing and dividing too      much.
-  Variations resullt in increased cell proliferation and reduced cell death. Frequent genetic inactivation of PTEN occurs in glioblastoma.
+  Tumor suppressing gene, which encodes for phosphatase and tensin homolog. The enzyme is involved in regulation of the cellcycle, preventing cells from growing and dividing too much.
+  Variations result in increased cell proliferation and reduced cell death. Frequent genetic inactivation of PTEN occurs in glioblastoma.
   
 7. Other mutations: 10096
 
