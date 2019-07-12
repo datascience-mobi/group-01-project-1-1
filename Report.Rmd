@@ -192,18 +192,18 @@ barplot_commongenes <- barplot(common.genes.c, beside = T, names.arg = rownames(
   Gene, which encodes for Titin/Connectin, which is responsible for the passive elasticity of muscles.
   Variations are associated with several forms of myopathy.
   
-*3. TP53: 24 mutations*
+**3. TP53: 24 mutations**
   Tumorsuppressorgene, which encodes for p53, which plays a role in regulation or progression through the cell cycle, apoptosis and genomic stability. 
   Variations are directly associated with cancer formation.
   
-*4. MUC16: 23 mutations*
+**4. MUC16: 23 mutations**
   Gene, which encodes for the cancer antigen CA-125/mucin 16, a highly glycosylated protein. It has found application as tumor marker, since it plays a role in advancing tumogenesis and tumor proliferation by several different mechanisms (Imuuneevasion, metastatic invasion, induced motility and chemotherapy resistance).
 
 5. MT-CYB: 18 mutations
   Gene, which encodes for cytochrome b, a subunit of the respiratory chain protein ubiquinol cytochrome c reductase.
   Variations result in mitochondrial deficiencies and associated disorders, including exericise intolerance and cardiomyopathy.
   
-*6. PTEN: 17 mutations*
+**6. PTEN: 17 mutations**
   Tumor suppressing gene, which encodes for phosphatase and tensin homolog. The enzyme is involved in regulation of the cellcycle, preventing cells from growing and dividing too much.
   Variations result in increased cell proliferation and reduced cell death. Frequent genetic inactivation of PTEN occurs in glioblastoma.
   
@@ -224,7 +224,7 @@ Our result doesn´t confirm the observations made in the literature, but that´s n
 
 ## Data distribution
 
-We visualized the gene´s distribution in all matrices by using heatmaps.
+We visualized the gene´s distribution in all matrices using heatmaps.
 
 Packages used: pheatmap, grid
 
@@ -259,18 +259,22 @@ grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
 
 ## Conclusion
 
-1. We have identified the most common mutated genes in our data. *Three out of the six most common mutations are directly associated with cancer developement (TP53, MUC-16 and PTEN)*. PTEN and TP53 are also two of the most prominent genetic alterations in GBM, mentioned by scientific papers.
+1. We have identified the most common mutated genes in our data. **Three out of the six most common mutations are directly associated with cancer developement (TP53, MUC-16 and PTEN)**. PTEN and TP53 are also two of the most prominent genetic alterations in GBM, mentioned by scientific papers.
 
 2. We visualized the gene´s distribution for all four matrices:
-  a. The majority of the genes shows normal to moderate expression levels. However, *few genes are highly overexpressed* (marked in red). 
+  a. The majority of the genes shows normal to moderate expression levels. However, **few genes are highly overexpressed** (marked in red). 
   b. All genes seem to have copy number levels between minus five and five. Genes, which differ significantly, are not identifiable through this distribution.
-  c. The majority of genes show no significant knockdown scores. However, *few genes have significantly smaller CERES scores, which makes them essential for cell survival* (marked in blue).
-  d. The majority of genes has low probability scores and is therefore not of interest. However, *few genes have probability scores up to one, which makes them important for cell survivability* (marked in red).
+  c. The majority of genes show no significant knockdown scores. However, **few genes have significantly smaller CERES scores, which makes them essential for cell survival** (marked in blue).
+  d. The majority of genes has low probability scores and is therefore not of interest. However, **few genes have probability scores up to one, which makes them important for cell survivability** (marked in red).
 
 
 # Data reduction
 
+<<<<<<< HEAD
 In order to just continue with the necessary data, we need to reduce our dataset. Since we already determined our most common mutations, which are realted to cancer (TP53, PTEN, MUC-16), we now isolate all celllines, which contain one of those specific mutations, from the mutation matrix. Our aim is to identify all other genes that were also mutated in the presence of this specific driving mutation (DM). Since there were a few thousand mutated genes for each DM, the ones were "IsDeleterious = TRUE" were extracted.
+
+In order to just continue with the necessary data, we need to reduce our dataset. Since we already determined our most common mutations, we now isolate all celllines from the mutation matrix, which contain one of those specific mutations. Our aim is to identify all other genes that were also mutated in the presence of this specific driving mutation (DM). Since there were a few thousand mutated genes for each DM, the ones with "IsDeleterious = TRUE" were extracted.
+
 
 * Package dplyr needed for this step
 
@@ -509,20 +513,20 @@ summary(lm(probability ~ ., data = mlr.mat))
 ```
 To evaluate our model we looked at the R-squared value. R squared is a statistical measure of how close the data are to the fitted regression line. It is also known as the coefficient of multiple determination for multiple linear regression. 
 
-The definition of R-squared is the percentage of the response variable variation that is explained by a linear model. It is always between 0% and 100%. 0% means that the model explains none of the variability around its mean and 100% indicates that the model explains all the variability of the response data around its mean.
+The definition of R-squared is the percentage of the response variable variation that is explained by a linear model. It is always between 0 and 1. 0 means that the model explains none of the variability around its mean and 1 indicates that the model explains all the variability of the response data around its mean.
 
 * expression -> r^2 = 0.1563
 * copynumber -> r^2 = 0.003437
 * CERES score -> r^2 = 0.9352
 * probability -> r^2 = 0.9358
 
-As we can see, the model for expression is not that great, having a R-squared value of 15,63%. The models for CERES score and probability look promising because of the values of 93,52% and 93,58%. The copy number model does not look good at all with a R-squared value of 0,34%.
+As we can see, the model for expression is not that great, having a R-squared value of 0.1563. The models for CERES score and probability look more reliable with values of 0.9352 and 0.9358. The copy number model does not look good at all with a R-squared value of 0.0034.
 
 ## Training and testing our multiple linear regression model
 
 Packages: caTools
 
-The intent with this testing was to use values the model had never seen before and to compare them with the real values. All steps showed below were performed with all models. Exemplary showing steps with expression model.
+The aim with this testing was to use values the model had never seen before and to compare them with the real values. All steps showed below were performed with all models. Exemplary showing steps with expression model.
 
 First we splitted the multiple linear regression matrix into 4/5 training set and 1/5 testing set. 
 ```{r}
