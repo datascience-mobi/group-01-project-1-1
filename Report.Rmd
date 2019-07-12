@@ -175,7 +175,8 @@ common.genes = as.matrix(table(c(relevant.mutations.combi$Hugo_Symbol)))
 summary(common.genes)
 ```
 
- 
+Next we plotted all the mutated genes as well as the most frequent ones by using barplots.
+
 ```{r}
 common.genes = as.matrix(common.genes)
 #rownames(common.genes) = common.genes$Var1
