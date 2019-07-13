@@ -497,9 +497,25 @@ We then tested our data for over-expressions:
 
 * BUB3, HSPA14, TFAM, GFTP1, DERL1, SND1, ALDH1B1, RECK, UGHD, AOF2 (LSD1), GADD45G and CERK (ceramide kinase) could be other SSTs  according to literature, but through our investigation we were not able to verify these potential SST.
 
-### For our other DMs
+### For PTEN
 
-There are no potential SSTs for TTN, MT-ND5 and MUC16 according to literature, because these are not common driving mutations. 
+Synthetic lethal targeting of PTEN-deficient cancer cells using selective disruption of polynucleotide kinase/phosphatase (Todd R. Mereniu; Mohamed A.M. El Gendy; Ana M. Mendes-Pereira)
+
+* Known synthetic lethal interactions with PNKP, PARP and TKK, but neither of this genes appears in our correlation matrix.
+
+Symbiotic Macrophage-Glioma Cell Interactions Reveal Synthetic Lethality in PTEN-Null Glioma (Peywen Chen *et al.*)
+
+* SL with LOX, but this gene doesnt appear in our correlation matrix.
+
+### For MUC-16
+
+There are no potential SSTs for MUC16 according to literature, because it is no common driving mutation. 
+
+
+## Conclusion
+
+In this part we wanted to find potential second-site-targets in the GBM celllines, where a specific driving mutation is present, After confirming the unnormal distribution of our data using Shapiro-Wilk-Tests, we used Spearman correlation to determine, whether there is a dependency between the presence of a specific DM and the essentiality for cell survival of another mutated gene (indicated by low CERES score). We performed those tests with our cancer-associated DM TP53, PTEN and MUC-16. For each DM we found about 100 potential SSTs, but we couldn´t confirm our results with scientific papers or the other way round, respectively. 
+Furthermore we are also not able to assign our celllines to a specific GBM subtype (classical, mesenchymal, neural, proneural). However, we would assign our celllines more towards the proneural or mesenchymal subtype, since these subtypes have mutations of PTEN and TP53 as there marker. But we couldn´t confirm any other known tumormarkers for those two subtypes in our celllines.
 
 
 # Multiple linear regression
