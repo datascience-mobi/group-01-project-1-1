@@ -550,7 +550,7 @@ As we can see, the model for expression is not that great, having a R-squared va
 
 Packages: caTools
 
-The aim with this testing was to use values the model had never seen before and to compare them with the real values. All steps showed below were performed with all models. Exemplary showing steps with expression model.
+The aim with this testing was to use values the model had never seen before and to compare them with the real values. 
 
 First we splitted the multiple linear regression matrix into 4/5 training set and 1/5 testing set. 
 ```{r}
@@ -560,6 +560,26 @@ split.exp = sample.split(mlr.mat$expression, SplitRatio = 0.8) #split the mlr.ma
 split.exp = as.data.frame(split.exp) #converting split.exp to a data frame for further analysis
 training_set_exp = subset(mlr.mat, split.exp == TRUE) #use labels to get training data
 test_set_exp = subset(mlr.mat, split.exp == FALSE) #dim(test_set_exp) will give you 2309 --> 11545/5*1 = 2309 --> train/test split worked
+
+#for copy number model
+set.seed(123)
+split.copy = sample.split(mlr.mat$copynumber, SplitRatio = 0.8)
+split.copy = as.data.frame(split.copy)
+training.set.copy = subset(mlr.mat, split.copy == TRUE)
+test.set.copy = subset(mlr.mat, split.copy == FALSE) 
+#dimensions were not right. Explanation below.
+
+#for ceres model
+set.seed(123)
+split.ceres = sample.split(mlr.mat$ceres, SplitRatio = 0.8)
+training.set.ceres = subset(mlr.mat, split.ceres == TRUE)
+test.set.ceres = subset(mlr.mat, split.ceres == FALSE)
+
+#for probability model
+set.seed(123)
+split.prob = sample.split(mlr.mat$probability, SplitRatio = 0.8)
+training.set.prob = subset(mlr.mat, split.prob ==TRUE)
+test.set.prob = subset(mlr.mat, split.prob == FALSE)
 ```
 
 Observation: the training/test set splitting did not work for the copy number matrix. The dimensions of the test set were not right. We had 2541 values instead of the 2309 we needed, which represent one fifth of the original multiple lineaar regression matrix.
@@ -567,6 +587,8 @@ Observation: the training/test set splitting did not work for the copy number ma
 We then fitted the multiple linear regression to the training set.
 ```{r}
 exp.regressor = lm(expression ~ ., data = training_set_exp)
+ceres.regressor = lm(ceres ~ ., data = as.data.frame(training.set.ceres))
+prob.regressor = lm(probability ~., data = as.data.frame(training.set.prob))
 ```
 
 Then we predicted the test results based on data that our model had never seen before. This is very useful to evaluate the performance of the model.
@@ -574,6 +596,12 @@ Then we predicted the test results based on data that our model had never seen b
 exp_pred = predict(exp.regressor, newdata = test_set_exp) 
 test_set_exp$Prediction = exp_pred #add predictions to mlr.mat 
 test_set_exp #now a comparison of the Predictions (last column) with the real values for the expression (1st column) is possible 
+
+ceres_pred = predict(ceres.regressor, newdata = test.set.ceres)
+test.set.ceres$Prediction = ceres_pred
+
+prob_pred = predict(prob.regressor, newdata = test.set.prob)
+test.set.prob$Prediction = prob_pred
 ```
 
 ## Visualizing real values against test values
@@ -671,6 +699,7 @@ Looking at both curves we see the same problem we had with the CERES score model
 
 # Conlusion
 
+As stated previously, the goal was to create a model that could predict one of our four variables using all three others (between expression, copynumber, CERES score and probability matrices). Our models proved not to be very useful or efficient in the prediction, especially for copy number and expression. The models for the prediction of the CERES score and probability looked promising becuase of the 
 
 
 
