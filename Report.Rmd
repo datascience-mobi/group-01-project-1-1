@@ -235,7 +235,7 @@ The most prominent driving mutations for GBM, we found in scientific papers, are
 4. TP53
 5. PTEN
 
-Our result doesn´t confirm the observations made in the literature, but that´s not suprising since our dataset is very small in comparison to scientific investigations. However, in TP53 and PTEN we found two of those five most prominent genetic alterations in GBM.
+Our result doesn´t confirm the observations made in the literature, but that´s not suprising since our dataset is very small in comparison to scientific investigations. However, in TP53 and PTEN we managed to find two of those five most prominent genetic alterations in GBM.
 
 
 ## Data distribution
@@ -286,7 +286,7 @@ grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
 
 # Data reduction
 
-In order to just continue with the necessary data, we need to reduce our dataset. Since we already determined our most common mutations, we now isolate all celllines from the mutation matrix, which contain one of those specific mutations. Our aim is to identify all other genes that were also mutated in the presence of this specific driving mutation (DM). Since there were a few thousand mutated genes for each DM, the ones with "IsDeleterious = TRUE" were extracted.
+In order to just continue with the necessary data, we need to reduce our dataset. Since we already determined our most common mutations, we now isolate all celllines from the mutation matrix, which contain one of those specific mutations. Since only PTEN, MUC-16 and TP53 are directly associated with the development of cancer, we decided wot continue working with these three driving mutations (DM). Our aim is to identify all other genes that were also mutated in the presence of this specific DM. Since there were a few thousand mutated genes for each DM, the ones with "IsDeleterious = TRUE" were extracted.
 
 * Package dplyr needed for this step
 
@@ -420,17 +420,20 @@ Packages used: Hmisc
 We calculated the significance levels for TP53 and extracted the relevant column:
 ```{r}
 library(Hmisc)
-sig.cor.ceres.tp53.genes_t<-rcorr(as.matrix(ceres.tp53.genes_t), type="spearman")
-sig.cor.ceres.tp53.only<-sig.cor.ceres.tp53.genes_t$r[1:734, 642]
+sig.cor.ceres.tp53.genes_t <-rcorr(as.matrix(ceres.tp53.genes_t), type="spearman")
+sig.cor.ceres.tp53.only <-as.data.frame(sig.cor.ceres.tp53.genes_t$r[1:734, 642])
+colnames(sig.cor.ceres.tp53.only) <- c("Correlation to TP53")
 
-sig.cor.ceres.muc16.genes_t<-rcorr(as.matrix(ceres.muc16.genes_t), type="spearman")
-sig.cor.ceres.muc16.only<-sig.cor.ceres.muc16.genes_t$r[1:478,251]
+sig.cor.ceres.muc16.genes_t <-rcorr(as.matrix(ceres.muc16.genes_t), type="spearman")
+sig.cor.ceres.muc16.only <-as.data.frame(sig.cor.ceres.muc16.genes_t$r[1:478, 251])
+colnames(sig.cor.ceres.muc16.only) <- c("Correlation to MUC-16")
 
-sig.cor.ceres.pten.genes_t<-rcorr(as.matrix(ceres.pten.genes_t), type="spearman")
-sig.cor.ceres.pten.only<-sig.cor.ceres.pten.genes_t$r[1:505,328]
+sig.cor.ceres.pten.genes_t <-rcorr(as.matrix(ceres.pten.genes_t), type="spearman")
+sig.cor.ceres.pten.only <-as.data.frame(sig.cor.ceres.pten.genes_t$r[1:505, 328])
+colnames(sig.cor.ceres.pten.only) <- c("Correlation to PTEN")
 ```
 
-#### P-values and hypothesis testing
+## P-values and hypothesis testing
 
 
 A p-value is the probability of obtaining a larger (one-sided upper tail), a smaller (one-sided lower tail) or a more extreme value (two-sided or two-tailed) value of the statistics if H0 is valid. Following this logic, a low p-value means that H0 is invalid with a high probability.
@@ -439,27 +442,20 @@ We need a significance level alpha to evaluate our p-values in order to identify
 
 ?? = 0.05 is often used as a standard value. We chose to apply the same value to evaluate our correlation results as well as H0 and H1.
 
-#### Formulating our H0 and H1 hypothesis:
+### Formulating our H0 and H1 hypothesis:
 
 
 * H0: The correlation of a mutated gene and the DM is not significant --> no potential SST
 
 * H1: The correlation of a mutated gene and the DM is significant --> potential SST
 
-We defined a threshold for the p-values to identify all the genes that are correlated to the DMs with a high probability.
+We defined a threshold for the p-values to identify all the genes that are correlated to the DMs with a high probability. We classify all genes with a correlation coeficient higher than 0,05 as NA, because the genes, where H0 cannot be rejected, are not potential SST. Next we isolated the remaining values by deleting the rows containing NA-values. The result is a matrix, which contains all potential SSTs, that we can compare to literature afterwards.
 
 * TP53
 ```{r}
 sig.cor.ceres.tp53.only[abs(sig.cor.ceres.tp53.only) > 0.05]<- NA
-``` 
-
-Only significant p-values remain --> all genes that are NA are no potential SSTs; all genes where H0 cannot be rejected are defined as NA
-
-```{r}
 SST.tp53<-na.omit(sig.cor.ceres.tp53.only)
-```
-
-Returns a matrix that contains all potential SSTs that we can compare to literature afterwards
+``` 
 
 * MUC16
 
@@ -475,6 +471,9 @@ sig.cor.ceres.pten.only[abs(sig.cor.ceres.pten.only) > 0.05] <- NA
 SST.pten<-na.omit(sig.cor.ceres.pten.only)
 ```
 
+### Results
+
+We found: 133 possible SSTs for TP53, 81 possible SSTs for MUC-16 and 97 possible SSTs for PTEN.
 
 ## Comparison to literature
 
