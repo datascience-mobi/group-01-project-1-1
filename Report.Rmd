@@ -235,12 +235,12 @@ The most prominent driving mutations for GBM, we found in scientific papers, are
 4. TP53
 5. PTEN
 
-Our result doesn´t confirm the observations made in the literature, but that´s not suprising since our dataset is very small in comparison to scientific investigations. However, in TP53 and PTEN we managed to find two of those five most prominent genetic alterations in GBM.
+Our result doesn?t confirm the observations made in the literature, but that?s not suprising since our dataset is very small in comparison to scientific investigations. However, in TP53 and PTEN we managed to find two of those five most prominent genetic alterations in GBM.
 
 
 ## Data distribution
 
-We visualized the gene´s distribution in all matrices using heatmaps.
+We visualized the gene?s distribution in all matrices using heatmaps.
 
 Packages used: pheatmap, grid
 
@@ -277,7 +277,7 @@ grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
 
 1. We have identified the most common mutated genes in our data. **Three out of the six most common mutations are directly associated with cancer developement (TP53, MUC-16 and PTEN)**. PTEN and TP53 are also two of the most prominent genetic alterations in GBM, mentioned by scientific papers.
 
-2. We visualized the gene´s distribution for all four matrices:
+2. We visualized the gene?s distribution for all four matrices:
   a. The majority of the genes shows normal to moderate expression levels. However, **few genes are highly overexpressed** (marked in red). 
   b. All genes seem to have copy number levels between minus five and five. Genes, which differ significantly, are not identifiable through this distribution.
   c. The majority of genes show no significant knockdown scores. However, **few genes have significantly smaller CERES scores, which makes them essential for cell survival** (marked in blue).
@@ -514,8 +514,8 @@ There are no potential SSTs for MUC16 according to literature, because it is no 
 
 ## Conclusion
 
-In this part we wanted to find potential second-site-targets in the GBM celllines, where a specific driving mutation is present, After confirming the unnormal distribution of our data using Shapiro-Wilk-Tests, we used Spearman correlation to determine, whether there is a dependency between the presence of a specific DM and the essentiality for cell survival of another mutated gene (indicated by low CERES score). We performed those tests with our cancer-associated DM TP53, PTEN and MUC-16. For each DM we found about 100 potential SSTs, but we couldn´t confirm our results with scientific papers or the other way round, respectively. 
-Furthermore we are also not able to assign our celllines to a specific GBM subtype (classical, mesenchymal, neural, proneural). However, we would assign our celllines more towards the proneural or mesenchymal subtype, since these subtypes have mutations of PTEN and TP53 as there marker. But we couldn´t confirm any other known tumormarkers for those two subtypes in our celllines.
+In this part we wanted to find potential second-site-targets in the GBM celllines, where a specific driving mutation is present, After confirming the unnormal distribution of our data using Shapiro-Wilk-Tests, we used Spearman correlation to determine, whether there is a dependency between the presence of a specific DM and the essentiality for cell survival of another mutated gene (indicated by low CERES score). We performed those tests with our cancer-associated DM TP53, PTEN and MUC-16. For each DM we found about 100 potential SSTs, but we couldn?t confirm our results with scientific papers or the other way round, respectively. 
+Furthermore we are also not able to assign our celllines to a specific GBM subtype (classical, mesenchymal, neural, proneural). However, we would assign our celllines more towards the proneural or mesenchymal subtype, since these subtypes have mutations of PTEN and TP53 as there marker. But we couldn?t confirm any other known tumormarkers for those two subtypes in our celllines.
 
 
 # Multiple linear regression
@@ -587,7 +587,7 @@ library(ggplot2)
 plot.exp.m <- melt(test_set_exp$expression)
 a <- melt(test_set_exp$Prediction)
 colnames(plot.exp.m) <- "Expression"
-rownames(plot.exp.m) = rownames(plot.ceres.m)
+rownames(plot.exp.m) = rownames(test.set.ceres)
 colnames(a) <- "Prediction"
 plot.exp.m <- cbind(plot.exp.m,a)
 plottingData.exp <- melt(plot.exp.m)
