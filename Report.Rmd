@@ -595,7 +595,7 @@ Then we predicted the test results based on data that our model had never seen b
 ```{r}
 exp_pred = predict(exp.regressor, newdata = test_set_exp) 
 test_set_exp$Prediction = exp_pred #add predictions to mlr.mat 
-test_set_exp #now a comparison of the Predictions (last column) with the real values for the expression (1st column) is possible 
+#now a comparison of the Predictions (last column) with the real values for the expression (1st column) is possible 
 
 ceres_pred = predict(ceres.regressor, newdata = test.set.ceres)
 test.set.ceres$Prediction = ceres_pred
@@ -636,6 +636,7 @@ exp_plot <- ggplot(data = plottingData.exp, aes(x=value, fill=variable)) +
 
 exp_plot
 ```
+
 We see that the predicted values and the real values do not match. This was already expected judging by the R-squared value our model gave us. We cannot use our model to predict expressions values.
 
 
@@ -665,6 +666,7 @@ ceres_plot <- ggplot(data = plottingData.ceres, aes(x=value, fill=variable)) +
 
 ceres_plot
 ```
+
 The R-squared value for the CERES score model was very promising, but judging by the visualization it is not so good. Both real and predicted values peak in the same region, around 0.0, but they have very different densities and do not match. 
 
 For the probability model:
@@ -694,6 +696,7 @@ prob_plot <- ggplot(data = plottingData.prob, aes(x=value, fill=variable)) +
 
 prob_plot
 ```
+
 Looking at both curves we see the same problem we had with the CERES score model. The R-squared value looked promising but after training and testing our model, the result was not good. The curves show that the predicted and real values are not similar, which proves our model to be not that good. 
 
 
