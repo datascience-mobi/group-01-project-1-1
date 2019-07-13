@@ -419,4 +419,193 @@ ceres.mtnd5.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.mtnd5),]
 list.muc16.genes = unique(subset(mutations.muc16))
 genes.muc16 <- c(list.muc16.genes$Hugo_Symbol)
 ceres.muc16.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.muc16),]
+qqnorm(ceres.tp53.genes$`ACH-000036`, main="QQ-Plot of CERES scores of all genes of cell line ACH-000036")
+qqline(ceres.tp53.genes$`ACH-000036`, datax = FALSE, distribution = qnorm,
+        probs = c(0.25, 0.75), qtype = 7)
+shapiro.test(ceres.tp53.genes$`ACH-000036`)
+ceres.allDM.genes=rbind(ceres.tp53.genes, ceres.ttn.genes, ceres.mtnd5.genes, ceres.muc16.genes)
+lapply(ceres.allDM.genes,shapiro.test)
+t(ceres.tp53.genes)->ceres.tp53.genes_t
+t(ceres.ttn.genes)->ceres.ttn.genes_t
+t(ceres.muc16.genes)->ceres.muc16.genes_t
+t(ceres.mtnd5.genes)->ceres.mtnd5.genes_t
+cor(ceres.tp53.genes_t$ABCA13, ceres.tp53.genes_t$TP53, method = "spearman")
+cor.ceres.tp53.genes_t<-cor(ceres.tp53.genes_t, method="spearman")
+cor.ceres.tp.53.only<-cor.ceres.tp53.genes_t[1:734,642]
+cor.ceres.ttn.genes_t<-cor(ceres.ttn.genes_t, method="spearman")
+cor.ceres.ttn.only<-cor.ceres.ttn.genes_t[1:585,520]
+cor.ceres.muc16.genes_t<-cor(ceres.muc16.genes_t, method="spearman")
+cor.ceres.muc16.only<-cor.ceres.muc16.genes_t[1:478,251]
+cor.ceres.mtnd5.genes_t<-cor(ceres.mtnd5.genes_t, method="spearman")
+#cor.ceres.mtnd5.only<-cor.ceres.mtnd5.genes_t[1:496,???]
+install.packages("Hmisc")
+library(Hmisc)
+sig.cor.ceres.tp53.genes_t<-rcorr(as.matrix(ceres.tp53.genes_t), type="spearman")
+View(sig.cor.ceres.tp53.genes_t$r)
+sig.cor.ceres.tp53.only<-sig.cor.ceres.tp53.genes_t$r[1:734, 642]
+sig.cor.ceres.ttn.genes_t<-rcorr(as.matrix(ceres.ttn.genes_t), type="spearman")
+View(sig.cor.ceres.ttn.genes_t$r)
+sig.cor.ceres.ttn.only<-sig.cor.ceres.ttn.genes_t$r[1:585,520]
+sig.cor.ceres.muc16.genes_t<-rcorr(as.matrix(ceres.muc16.genes_t), type="spearman")
+View(sig.cor.ceres.muc16.genes_t$r)
+sig.cor.ceres.muc16.only<-sig.cor.ceres.muc16.genes_t$r[1:478,251]
+sig.cor.ceres.mtnd5.genes_t<-rcorr(as.matrix(ceres.mtnd5.genes_t), type="spearman")
+View(sig.cor.ceres.mtnd5.genes_t$r)
+#sig.cor.ceres.mtnd5.only<-sig.cor.ceres.mtnd5.genes_t$r[1:496,???]
+
+mlr.mat = as.data.frame(cbind(rowMeans(exp.clean.w0), rowMeans(copy.clean.w0), rowMeans(ceres.clean.w0), rowMeans(prob.clean.w0)))
+colnames(mlr.mat) = c("expression", "copynumber", "ceres", "probability")
+summary(lm(expression ~ ., data = mlr.mat))
+summary(lm(copynumber ~ ., data = mlr.mat))
+summary(lm(ceres ~ ., data = mlr.mat))
+summary(lm(probability ~ ., data = mlr.mat))
+mlr.mat.0 = as.data.frame(cbind(rowMeans(exp.clean), rowMeans(copy.clean), rowMeans(ceres.clean), rowMeans(prob.clean)))
+colnames(mlr.mat.0) = c("expression", "copynumber", "ceres", "probability")
+summary(lm(expression ~ ., data = mlr.mat.0))
+summary(lm(copynumber ~ ., data = mlr.mat.0))
+summary(lm(ceres ~ ., data = mlr.mat.0))
+summary(lm(probability ~ ., data = mlr.mat.0))
+set.seed(123)
+split.exp = sample.split(mlr.mat$expression, SplitRatio = 0.8)
+split.exp = as.data.frame(split.exp)
+training_set_exp = subset(mlr.mat, split.exp == TRUE)
+test_set_exp = subset(mlr.mat, split.exp == FALSE)
+training_set_exp = scale(training_set_exp)
+test_set_exp = scale(test_set_exp)
+exp.regressor = lm(expression ~ ., data = training_set_exp)
+exp_pred = predict(exp.regressor, newdata = test_set_exp) 
+test_set_exp$Prediction = exp_pred 
+test_set_exp
+set.seed(123)
+split.copy = sample.split(mlr.mat$copynumber, SplitRatio = 0.8)
+split.copy = as.data.frame(split.copy)
+training.set.copy = subset(mlr.mat, split.copy == TRUE)
+test.set.copy = subset(mlr.mat, split.copy == FALSE)
+dim(test.set.copy) 
+set.seed(123)
+split.ceres = sample.split(mlr.mat$ceres, SplitRatio = 0.8)
+training.set.ceres = subset(mlr.mat, split.ceres == TRUE)
+test.set.ceres = subset(mlr.mat, split.ceres == FALSE)
+dim(test.set.ceres) #2309 --> training/test split successful
+training.set.ceres = scale(training.set.ceres)
+test.set.ceres = scale(test.set.ceres)
+ceres.regressor = lm(ceres ~ ., data = as.data.frame(training.set.ceres))
+ceres_pred = predict(ceres.regressor, newdata = test.set.ceres)
+test.set.ceres$Prediction = ceres_pred
+View(test.set.ceres)
+set.seed(123)
+split.prob = sample.split(mlr.mat$probability, SplitRatio = 0.8)
+training.set.prob = subset(mlr.mat, split.prob ==TRUE)
+test.set.prob = subset(mlr.mat, split.prob == FALSE)
+prob.regressor = lm(probability ~., data = as.data.frame(training.set.prob))
+prob_pred = predict(prob.regressor, newdata = test.set.prob)
+test.set.prob$Prediction = prob_pred
+plot(density(test_set_exp$expression), col = "red")
+lines(density(test_set_exp$Prediction), col = "blue")
+plot(density(test.set.ceres$ceres), col = "red")
+lines(density(test.set.ceres$Prediction))
+plot(density(test.set.prob$probability), col = "red")
+lines(density(test.set.prob$Prediction))
+plot.ceres.m <- melt(test.set.ceres$ceres)
+a <- melt(test.set.ceres$Prediction)
+colnames(plot.ceres.m) <- "CERES"
+rownames(plot.ceres.m) = rownames(test.set.ceres)
+colnames(a) <- "Prediction"
+plot.ceres.m <- cbind(plot.ceres.m,a)
+plottingData.ceres <- melt(plot.ceres.m)
+plot.exp.m <- melt(test_set_exp$expression)
+a <- melt(test_set_exp$Prediction)
+colnames(plot.exp.m) <- "Expression"
+rownames(plot.exp.m) = rownames(plot.ceres.m)
+colnames(a) <- "Prediction"
+plot.exp.m <- cbind(plot.exp.m,a)
+plottingData.exp <- melt(plot.exp.m)
+
+plot.prob.m <- melt(test.set.prob$probability)
+a <- melt(test.set.prob$Prediction)
+colnames(plot.prob.m) <- "Probability"
+rownames(plot.prob.m) = rownames(test.set.prob)
+colnames(a) <- "Prediction"
+plot.prob.m <- cbind(plot.prob.m,a)
+plottingData.prob <- melt(plot.prob.m)
+exp_plot <- ggplot(data = plottingData.exp, aes(x=value, fill=variable)) + 
+  geom_density(alpha=.3) +
+  ggtitle(paste0("Performance evaluation Lin.Reg. expression")) +
+  ylab("Density") +
+  xlab("Expression values") +
+  theme_bw(base_size = 7) +
+  theme(legend.position="bottom",
+        legend.direction="horizontal",
+        plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        legend.title= element_blank(),
+        axis.title.x = element_blank(),
+        strip.text.y = element_text(angle = 0))
+
+prob_plot <- ggplot(data = plottingData.prob, aes(x=value, fill=variable)) + 
+    geom_density(alpha=.3) +
+     ggtitle(paste0("Performance evaluation Lin.Reg. probability")) +
+     ylab("Density") +
+     xlab("Probability values") +
+    theme_bw(base_size = 7) +
+     theme(legend.position="bottom",
+           legend.direction="horizontal",
+           plot.title = element_text(hjust = 0.5),           axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+           legend.title= element_blank(),
+           axis.title.x = element_blank(),
+           strip.text.y = element_text(angle = 0))
+
+ceres_plot <- ggplot(data = plottingData.ceres, aes(x=value, fill=variable)) + 
+  geom_density(alpha=.3) +
+  ggtitle(paste0("Performance evaluation Lin.Reg. CERES score")) +
+  ylab("Density") +
+  xlab("CERES score values") +
+  theme_bw(base_size = 7) +
+  theme(legend.position="bottom",
+        legend.direction="horizontal",
+        plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        legend.title= element_blank(),
+        axis.title.x = element_blank(),
+        strip.text.y = element_text(angle = 0))
+qqnorm(ceres.tp53.genes$`ACH-000036`, main="QQ-Plot of CERES scores of all genes of cell line ACH-000036")
+qqline(ceres.tp53.genes$`ACH-000036`, datax = FALSE, distribution = qnorm,
+        probs = c(0.25, 0.75), qtype = 7)
+shapiro.test(ceres.tp53.genes$`ACH-000036`)
+ceres.allDM.genes=rbind(ceres.tp53.genes, ceres.ttn.genes, ceres.mtnd5.genes, ceres.muc16.genes)
+lapply(ceres.allDM.genes,shapiro.test)
+t(ceres.tp53.genes)->ceres.tp53.genes_t
+t(ceres.ttn.genes)->ceres.ttn.genes_t
+t(ceres.muc16.genes)->ceres.muc16.genes_t
+t(ceres.mtnd5.genes)->ceres.mtnd5.genes_t
+cor(ceres.tp53.genes_t$ABCA13, ceres.tp53.genes_t$TP53, method = "spearman")
+cor.ceres.tp53.genes_t<-cor(ceres.tp53.genes_t, method="spearman")
+
+cor.ceres.ttn.genes_t<-cor(ceres.ttn.genes_t, method="spearman")
+cor.ceres.ttn.only<-cor.ceres.ttn.genes_t[1:585,520]
+cor.ceres.muc16.genes_t<-cor(ceres.muc16.genes_t, method="spearman")
+cor.ceres.muc16.only<-cor.ceres.muc16.genes_t[1:478,251]
+cor.ceres.mtnd5.genes_t<-cor(ceres.mtnd5.genes_t, method="spearman")
+#cor.ceres.mtnd5.only<-cor.ceres.mtnd5.genes_t[1:496,???]
+
+sig.cor.ceres.tp53.genes_t<-rcorr(as.matrix(ceres.tp53.genes_t), type="spearman")
+View(sig.cor.ceres.tp53.genes_t$r)
+sig.cor.ceres.tp53.only<-sig.cor.ceres.tp53.genes_t$r[1:734, 642]
+sig.cor.ceres.ttn.genes_t<-rcorr(as.matrix(ceres.ttn.genes_t), type="spearman")
+View(sig.cor.ceres.ttn.genes_t$r)
+sig.cor.ceres.ttn.only<-sig.cor.ceres.ttn.genes_t$r[1:585,520]
+sig.cor.ceres.muc16.genes_t<-rcorr(as.matrix(ceres.muc16.genes_t), type="spearman")
+View(sig.cor.ceres.muc16.genes_t$r)
+sig.cor.ceres.muc16.only<-sig.cor.ceres.muc16.genes_t$r[1:478,251]
+sig.cor.ceres.mtnd5.genes_t<-rcorr(as.matrix(ceres.mtnd5.genes_t), type="spearman")
+View(sig.cor.ceres.mtnd5.genes_t$r)
+#sig.cor.ceres.mtnd5.only<-sig.cor.ceres.mtnd5.genes_t$r[1:496,???]
+sig.cor.ceres.tp53.only[abs(sig.cor.ceres.tp53.only) > 0.05]<- NA
+sst.tp53<-na.omit(sig.cor.ceres.tp53.only)
+sig.cor.ceres.ttn.only[abs(sig.cor.ceres.ttn.only) > 0.05]<- NA
+sst.ttn<-na.omit(sig.cor.ceres.ttn.only)
+sig.cor.ceres.muc16.only[abs(sig.cor.ceres.muc16.only) > 0.05] <- NA
+SST.muc16<-na.omit(sig.cor.ceres.muc16.only)
+sig.cor.ceres.mtnd5.only[abs(sig.cor.ceres.mtnd5.only) > 0.05] <- NA
+SST.mtnd5<-na.omit(sig.cor.ceres.mtnd5.only)																										  
 ```
