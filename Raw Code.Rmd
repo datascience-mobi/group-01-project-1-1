@@ -9,7 +9,7 @@ install.packages("dplyr")
 library("dplyr")
 install.packages("grid")
 library("grid")
-allDepMapData = readRDS("/Users/Amanda/Desktop/DepMap19Q1_allData.RDS")
+allDepMapData = readRDS("C:\\Users\\nikla\\Documents\\R\\bioinfoproject\\project-01-group-01\\AllDepMapData.RDS")
 brain.anno = allDepMapData$annotation[allDepMapData$annotation$Subtype.Disease == "Glioblastoma", ]
 rownames(brain.anno) = brain.anno$DepMap_ID
 brain.anno = brain.anno[, -1]
@@ -221,6 +221,9 @@ exp.clean.w0 = exp.clean.w0[-which(rownames(exp.clean.w0) %!in% genes.clean.w0),
 copy.clean.w0 = copy.clean.w0[-which(rownames(copy.clean.w0) %!in% genes.clean.w0),]
 ceres.clean.w0 = ceres.clean.w0[-which(rownames(ceres.clean.w0) %!in% genes.clean.w0),]
 rm(gene.data.ex)
+```
+
+```{r}
 pca_exp <- prcomp(t(exp.clean.w0), scale = TRUE) 
 plot(pca_exp$x[,1], pca_exp$x[,2]) 
 pca_exp_var <- pca_exp$sdev^2
@@ -454,10 +457,10 @@ qqnorm(ceres.tp53.genes$`ACH-000036`, main="QQ-Plot of CERES scores of all genes
 qqline(ceres.tp53.genes$`ACH-000036`, datax = FALSE, distribution = qnorm,
         probs = c(0.25, 0.75), qtype = 7)
 shapiro.test(ceres.tp53.genes$`ACH-000036`)
-ceres.allDM.genes=rbind(ceres.tp53.genes, ceres.ttn.genes, ceres.mtnd5.genes, ceres.muc16.genes)
+ceres.allDM.genes=rbind(ceres.tp53.genes, ceres.muc16.genes, ceres.pten.genes)
 lapply(ceres.allDM.genes,shapiro.test)
-t(ceres.tp53.genes)->ceres.tp53.genes_t
-t(ceres.mtnd5.genes)->ceres.mtnd5.genes_t
+t(ceres.tp53.genes)-> ceres.tp53.genes_t
+t(ceres.muc16.genes)-> ceres.muc16.genes_t
 t(ceres.pten.genes) -> ceres.pten.genes_t
 
 cor.ceres.tp53.genes_t<-cor(ceres.tp53.genes_t, method="spearman")
@@ -481,13 +484,6 @@ colnames(sig.cor.ceres.muc16.only) <- c("Correlation to MUC-16")
 sig.cor.ceres.pten.genes_t <-rcorr(as.matrix(ceres.pten.genes_t), type="spearman")
 sig.cor.ceres.pten.only <-as.data.frame(sig.cor.ceres.pten.genes_t$r[1:505, 328])
 colnames(sig.cor.ceres.pten.only) <- c("Correlation to PTEN")
-
-mlr.mat = as.data.frame(cbind(rowMeans(exp.clean.w0), rowMeans(copy.clean.w0), rowMeans(ceres.clean.w0), rowMeans(prob.clean.w0)))
-colnames(mlr.mat) = c("expression", "copynumber", "ceres", "probability")
-summary(lm(expression ~ ., data = mlr.mat))
-summary(lm(copynumber ~ ., data = mlr.mat))
-summary(lm(ceres ~ ., data = mlr.mat))
-summary(lm(probability ~ ., data = mlr.mat))
 ```
 
 ```{r}
@@ -500,6 +496,13 @@ summary(lm(probability ~ ., data = mlr.mat.0))
 ```
 
 ```{r}
+mlr.mat = as.data.frame(cbind(rowMeans(exp.clean.w0), rowMeans(copy.clean.w0), rowMeans(ceres.clean.w0), rowMeans(prob.clean.w0)))
+colnames(mlr.mat) = c("expression", "copynumber", "ceres", "probability")
+summary(lm(expression ~ ., data = mlr.mat))
+summary(lm(copynumber ~ ., data = mlr.mat))
+summary(lm(ceres ~ ., data = mlr.mat))
+summary(lm(probability ~ ., data = mlr.mat))
+
 library(caTools)
 set.seed(123)
 split.exp = sample.split(mlr.mat$expression, SplitRatio = 0.8)
@@ -526,17 +529,17 @@ split.prob = sample.split(mlr.mat$probability, SplitRatio = 0.8)
 training.set.prob = subset(mlr.mat, split.prob ==TRUE)
 test.set.prob = subset(mlr.mat, split.prob == FALSE)
 
-exp.regressor = lm(expression ~ ., data = training_set_exp)
+exp.regressor = lm(expression ~ ., data = as.data.frame(training_set_exp))
 ceres.regressor = lm(ceres ~ ., data = as.data.frame(training.set.ceres))
 prob.regressor = lm(probability ~., data = as.data.frame(training.set.prob))
 
-exp_pred = predict(exp.regressor, newdata = test_set_exp) 
+exp_pred = predict(exp.regressor, newdata = as.data.frame(test_set_exp)) 
 test_set_exp$Prediction = exp_pred
 
-ceres_pred = predict(ceres.regressor, newdata = test.set.ceres)
+ceres_pred = predict(ceres.regressor, newdata = as.data.frame(test.set.ceres))
 test.set.ceres$Prediction = ceres_pred
 
-prob_pred = predict(prob.regressor, newdata = test.set.prob)
+prob_pred = predict(prob.regressor, newdata = as.data.frame(test.set.prob))
 test.set.prob$Prediction = prob_pred
 ```
 
