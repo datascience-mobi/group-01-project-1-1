@@ -699,7 +699,7 @@ Looking at both curves we see the same problem we had with the CERES score model
 
 # Conlusion
 
-As stated previously, the goal was to create a model that could predict one of our four variables using all three others (between expression, copynumber, CERES score and probability matrices). Our models proved not to be very useful or efficient in the prediction, especially for copy number and expression. The models for the prediction of the CERES score and probability looked promising becuase of the 
+As stated previously, the goal was to create a model that could predict one of our four variables using all three others (between expression, copynumber, CERES score and probability matrices). Our models proved not to be very useful or efficient in the prediction, especially for copy number and expression. The models for the prediction of the CERES score and probability looked promising becuase of the R-squared values, but after the visualisation of the predicted versus the real values, we can say that they are not suitable for an correct prediction.
 
 
 
