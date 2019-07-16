@@ -4,6 +4,11 @@ author: "Annika Hein, Amanda Janzen, Nicolai Laufer, Niklas Schwan"
 date: "25/06/2019"
 output: html_document
 ---
+<style>
+body {
+text-align: justify}
+</style>
+
 
 # Introduction
 
@@ -11,7 +16,7 @@ In this project we tried to identify genetic interactions and their effects on s
 
 GBM is a fast growing, malignant brain tumor classified as a grade IV cancer by the World Health Organisation (WHO). It represents about 15% of all brain tumors and most commonly develops in adults aged 45-70. We chose GBM because it falls in the category of cancers with poor diagnosis and also has no effective long-term treatments, which leads to a survival rate of less than 15 months, according to the TCGA (The Cancer Genome Atlas Research Network).
 
-The identification of genomic interactions and their effect on cancer cell survival is very important for the search after a better treatment. Its concept is tied to the fact that cancer is a product of accumulated genomic defects (mutations, copy number changes, etc.). There are a handful of genes that drive the process of oncogenesis, these are called *driver mutations* (DM), all other mutations that don't really have an impact on the oncogenisis are called *passenger mutations*.
+The identification of genomic interactions and their effect on cancer cell survival is very important for the search after better treatments. Its concept is tied to the fact that cancer is a product of accumulated genomic defects (mutations, copy number changes, etc.). There are a handful of genes that drive the process of oncogenesis, these are called *driver mutations* (DM), all other mutations that do not really have an impact on the oncogenisis are called *passenger mutations*.
 
 The driver mutations are normally highly essential genes for all cells in the human body, making them a bad target for anti-cancer drugs, for they would shut down all cells, not just cancer cells. The alternative to this targeting problem is to find genes that are linked with the driving mutations in the cancer cells, but not in the normal cells. Ideally, the targeting of these so called *second site targets* (SST) would cause the cancer cells to shut down and stop proliferating, while the normal cells would not be subjected to any changes.
 
@@ -19,7 +24,7 @@ Our aim in this project was to find the driver mutations in GBM throughout all c
 
 # Data cleanup
 
-Once we downloaded the data, we first removed all data that didn't have to do with Glioblastoma.
+Once we downloaded the data, we first removed all data that did not have to do with Glioblastoma.
 
 ```{r}
 allDepMapData = readRDS("/Users/Amanda/Desktop/DepMap19Q1_allData.RDS")
@@ -37,8 +42,10 @@ The next step was to remove all cell lines that were irrelevant to our project f
 
 Package "operators" needed.
 
-```{r}
+```{r, include=FALSE}
 library("operators")
+```
+```{r}
 cell.lines = dput(rownames(brain.anno))
 exp.clean = allDepMapData$expression[, -which(colnames(allDepMapData$expression) %!in% cell.lines)]
 copy.clean = allDepMapData$copynumber[, -which(colnames(allDepMapData$copynumber) %!in% cell.lines)]
@@ -83,12 +90,11 @@ copy.clean = copy.clean[-which(apply(copy.clean, 1, function(x) {sum(is.na(x))})
 sum(is.na(copy.clean))
 ```
 
-* copy.clean -> 0
 
 
 3. Scan for outliers via boxplots and threshold or remove them if necessary.
 
-* Two values were identified an outliers, then thresholded and removed them.
+* Two values were identified as outliers, then thresholded and removed them.
 
 ```{r}
 boxplot(ceres.clean) 
@@ -104,10 +110,6 @@ sum(copy.clean == 0)
 sum(exp.clean == 0)
 ```
 
-* ceres.clean -> 28
-* prob.clean -> 80
-* copy.clean -> 0
-* exp.clean -> 644705
 
 We then decided to generate the matrices with and without x = 0 values.
 
@@ -191,20 +193,20 @@ Next we plotted all the mutated genes as well as the most frequent ones by using
 
 ```{r}
 common.genes = as.matrix(common.genes)
-barplot(common.genes, beside = T, names.arg = NULL,  ylab = "Frequency", main = "All mutated genes", las = 2)
+barplot(common.genes, beside = T, names.arg = NULL,  ylab = "Frequency", xlab = "Genes", main = "All mutated genes", las = 2)
 common.genes.c = subset(common.genes, common.genes >11)
 common.genes.c = common.genes.c[c(6, 11, 10, 7, 4, 9, 3, 2, 1, 8),]
 common.genes.c
 barplot_commongenes <- barplot(common.genes.c, beside = T, names.arg = rownames(common.genes.c), ylab = "Frequency", main = "Most common gene mutations", las = 2)
 ```
 
-### Commonly mutated genes:
+### Commonly mutated genes
 
-1. MT-ND5: 32 mutations
+**1. MT-ND5: 32 mutations**
   Mitochondrial gene, which encodes NADH-ubiquinone oxidoreductase chain 5 (ND5). ND5 is a subunit of NADH dehydrogenase, the largest complex of the electron transport chain.
-  Variations are associated with mitochondrail encephalomypathy, stroke-like episodes as well as Leighs syndrome and Leber?s hereditary optic neuropathy.
+  Variations are associated with mitochondrail encephalomypathy, stroke-like episodes as well as Leighs syndrome and Leber's hereditary optic neuropathy.
   
-2. TTN: 26 mutations
+**2. TTN: 26 mutations**
   Gene, which encodes for Titin/Connectin, which is responsible for the passive elasticity of muscles.
   Variations are associated with several forms of myopathy.
   
@@ -215,7 +217,7 @@ barplot_commongenes <- barplot(common.genes.c, beside = T, names.arg = rownames(
 **4. MUC16: 23 mutations**
   Gene, which encodes for the cancer antigen CA-125/mucin 16, a highly glycosylated protein. It has found application as tumor marker, since it plays a role in advancing tumogenesis and tumor proliferation by several different mechanisms (Imuuneevasion, metastatic invasion, induced motility and chemotherapy resistance).
 
-5. MT-CYB: 18 mutations
+**5. MT-CYB: 18 mutations**
   Gene, which encodes for cytochrome b, a subunit of the respiratory chain protein ubiquinol cytochrome c reductase.
   Variations result in mitochondrial deficiencies and associated disorders, including exericise intolerance and cardiomyopathy.
   
@@ -223,31 +225,35 @@ barplot_commongenes <- barplot(common.genes.c, beside = T, names.arg = rownames(
   Tumor suppressing gene, which encodes for phosphatase and tensin homolog. The enzyme is involved in regulation of the cellcycle, preventing cells from growing and dividing too much.
   Variations result in increased cell proliferation and reduced cell death. Frequent genetic inactivation of PTEN occurs in glioblastoma.
   
-7. Other mutations: 10096
+**7. Other mutations: 10096**
 
 
 ### Comparison with literature
 
-The most prominent driving mutations for GBM, we found in scientific papers, are:
+According to scientific papers, the most prominent dirving mutations for GBM are:
+
 1. EGFR
 2. CDKN2A
 3. ARF
 4. TP53
 5. PTEN
 
-Our result doesn?t confirm the observations made in the literature, but that?s not suprising since our dataset is very small in comparison to scientific investigations. However, in TP53 and PTEN we managed to find two of those five most prominent genetic alterations in GBM.
+
+Our result does not confirm the observations made in the literature, but that is not suprising since our dataset is very small in comparison to scientific investigations. However, in TP53 and PTEN we managed to find two of those five most prominent genetic alterations in GBM.
 
 
 ## Data distribution
 
-We visualized the gene?s distribution in all matrices using heatmaps.
+We visualized the gene's distribution in all matrices using heatmaps.
 
 Packages used: pheatmap, grid
 
-```{r}
+```{r,include=FALSE}
 
 library(pheatmap)
 library(grid)
+````
+```{r}
 setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
 pheatmap(exp.clean, main = "Distribution of expression values",  show_rownames = F)
 setHook("grid.newpage", NULL, "replace")
@@ -277,21 +283,23 @@ grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
 
 1. We have identified the most common mutated genes in our data. **Three out of the six most common mutations are directly associated with cancer developement (TP53, MUC-16 and PTEN)**. PTEN and TP53 are also two of the most prominent genetic alterations in GBM, mentioned by scientific papers.
 
-2. We visualized the gene?s distribution for all four matrices:
-  a. The majority of the genes shows normal to moderate expression levels. However, **few genes are highly overexpressed** (marked in red). 
-  b. All genes seem to have copy number levels between minus five and five. Genes, which differ significantly, are not identifiable through this distribution.
-  c. The majority of genes show no significant knockdown scores. However, **few genes have significantly smaller CERES scores, which makes them essential for cell survival** (marked in blue).
-  d. The majority of genes has low probability scores and is therefore not of interest. However, **few genes have probability scores up to one, which makes them important for cell survivability** (marked in red).
+2. We visualized the gene's distribution for all four matrices:
+    a. The majority of the genes shows normal to moderate expression levels. However, **few genes are highly overexpressed** (marked in red). 
+    b. All genes seem to have copy number levels between minus five and five. Genes, which differ significantly, are not identifiable through this distribution.
+    c. The majority of genes show no significant knockdown scores. However, **few genes have significantly smaller CERES scores, which makes them essential for cell survival** (marked in blue).
+    d. The majority of genes has low probability scores and is therefore not of interest. However, **few genes have probability scores up to one, which makes them important for cell survivability** (marked in red).
 
 
 # Data reduction
 
-In order to just continue with the necessary data, we need to reduce our dataset. Since we already determined our most common mutations, we now isolate all celllines from the mutation matrix, which contain one of those specific mutations. Since only PTEN, MUC-16 and TP53 are directly associated with the development of cancer, we decided wot continue working with these three driving mutations (DM). Our aim is to identify all other genes that were also mutated in the presence of this specific DM. Since there were a few thousand mutated genes for each DM, the ones with "IsDeleterious = TRUE" were extracted.
+In order to just continue with the necessary data, we need to reduce our dataset. Since we already determined our most common mutations, we now isolate all cell lines from the mutation matrix, which contain one of those specific mutations. Since only PTEN, MUC-16 and TP53 are directly associated with the development of cancer, we decided wot continue working with these three driving mutations (DM). Our aim is to identify all other genes that were also mutated in the presence of this specific DM. Since there were a few thousand mutated genes for each DM, the ones with "IsDeleterious = TRUE" were extracted.
 
 * Package dplyr needed for this step
 
-```{r}
+```{r, include=FALSE}
 library(dplyr)
+```
+```{r}
 mutations.tp53 = rbind(relevant.mutations$`ACH-000036`,relevant.mutations$`ACH-000040`, relevant.mutations$`ACH-000098`, relevant.mutations$`ACH-000208`, relevant.mutations$`ACH-000215`, relevant.mutations$`ACH-000137`, relevant.mutations$`ACH-000152`, relevant.mutations$`ACH-000591`, relevant.mutations$`ACH-000673`, relevant.mutations$`ACH-000231`, relevant.mutations$`ACH-000368`, relevant.mutations$`ACH-000376`, relevant.mutations$`ACH-000445`, relevant.mutations$`ACH-000464`, relevant.mutations$`ACH-000469`, relevant.mutations$`ACH-000570`, relevant.mutations$`ACH-000571`, relevant.mutations$`ACH-000623`, relevant.mutations$`ACH-000673`, relevant.mutations$`ACH-000738`, relevant.mutations$`ACH-000756`, relevant.mutations$`ACH-000819`, relevant.mutations$`ACH-000128`)
 mutations.tp53 = select(mutations.tp53, c(2,21, 36))
 mutations.tp53 = subset(mutations.tp53, mutations.tp53$isDeleterious == "TRUE")
@@ -305,7 +313,7 @@ mutations.pten = select(mutations.pten, c(2,21, 36))
 mutations.pten = subset(mutations.pten, mutations.pten$isDeleterious == "TRUE")
 ```
 
-Next we extracted those remaining genes for each DM from the CERES matrix in order to just continue working with them
+Next we extracted those remaining genes for each DM from the CERES matrix in order to continue working with just them.
 
 ```{r}
 list.tp53.genes = unique(subset(mutations.tp53))
@@ -332,11 +340,11 @@ Parametric correlation tests (e.g. Pearson correlation) need normally distribute
 
 Methods to determine the type of distribution: qq-plots (visual determination), Shapiro-Wilk-test.
 
-* exemplary qq-plot of CERES scores of all genes of cell line ACH-000036
+* Exemplary qq-plot of CERES scores of all genes of cell line ACH-000036
 
 
 ```{r}
-qqnorm(ceres.tp53.genes$`ACH-000036`, main="QQ-Plot of CERES scores of all genes of cell line ACH-000036")
+qqnorm(ceres.tp53.genes$`ACH-000036`, main = "QQ-Plot of CERES scores of all genes of cell line ACH-000036")
 qqline(ceres.tp53.genes$`ACH-000036`, datax = FALSE, distribution = qnorm,
         probs = c(0.25, 0.75), qtype = 7)
 ```
@@ -418,8 +426,10 @@ The function rcorr(x, type = c("pearson", "spearman")) can be used to compute th
 Packages used: Hmisc
 
 We calculated the significance levels for TP53 and extracted the relevant column:
-```{r}
+```{r, include = FALSE}
 library(Hmisc)
+```
+```{r}
 sig.cor.ceres.tp53.genes_t <-rcorr(as.matrix(ceres.tp53.genes_t), type="spearman")
 sig.cor.ceres.tp53.only <-as.data.frame(sig.cor.ceres.tp53.genes_t$r[1:734, 642])
 colnames(sig.cor.ceres.tp53.only) <- c("Correlation to TP53")
@@ -438,9 +448,8 @@ colnames(sig.cor.ceres.pten.only) <- c("Correlation to PTEN")
 
 A p-value is the probability of obtaining a larger (one-sided upper tail), a smaller (one-sided lower tail) or a more extreme value (two-sided or two-tailed) value of the statistics if H0 is valid. Following this logic, a low p-value means that H0 is invalid with a high probability.
 
-We need a significance level alpha to evaluate our p-values in order to identify potential SSTs --> p < ?? : H0 is invalid and can be rejected, the observed effect is significant and H1 is statistically proven.
+We need a significance level alpha to evaluate our p-values in order to identify potential SSTs --> a p-value of 0.05 is often used as a standard value. We chose to apply the same value to evaluate our correlation results as well as H0 and H1, which means if p < 0.05, H0 is invalid and can be rejected, the observed effect is significant and H1 is statistically proven.
 
-?? = 0.05 is often used as a standard value. We chose to apply the same value to evaluate our correlation results as well as H0 and H1.
 
 ### Formulating our H0 and H1 hypothesis:
 
@@ -483,7 +492,7 @@ Paper: Synthetic sickness or lethality points at candidate combination therapy t
 
 * PLK-1: well-known interaction between PLK-1 and TP53, which is not present in our data. It does not show a significant correlation between TP53 and PLK-1 because PLK-1 does not appear in the remaining mutated genes. 
 
-* SLC1A5: one of the top plausible SSL pairs with significant impact on overall survival in GBM when knock-down.  SLC16A5, SLC27A6, SLC34A1, SLC3A2 and SLC6A9 appear to be significantly correlated to the TP53 mutation. Are these genes maybe variants of SLC1A5? Or are they completely different genes?
+* SLC1A5: one of the top plausible SSL pairs with significant impact on overall survival in GBM when knock-down.  SLC16A5, SLC27A6, SLC34A1, SLC3A2 and SLC6A9 appear to be correlated to the TP53 mutation.
 
 Paper: Correlation of Somatic Mutation and Expression Identifies Genes Important in Human Glioblastoma. (Masica, David L.; Karchin, Rachel)
 
