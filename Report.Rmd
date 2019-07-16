@@ -31,7 +31,7 @@ allDepMapData = readRDS("/Users/Amanda/Desktop/DepMap19Q1_allData.RDS")
 brain.anno = allDepMapData$annotation[allDepMapData$annotation$Subtype.Disease == "Glioblastoma", ]
 ```
 
-* make cell line identifier be the rownames in annotation
+* Make cell line identifier be the rownames in annotation
 
 ```{r}
 rownames(brain.anno) = brain.anno$DepMap_ID
@@ -189,10 +189,11 @@ relevant.mutations.combi = do.call(rbind, lapply(which(names(allDepMapData$mutat
 common.genes = as.matrix(table(c(relevant.mutations.combi$Hugo_Symbol)))
 ```
 
-Next we plotted all the mutated genes as well as the most frequent ones by using barplots.
+Next we plotted all the mutated genes as well as the ten most frequent ones by using barplots. The genes were sorted manually according to their frequency of being mutated among our cell lines.
 
 ```{r}
 common.genes = as.matrix(common.genes)
+common.genes
 barplot(common.genes, beside = T, names.arg = NULL,  ylab = "Frequency", xlab = "Genes", main = "All mutated genes", las = 2)
 common.genes.c = subset(common.genes, common.genes >11)
 common.genes.c = common.genes.c[c(6, 11, 10, 7, 4, 9, 3, 2, 1, 8),]
@@ -202,31 +203,31 @@ barplot_commongenes <- barplot(common.genes.c, beside = T, names.arg = rownames(
 
 ### Commonly mutated genes
 
-**1. MT-ND5: 32 mutations**
-  Mitochondrial gene, which encodes NADH-ubiquinone oxidoreductase chain 5 (ND5). ND5 is a subunit of NADH dehydrogenase, the largest complex of the electron transport chain.
+**1. MT-ND5:**
+  (32 mutations) Mitochondrial gene, which encodes NADH-ubiquinone oxidoreductase chain 5 (ND5). ND5 is a subunit of NADH dehydrogenase, the largest complex of the electron transport chain.
   Variations are associated with mitochondrail encephalomypathy, stroke-like episodes as well as Leighs syndrome and Leber's hereditary optic neuropathy.
   
-**2. TTN: 26 mutations**
-  Gene, which encodes for Titin/Connectin, which is responsible for the passive elasticity of muscles.
+**2. TTN:**
+  (26 mutations) Gene, which encodes for Titin/Connectin, which is responsible for the passive elasticity of muscles.
   Variations are associated with several forms of myopathy.
   
-**3. TP53: 24 mutations**
-  Tumorsuppressorgene, which encodes for p53, which plays a role in regulation or progression through the cell cycle, apoptosis and genomic stability. 
+**3. TP53:**
+  (24 mutations) Tumorsuppressorgene, which encodes for p53, which plays a role in regulation or progression through the cell cycle, apoptosis and genomic stability. 
   Variations are directly associated with cancer formation.
   
-**4. MUC16: 23 mutations**
-  Gene, which encodes for the cancer antigen CA-125/mucin 16, a highly glycosylated protein. It has found application as tumor marker, since it plays a role in advancing tumogenesis and tumor proliferation by several different mechanisms (Imuuneevasion, metastatic invasion, induced motility and chemotherapy resistance).
+**4. MUC16:**
+  (23 mutations) Gene, which encodes for the cancer antigen CA-125/mucin 16, a highly glycosylated protein. It has found application as tumor marker, since it plays a role in advancing tumogenesis and tumor proliferation by several different mechanisms (Imuuneevasion, metastatic invasion, induced motility and chemotherapy resistance).
 
-**5. MT-CYB: 18 mutations**
-  Gene, which encodes for cytochrome b, a subunit of the respiratory chain protein ubiquinol cytochrome c reductase.
+**5. MT-CYB:**
+  (18 mutations) Gene, which encodes for cytochrome b, a subunit of the respiratory chain protein ubiquinol cytochrome c reductase.
   Variations result in mitochondrial deficiencies and associated disorders, including exericise intolerance and cardiomyopathy.
   
-**6. PTEN: 17 mutations**
-  Tumor suppressing gene, which encodes for phosphatase and tensin homolog. The enzyme is involved in regulation of the cellcycle, preventing cells from growing and dividing too much.
+**6. PTEN:**
+  (17 mutations) Tumor suppressing gene, which encodes for phosphatase and tensin homolog. The enzyme is involved in regulation of the cellcycle, preventing cells from growing and dividing too much.
   Variations result in increased cell proliferation and reduced cell death. Frequent genetic inactivation of PTEN occurs in glioblastoma.
   
-**7. Other mutations: 10096**
-
+**7. Other mutations:**
+  (10096)
 
 ### Comparison with literature
 
@@ -252,7 +253,8 @@ Packages used: pheatmap, grid
 
 library(pheatmap)
 library(grid)
-````
+```
+
 ```{r}
 setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
 pheatmap(exp.clean, main = "Distribution of expression values",  show_rownames = F)
@@ -523,8 +525,8 @@ There are no potential SSTs for MUC16 according to literature, because it is no 
 
 ## Conclusion
 
-In this part we wanted to find potential second-site-targets in the GBM celllines, where a specific driving mutation is present, After confirming the unnormal distribution of our data using Shapiro-Wilk-Tests, we used Spearman correlation to determine, whether there is a dependency between the presence of a specific DM and the essentiality for cell survival of another mutated gene (indicated by low CERES score). We performed those tests with our cancer-associated DM TP53, PTEN and MUC-16. For each DM we found about 100 potential SSTs, but we couldn?t confirm our results with scientific papers or the other way round, respectively. 
-Furthermore we are also not able to assign our celllines to a specific GBM subtype (classical, mesenchymal, neural, proneural). However, we would assign our celllines more towards the proneural or mesenchymal subtype, since these subtypes have mutations of PTEN and TP53 as there marker. But we couldn?t confirm any other known tumormarkers for those two subtypes in our celllines.
+In this part, we wanted to find potential second-site-targets in the GBM celllines, where a specific driving mutation is present. After confirming the unnormal distribution of our data using Shapiro-Wilk-Tests, we used Spearman correlation to determine, whether there is a dependency between the presence of a specific DM and the essentiality for cell survival of another mutated gene (indicated by low CERES score). We performed those tests with our cancer-associated DM TP53, PTEN and MUC-16. For each DM we found about 100 potential SSTs, but we could not confirm our results with scientific papers or the other way round, respectively. 
+Furthermore, we are also not able to assign our celllines to a specific GBM subtype (classical, mesenchymal, neural, proneural). However, we would assign our celllines more towards the proneural or mesenchymal subtype, since these subtypes have mutations of PTEN and TP53 as there marker. But we could not confirm any other known tumormarkers for those two subtypes in our celllines.
 
 
 # Multiple linear regression
@@ -533,7 +535,7 @@ Furthermore we are also not able to assign our celllines to a specific GBM subty
 
 With a multiple linear regression we intended to create a model which could predict a SST deriving from a DM. This turned out not to work and we decided to create a model for each expression, copy number, CERES score and probability, each based on the other values.
 
-We calculated the mean of expression, copy number, CERES score and probability throughout all cell lines and combined all values in a matrix. We then performed the multiple linear regression.
+We calculated the mean of expression, copy number, CERES score and probability throughout all cell lines and combined all values into one matrix. We then performed the multiple linear regression.
 
 ```{r}
 mlr.mat = as.data.frame(cbind(rowMeans(exp.clean.w0), rowMeans(copy.clean.w0), rowMeans(ceres.clean.w0), rowMeans(prob.clean.w0)))
@@ -548,10 +550,10 @@ To evaluate our model we looked at the R-squared value. R squared is a statistic
 
 The definition of R-squared is the percentage of the response variable variation that is explained by a linear model. It is always between 0 and 1. 0 means that the model explains none of the variability around its mean and 1 indicates that the model explains all the variability of the response data around its mean.
 
-* expression -> r^2 = 0.1563
-* copynumber -> r^2 = 0.003437
-* CERES score -> r^2 = 0.9352
-* probability -> r^2 = 0.9358
+* expression -> $$r^{2}$$ = 0.1563
+* copynumber -> $$r^{2}$$ = 0.003437
+* CERES score -> $$r^{2}$$ = 0.9352
+* probability -> $$r^{2}$$ = 0.9358
 
 As we can see, the model for expression is not that great, having a R-squared value of 0.1563. The models for CERES score and probability look more reliable with values of 0.9352 and 0.9358. The copy number model does not look good at all with a R-squared value of 0.0034.
 
