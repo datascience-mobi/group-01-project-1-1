@@ -92,13 +92,12 @@ sum(is.na(copy.clean))
 
 
 
-3. Scan for outliers via boxplots and threshold or remove them if necessary.
+3. Scan for outliers via boxplots.
 
-* Two values were identified as outliers, then thresholded and removed them.
+* Two values were identified as outliers
 
 ```{r}
-boxplot(ceres.clean) 
-ceres.transf = ceres.clean[-which(ceres.clean > 3), ] 
+ggplot(melt(ceres.clean), aes(x = variable, y = value)) + geom_boxplot() + theme(axis.text.x  = element_text(angle=90, vjust=0.5), plot.title = element_text(hjust = 0.5)) + ggtitle(paste0("Boxplot of CERES scores of all cell lines")) + ylab("CERES score") + xlab("cell lines") 
 ```
 
 4. Then we checked all matrices for containing values x = 0.
