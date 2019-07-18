@@ -205,46 +205,26 @@ barplot_commongenes <- barplot(common.genes.c, beside = T, names.arg = rownames(
 
 **1. MT-ND5:**
   (32 mutations) Mitochondrial gene, which encodes NADH-ubiquinone oxidoreductase chain 5 (ND5). ND5 is a subunit of NADH dehydrogenase, the largest complex of the electron transport chain.
-  Variations are associated with mitochondrial encephalomypathy, stroke-like episodes as well as Leighs syndrome and Leber's hereditary optic neuropathy.
-  
-Source: 
-Whole-exome sequencing reveals a novel mutation of MT-ND5 gene in a mitochondrial cardiomyopathy pedigree: Patients who show biventricular hypertrophy, hyperlactacidemia, pulmonary hypertension, and decreased exercise tolerance (Zhou N, et al., 2019)
-Impaired Cellular Bioenergetics Causes Mitochondrial Calcium Handling Defects in MT-ND5 Mutant Cybrids (McKenzie Mathew, Duchen Michael R; 2016)
+  Variations are associated with mitochondrial encephalomypathy, stroke-like episodes as well as Leighs syndrome and Leber's hereditary optic neuropathy (Zhou et al., 2019; McKenzie and Duchen, 2016). 
   
 **2. TTN:**
   (26 mutations) Gene, which encodes for Titin/Connectin, which is crucial for myofibrillar elasticity and integrity.
-  Variations are associated with several forms of myopathy.
-
-Source:
-Recessive truncating titin gene, TTN, mutations presenting as centronuclear myopathy (Ozge Ceyhan-Birsoy, *et al.*; 2013)
-Mutations of TTN, encoding the giant muscle filament titin, cause familial dilated cardiomyopathy (Brenda Gerull, *et al.*; 2002)
+  Variations are associated with several forms of myopathy (Ceyhan-Birsoy et al., 2013; Gerull et al., 2002).
   
 **3. TP53:**
   (24 mutations) Tumorsuppressorgene, which encodes for p53, which plays a role in regulation or progression through the cell cycle, apoptosis and genomic stability. 
-  Variations are directly associated with cancer formation.
-  
-Source:
-Revisiting TP53 Mutations and Immunohistochemistry-A Comparative Study in 157 Diffuse Gliomas (Hirokazu Takami, *et.al*, 2014)
+  Variations are directly associated with cancer formation (Takami et al., 2015).
   
 **4. MUC16:**
-  (23 mutations) Gene, which encodes for the cancer antigen CA-125/mucin 16, a highly glycosylated protein. It has found application as tumor marker, since it plays a role in  tumor proliferation as a suppressor of the anti-tumor immune response.
-  
-Source:
-CA125 in Ovarian Cancer (Nathalie Scholler, Nicole Urban; 2007)
+  (23 mutations) Gene, which encodes for the cancer antigen CA-125/mucin 16, a highly glycosylated protein. It has found application as tumor marker, since it plays a role in  tumor proliferation as a suppressor of the anti-tumor immune response (Scholler and Urban, 2007).
 
 **5. MT-CYB:**
   (18 mutations) Gene, which encodes for cytochrome b, a subunit of the respiratory chain protein ubiquinol cytochrome c reductase.
-  Variations result in mitochondrial deficiencies and associated disorders, including exericise intolerance.
-  
-Source:
-A Novel in-Frame 18-bp Microdeletion in MT-CYB Causes a Multisystem Disorder with Prominent Exercise Intolerance (Carossa Valeria, *et. al*, 2014)
+  Variations result in mitochondrial deficiencies and associated disorders, including exericise intolerance (Carossa et al., 2014).
   
 **6. PTEN:**
   (17 mutations) Tumor suppressing gene, which encodes for phosphatase and tensin homolog. The enzyme is involved in regulation of cell growth and survival.
-  Variations result in increased cell proliferation and in evasion of cell death. Frequent genetic inactivation of PTEN occurs in glioblastoma.
-  
-Source:
-New insights into tumor suppression: PTEN suppresses tumor formation by restraining the phosphoinositide 3-kinase/AKT pathway (Lewis C. Cantley, Benjamin G. Neel; 1999)
+  Variations result in increased cell proliferation and in evasion of cell death. Frequent genetic inactivation of PTEN occurs in glioblastoma (Cantley and Neel, 1999).
   
 **7. Other mutations:**
   (10096)
@@ -752,13 +732,15 @@ As stated previously, the goal was to create a model that could predict one of o
 
 # References
 
-* Szczurek, E., Misra, N., and Vingron, M. (2013). Synthetic sickness or lethality points at candidate combination therapy targets in glioblastoma. International Journal of Cancer 133, 2123-2132.
-* Masica, D.L., and Karchin, R. (2011). Correlation of somatic mutation and expression identifies genes important in human glioblastoma progression and survival. Cancer Res 71, 4550-4561.
+* Cantley, L.C., and Neel, B.G. (1999). New insights into tumor suppression: PTEN suppresses tumor formation by restraining the phosphoinositide 3-kinase/AKT pathway. Proc Natl Acad Sci U S A 96, 4240-4245.
+* Carossa, V., Ghelli, A., Tropeano, C.V., Valentino, M.L., Iommarini, L., Maresca, A., Caporali, L., La Morgia, C., Liguori, R., Barboni, P., et al. (2014). A Novel in-Frame 18-bp Microdeletion in MT-CYB Causes a Multisystem Disorder with Prominent Exercise Intolerance. Human Mutation 35, 954-958.
+* Ceyhan-Birsoy, O., Agrawal, P.B., Hidalgo, C., Schmitz-Abe, K., DeChene, E.T., Swanson, L.C., Soemedi, R., Vasli, N., Iannaccone, S.T., Shieh, P.B., et al. (2013). Recessive truncating titin gene, TTN, mutations presenting as centronuclear myopathy. Neurology 81, 1205-1214.
 * Chen, P., Zhao, D., Li, J., Liang, X., Li, J., Chang, A., Henry, V.K., Lan, Z., Spring, D.J., Rao, G., et al. (2019). Symbiotic Macrophage-Glioma Cell Interactions Reveal Synthetic Lethality in PTEN-Null Glioma. Cancer Cell 35, 868-884.e866.
+* Gerull, B., Gramlich, M., Atherton, J., McNabb, M., Trombitás, K., Sasse-Klaassen, S., Seidman, J.G., Seidman, C., Granzier, H., Labeit, S., et al. (2002). Mutations of TTN, encoding the giant muscle filament titin, cause familial dilated cardiomyopathy. Nature Genetics 30, 201-204.
+* Masica, D.L., and Karchin, R. (2011). Correlation of somatic mutation and expression identifies genes important in human glioblastoma progression and survival. Cancer Res 71, 4550-4561.
+* McKenzie, M., and Duchen, M.R. (2016). Impaired Cellular Bioenergetics Causes Mitochondrial Calcium Handling Defects in MT-ND5 Mutant Cybrids. PLOS ONE 11, e0154371.
 * Mereniuk, T.R., El Gendy, M.A.M., Mendes-Pereira, A.M., Lord, C.J., Ghosh, S., Foley, E., Ashworth, A., and Weinfeld, M. (2013). Synthetic lethal targeting of PTEN-deficient cancer cells using selective disruption of polynucleotide kinase/phosphatase. Mol Cancer Ther 12, 2135-2144.
-
-
-
-
-
-
+* Scholler, N., and Urban, N. (2007). CA125 in ovarian cancer. Biomark Med 1, 513-523.
+* Szczurek, E., Misra, N., and Vingron, M. (2013). Synthetic sickness or lethality points at candidate combination therapy targets in glioblastoma. International Journal of Cancer 133, 2123-2132.
+* Takami, H., Yoshida, A., Fukushima, S., Arita, H., Matsushita, Y., Nakamura, T., Ohno, M., Miyakita, Y., Shibui, S., Narita, Y., et al. (2015). Revisiting TP53 Mutations and Immunohistochemistry—A Comparative Study in 157 Diffuse Gliomas. Brain Pathology 25, 256-265.
+* Zhou, N., Tang, L., Jiang, Y., Qin, S., Cui, J., Wang, Y., Zhu, W., Zhao, W., Pan, C., and Shu, X. (2019). Whole-exome sequencing reveals a novel mutation of MT-ND5 gene in a mitochondrial cardiomyopathy pedigree: Patients who show biventricular hypertrophy, hyperlactacidemia, pulmonary hypertension, and decreased exercise tolerance. Anatol J Cardiol 21, 18-24.
