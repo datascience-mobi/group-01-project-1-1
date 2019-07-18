@@ -205,26 +205,46 @@ barplot_commongenes <- barplot(common.genes.c, beside = T, names.arg = rownames(
 
 **1. MT-ND5:**
   (32 mutations) Mitochondrial gene, which encodes NADH-ubiquinone oxidoreductase chain 5 (ND5). ND5 is a subunit of NADH dehydrogenase, the largest complex of the electron transport chain.
-  Variations are associated with mitochondrail encephalomypathy, stroke-like episodes as well as Leighs syndrome and Leber's hereditary optic neuropathy.
+  Variations are associated with mitochondrial encephalomypathy, stroke-like episodes as well as Leighs syndrome and Leber's hereditary optic neuropathy.
+  
+Source: 
+Whole-exome sequencing reveals a novel mutation of MT-ND5 gene in a mitochondrial cardiomyopathy pedigree: Patients who show biventricular hypertrophy, hyperlactacidemia, pulmonary hypertension, and decreased exercise tolerance (Zhou N, et al., 2019)
+Impaired Cellular Bioenergetics Causes Mitochondrial Calcium Handling Defects in MT-ND5 Mutant Cybrids (McKenzie Mathew, Duchen Michael R; 2016)
   
 **2. TTN:**
-  (26 mutations) Gene, which encodes for Titin/Connectin, which is responsible for the passive elasticity of muscles.
+  (26 mutations) Gene, which encodes for Titin/Connectin, which is crucial for myofibrillar elasticity and integrity.
   Variations are associated with several forms of myopathy.
+
+Source:
+Recessive truncating titin gene, TTN, mutations presenting as centronuclear myopathy (Ozge Ceyhan-Birsoy, *et al.*; 2013)
+Mutations of TTN, encoding the giant muscle filament titin, cause familial dilated cardiomyopathy (Brenda Gerull, *et al.*; 2002)
   
 **3. TP53:**
   (24 mutations) Tumorsuppressorgene, which encodes for p53, which plays a role in regulation or progression through the cell cycle, apoptosis and genomic stability. 
   Variations are directly associated with cancer formation.
   
+Source:
+Revisiting TP53 Mutations and Immunohistochemistry-A Comparative Study in 157 Diffuse Gliomas (Hirokazu Takami, *et.al*, 2014)
+  
 **4. MUC16:**
-  (23 mutations) Gene, which encodes for the cancer antigen CA-125/mucin 16, a highly glycosylated protein. It has found application as tumor marker, since it plays a role in advancing tumogenesis and tumor proliferation by several different mechanisms (Imuuneevasion, metastatic invasion, induced motility and chemotherapy resistance).
+  (23 mutations) Gene, which encodes for the cancer antigen CA-125/mucin 16, a highly glycosylated protein. It has found application as tumor marker, since it plays a role in  tumor proliferation as a suppressor of the anti-tumor immune response.
+  
+Source:
+CA125 in Ovarian Cancer (Nathalie Scholler, Nicole Urban; 2007)
 
 **5. MT-CYB:**
   (18 mutations) Gene, which encodes for cytochrome b, a subunit of the respiratory chain protein ubiquinol cytochrome c reductase.
-  Variations result in mitochondrial deficiencies and associated disorders, including exericise intolerance and cardiomyopathy.
+  Variations result in mitochondrial deficiencies and associated disorders, including exericise intolerance.
+  
+Source:
+A Novel in-Frame 18-bp Microdeletion in MT-CYB Causes a Multisystem Disorder with Prominent Exercise Intolerance (Carossa Valeria, *et. al*, 2014)
   
 **6. PTEN:**
-  (17 mutations) Tumor suppressing gene, which encodes for phosphatase and tensin homolog. The enzyme is involved in regulation of the cellcycle, preventing cells from growing and dividing too much.
-  Variations result in increased cell proliferation and reduced cell death. Frequent genetic inactivation of PTEN occurs in glioblastoma.
+  (17 mutations) Tumor suppressing gene, which encodes for phosphatase and tensin homolog. The enzyme is involved in regulation of cell growth and survival.
+  Variations result in increased cell proliferation and in evasion of cell death. Frequent genetic inactivation of PTEN occurs in glioblastoma.
+  
+Source:
+New insights into tumor suppression: PTEN suppresses tumor formation by restraining the phosphoinositide 3-kinase/AKT pathway (Lewis C. Cantley, Benjamin G. Neel; 1999)
   
 **7. Other mutations:**
   (10096)
@@ -286,8 +306,8 @@ grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
 
 2. We visualized the gene's distribution for all four matrices:
     a. The majority of the genes shows normal to moderate expression levels. However, **few genes are highly overexpressed** (marked in red). 
-    b. All genes seem to have copy number levels between minus five and five. Genes, which differ significantly, are not identifiable through this distribution.
-    c. The majority of genes show no significant knockdown scores. However, **few genes have significantly smaller CERES scores, which makes them essential for cell survival** (marked in blue).
+    b. All genes seem to have copy number levels between minus five and five. There seems to be no distribution.
+    c. The majority of genes show high CERES scores (around zero). However, **few genes seem to have low CERES scores (around minus two), which makes them essential for cell survival** (marked in blue).
     d. The majority of genes has low probability scores and is therefore not of interest. However, **few genes have probability scores up to one, which makes them important for cell survivability** (marked in red).
 
 
@@ -336,7 +356,7 @@ Our next goal is to determine whether there is a correlation between the presenc
 
 ## Checking data distribution in order to determine which correlation test to apply
 
-Parametric correlation tests (e.g. Pearson correlation) need normally distributed data. If that is not the case, we need to apply non-parametric tests (e.g. Spearman correlation or Wilcoxon Rank sum test).
+Parametric correlation test (e.g. Pearson correlation) needs normally distributed data. If that is not the case, we need to apply non-parametric tests (e.g. Spearman correlation or Wilcoxon Rank sum test).
 
 Methods to determine the type of distribution: qq-plots (visual determination), Shapiro-Wilk-test.
 
