@@ -250,7 +250,6 @@ We visualized the gene's distribution in all matrices using heatmaps.
 Packages used: pheatmap, grid
 
 ```{r,include=FALSE}
-
 library(pheatmap)
 library(grid)
 ```
@@ -330,7 +329,6 @@ list.pten.genes = unique(subset(mutations.pten))
 genes.pten <- c(list.pten.genes$Hugo_Symbol)
 ceres.pten.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.pten),]
 ```
-
 
 # Statistical tests
 
@@ -521,6 +519,23 @@ Symbiotic Macrophage-Glioma Cell Interactions Reveal Synthetic Lethality in PTEN
 ### For MUC-16
 
 There are no potential SSTs for MUC16 according to literature, because it is no common driving mutation. 
+
+# K-Means Clustering
+
+In this part we performed a k-means clustering using the CERES matrix to find out if our selected DMs and the potential SST are part of the same cluster. bla bla bla ... ergänzen
+
+## First step: Define optimal number of clusters k
+
+The CERES matrix was used to determine potential SSTs. In order to verify them we performed our k-means clustering using the CERES matrix as well.
+
+
+
+
+
+
+
+
+
 
 
 ## Conclusion
