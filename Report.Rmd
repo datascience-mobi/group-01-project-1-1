@@ -508,13 +508,13 @@ We found: 133 possible SSTs for TP53, 81 possible SSTs for MUC-16 and 97 possibl
 
 ### For TP53: 
 
-Paper: Synthetic sickness or lethality points at candidate combination therapy targets in glioblastoma.  (Szczurek, Ewa; Misra, Navodit; Vingron, Martin)
+(Szczurek, Misra and Vingron, 2013)
 
 * PLK-1: well-known interaction between PLK-1 and TP53, which is not present in our data. It does not show a significant correlation between TP53 and PLK-1 because PLK-1 does not appear in the remaining mutated genes. 
 
 * SLC1A5: one of the top plausible SSL pairs with significant impact on overall survival in GBM when knock-down.  SLC16A5, SLC27A6, SLC34A1, SLC3A2 and SLC6A9 appear to be correlated to the TP53 mutation.
 
-Paper: Correlation of Somatic Mutation and Expression Identifies Genes Important in Human Glioblastoma. (Masica, David L.; Karchin, Rachel)
+(Masica and Karchin, 2011)
 
 * MDM2: all genes except MDM2 are overexpressed if TP53 is mutated, but it is overexpressed by TP53 wt. Our data does not show a significant correlation between MDM2 and TP53.
 
@@ -528,11 +528,11 @@ We then tested our data for over-expressions:
 
 ### For PTEN
 
-Synthetic lethal targeting of PTEN-deficient cancer cells using selective disruption of polynucleotide kinase/phosphatase (Todd R. Mereniu; Mohamed A.M. El Gendy; Ana M. Mendes-Pereira)
+(Mereniuk et al., 2013)
 
 * Known synthetic lethal interactions with PNKP, PARP and TKK, but neither of this genes appears in our correlation matrix.
 
-Symbiotic Macrophage-Glioma Cell Interactions Reveal Synthetic Lethality in PTEN-Null Glioma (Peywen Chen *et al.*)
+(Chen et al., 2019)
 
 * SL with LOX, but this gene doesnt appear in our correlation matrix.
 
@@ -542,7 +542,7 @@ There are no potential SSTs for MUC16 according to literature, because it is no 
 
 # K-Means Clustering
 
-In this part we performed a k-means clustering using the CERES matrix to find out if our selected DMs and the potential SST are part of the same cluster. bla bla bla ... ergänzen
+In this part we performed a k-means clustering using the CERES matrix to find out if our selected DMs and the potential SST are part of the same cluster. bla bla bla ... erg?nzen
 
 ## First step: Define optimal number of clusters k
 
@@ -749,6 +749,14 @@ Looking at both curves we see the same problem we had with the CERES score model
 # Conlusion
 
 As stated previously, the goal was to create a model that could predict one of our four variables using all three others (between expression, copynumber, CERES score and probability matrices). Our models proved not to be very useful or efficient in the prediction, especially for copy number and expression. The models for the prediction of the CERES score and probability looked promising becuase of the R-squared values, but after the visualisation of the predicted versus the real values, we can say that they are not suitable for an correct prediction.
+
+# References
+
+* Szczurek, E., Misra, N., and Vingron, M. (2013). Synthetic sickness or lethality points at candidate combination therapy targets in glioblastoma. International Journal of Cancer 133, 2123-2132.
+* Masica, D.L., and Karchin, R. (2011). Correlation of somatic mutation and expression identifies genes important in human glioblastoma progression and survival. Cancer Res 71, 4550-4561.
+* Chen, P., Zhao, D., Li, J., Liang, X., Li, J., Chang, A., Henry, V.K., Lan, Z., Spring, D.J., Rao, G., et al. (2019). Symbiotic Macrophage-Glioma Cell Interactions Reveal Synthetic Lethality in PTEN-Null Glioma. Cancer Cell 35, 868-884.e866.
+* Mereniuk, T.R., El Gendy, M.A.M., Mendes-Pereira, A.M., Lord, C.J., Ghosh, S., Foley, E., Ashworth, A., and Weinfeld, M. (2013). Synthetic lethal targeting of PTEN-deficient cancer cells using selective disruption of polynucleotide kinase/phosphatase. Mol Cancer Ther 12, 2135-2144.
+
 
 
 
