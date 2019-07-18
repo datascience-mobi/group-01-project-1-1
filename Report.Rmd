@@ -97,9 +97,10 @@ sum(is.na(copy.clean))
 * Two values were identified as outliers and removed
 
 ```{r}
-ceres.boxplot = ggplot(melt(ceres.clean), aes(x = variable, y = value)) + geom_boxplot() + theme(axis.text.x  = element_text(angle=90, vjust=0.5), plot.title = element_text(hjust = 0.5)) + ggtitle(paste0("Boxplot of CERES scores of all cell lines")) + ylab("CERES score") + xlab("cell lines")
-ceres.clean = ceres.clean[-which(ceres.clean > 3), ]
-ggplot(melt(ceres.clean[-which(ceres.clean > 3), ]), aes(x = variable, y = value)) + geom_boxplot() + theme(axis.text.x  = element_text(angle=90, vjust=0.5), plot.title = element_text(hjust = 0.5)) + ggtitle(paste0("Boxplot of CERES scores of all cell lines")) + ylab("CERES score") + xlab("cell lines")
+library(reshape2)
+library(ggplot2)
+ceres.boxplot = ggplot(melt(ceres.clean), aes(x = variable, y = value)) + geom_boxplot() + theme(axis.text.x  = element_text(angle=90, vjust=0.5), plot.title = element_text(hjust = 0.5)) + ggtitle(paste0("Boxplot of CERES scores of all cell lines")) + ylab("CERES score") + xlab(NULL)
+ceres.boxplot
 ```
 
 4. Then we checked all matrices for containing values x = 0.
@@ -637,8 +638,6 @@ To better visualize and evaluate our models we plotted the predicted values agai
 
 For the expression model:
 ```{r}
-library(reshape2)
-library(ggplot2)
 plot.exp.m <- melt(test_set_exp$expression)
 a <- melt(test_set_exp$Prediction)
 colnames(plot.exp.m) <- "Expression"
