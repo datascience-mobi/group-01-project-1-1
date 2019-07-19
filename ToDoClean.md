@@ -1771,3 +1771,139 @@ SLC27A6, SLC34A1, SLC3A2, SLC6A9 appear to be significantly coorelated to TP 53 
     
 * TTN: no potential SSTs according to literature --> potential reason: no typical DM; same problem appears for MT-ND5 and MUC16
 #### Follow up: Other option: compare possible SSTs through all cell lines and eliminate the ones that appear in more than one cell line because they are not specifically linked to one specific DM. For the remaining ones we will check literature if they are part of the same pathway as the DM or interact with proteins that are effected by the DM and look for possible drugs
+
+
+KMEANS
+
+```
+CERES_Optimal_K <- function(ceres.clean, specifier) {
+  output <- lapply(1:ncol(ceres.clean), function(a){
+   df <- scale(ceres.clean[,a]) # pick one column of input data and scale 
+   wss <-(nrow(df-1))*sum(apply(df,2,var)) #define method of wss computation 
+   for (i in 2:15){ # for k between 2 and 15
+     set.seed(1234) # to ensure reproducability of results 
+     wss[i] <- sum(kmeans(df, centers = i)$withinss)
+     } 
+   return(wss)
+  })
+names (output) <- colnames(ceres.clean) # rename the output 
+return(output)
+}
+
+Ceres_optKS <- CERES_Optimal_K(ceres.clean, "CERES Optimal Clusters k")
+## plotting wss function 
+optimalKprocessedData <- lapply(seq_along(Ceres_optKS), function(a){
+  dtPicker <- as.data.frame(Ceres_optKS[[a]]) # one vector picked and formatted into dataframe
+  dtPicker$Cell_Sample <- names(Ceres_optKS)[a] #sample added as label
+  dtPicker$OptimalK <- 1:nrow(dtPicker) 
+  return(dtPicker)
+})
+
+optimalKprocessedData <- as.data.frame(do.call("rbind",optimalKprocessedData)) # output into dataframe
+colnames(optimalKprocessedData) <- c("WSS", "Cell_Sample", "OptimalK") # renaming columns
+
+## using ggplot to plot output
+if(!require(devtools)) install.packages("devtools")
+devtools::install_github("kassambara/ggpubr")
+library(ggpubr)
+install.packages("factoextra")
+library(factoextra)
+install.packages("cluster")
+library(cluster)
+install.packages("gridExtra")
+library(gridExtra)
+install.packages("lattice")
+library(lattice)
+
+ggplot(data = optimalKprocessedData, aes(x=OptimalK, y=WSS)) +
+  geom_line(aes(color=Cell_Sample)) +
+  labs(title = 'Optimal number of clusters k', x = 'Number of clusters', y = 'WSS') +
+  theme_minimal() +
+           theme(legend.position ='none',
+                  plot.title = element_text(hjust = 0.5),
+                  axis.text.x = element_text(angle = 0, vjust = 0, hjust=0.5),
+                  legend.title= element_blank(),
+                  axis.title.x = element_blank(),
+                  strip.text.y = element_text(angle = 0))
+
+
+km2 = kmeans(x= ceres.clean, centers = 2, nstart = 100)
+km3 = kmeans(x = ceres.clean, centers = 3, nstart = 100)
+km4 = kmeans(x= ceres.clean, centers = 4, nstart = 100)
+
+p2 = fviz_cluster(km2, geom = "point", data = ceres.clean, pointsize = 0.5) + ggtitle("k = 2")
+p3 = fviz_cluster(km3, geom = "point", data = ceres.clean, pointsize = 0.5) + ggtitle("k = 3")
+p4 = fviz_cluster(km4, geom = "point", data = ceres.clean, pointsize = 0.5) + ggtitle("k = 4")
+
+s2 = fviz_silhouette(silhouette(km2$cluster, dist(ceres.clean)), border = NA, main = "Silhouette values for 2 clusters")
+s3 = fviz_silhouette(silhouette(km3$cluster, dist(ceres.clean)), border = NA, main = "Silhouette values for 3 clusters")
+s4 = fviz_silhouette(silhouette(km4$cluster, dist(ceres.clean)), border = NA, main = "Silhouette values for 4 clusters")
+
+grid.arrange(p2,p3,s2,s3, nrow=2)
+```
+```
+CERES.red_Optimal_K <- function(ceres.red.genes, specifier) {
+  output <- lapply(1:ncol(ceres.red.genes), function(a){
+    df <- scale(ceres.red.genes[,a]) # pick one column of input data and scale 
+    wss <-(nrow(df-1))*sum(apply(df,2,var)) #define method of wss computation 
+    for (i in 2:15){ # for k between 2 and 15
+      set.seed(1234) # to ensure reproducability of results 
+      wss[i] <- sum(kmeans(df, centers = i)$withinss)
+    } 
+    return(wss)
+  })
+  names (output) <- colnames(ceres.red.genes) # rename the output 
+  return(output)
+}
+
+Ceres.red_optKS <- CERES.red_Optimal_K(ceres.red.genes, "CERES Optimal Clusters k")
+## plotting wss function 
+optimalKprocessedData.red.red <- lapply(seq_along(Ceres.red_optKS), function(a){
+  dtPicker <- as.data.frame(Ceres.red_optKS[[a]]) # one vector picked and formatted into dataframe
+  dtPicker$Cell_Sample <- names(Ceres.red_optKS)[a] #sample added as label
+  dtPicker$OptimalK <- 1:nrow(dtPicker) 
+  return(dtPicker)
+})
+
+optimalKprocessedData.red <- as.data.frame(do.call("rbind",optimalKprocessedData.red)) # output into dataframe
+colnames(optimalKprocessedData.red) <- c("WSS", "Cell_Sample", "OptimalK") # renaming columns
+
+## using ggplot to plot output
+if(!require(devtools)) install.packages("devtools")
+devtools::install_github("kassambara/ggpubr")
+library(ggpubr)
+install.packages("factoextra")
+library(factoextra)
+install.packages("cluster")
+library(cluster)
+install.packages("gridExtra")
+library(gridExtra)
+install.packages("lattice")
+library(lattice)
+
+ggplot(data = optimalKprocessedData.red, aes(x=OptimalK, y=WSS)) +
+  geom_line(aes(color=Cell_Sample)) +
+  labs(title = 'Optimal number of clusters k', x = 'Number of clusters', y = 'WSS') +
+  theme_minimal() +
+  theme(legend.position ='none',
+        plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 0, vjust = 0, hjust=0.5),
+        legend.title= element_blank(),
+        axis.title.x = element_blank(),
+        strip.text.y = element_text(angle = 0))
+
+
+km2 = kmeans(x= ceres.red.genes, centers = 2, nstart = 100)
+km3 = kmeans(x = ceres.red.genes, centers = 3, nstart = 100)
+km4 = kmeans(x= ceres.red.genes, centers = 4, nstart = 100)
+
+p2 = fviz_cluster(km2, geom = "point", data = ceres.red.genes, pointsize = 0.5) + ggtitle("k = 2")
+p3 = fviz_cluster(km3, geom = "point", data = ceres.red.genes, pointsize = 0.5) + ggtitle("k = 3")
+p4 = fviz_cluster(km4, geom = "point", data = ceres.red.genes, pointsize = 0.5) + ggtitle("k = 4")
+
+s2 = fviz_silhouette(silhouette(km2$cluster, dist(ceres.red.genes)), border = NA, main = "Silhouette values for 2 clusters")
+s3 = fviz_silhouette(silhouette(km3$cluster, dist(ceres.red.genes)), border = NA, main = "Silhouette values for 3 clusters")
+s4 = fviz_silhouette(silhouette(km4$cluster, dist(ceres.red.genes)), border = NA, main = "Silhouette values for 4 clusters")
+
+grid.arrange(p2,p3,s2,s3, nrow=2)
+```
