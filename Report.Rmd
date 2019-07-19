@@ -332,56 +332,6 @@ genes.pten <- c(list.pten.genes$Hugo_Symbol)
 ceres.pten.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.pten),]
 ```
 
-# K-means
-
-## determining optimal cluster number k
-```{r}
-
-CERES_Optimal_K <- function(ceres.clean, specifier) {
-  output <- lapply(1:ncol(ceres.clean), function(a){
-   df <- scale(ceres.clean[,a]) # pick one column of input data and scale 
-   wss <-(nrow(df-1))*sum(apply(df,2,var)) #define method of wss computation 
-   for (i in 2:15){ # for k between 2 and 15
-     set.seed(1234) # to ensure reproducability of results 
-     wss[i] <- sum(kmeans(df, centers = i)$withinss)
-     } 
-   return(wss)
-  })
-names (output) <- colnames(ceres.clean) # rename the output 
-return(output)
-}
-
-Ceres_optKS <- CERES_Optimal_K(ceres.clean, "CERES Optimal Clusters k")
-## plotting wss function 
-optimalKprocessedData <- lapply(seq_along(Ceres_optKS), function(a){
-  dtPicker <- as.data.frame(Ceres_optKS[[a]]) # one vector picked and formatted into dataframe
-  dtPicker$Cell_Sample <- names(Ceres_optKS)[a] #sample added as label
-  dtPicker$OptimalK <- 1:nrow(dtPicker) 
-  return(dtPicker)
-})
-
-optimalKprocessedData <- as.data.frame(do.call("rbind",optimalKprocessedData)) # output into dataframe
-colnames(optimalKprocessedData) <- c("WSS", "Cell_Sample", "OptimalK") # renaming columns
-
-## using ggplot to plot output 
-ggplot(data = optimalKprocessedData, aes(x=OptimalK, y=WSS)) +
-  geom_line(aes(color=Cell_Sample)) +
-  labs(title = 'Optimal number of clusters k', x = 'Number of clusters', y = 'WSS') +
-  theme_minimal() +
-           theme(legend.position ='none',
-                  plot.title = element_text(hjust = 0.5),
-                  axis.text.x = element_text(angle = 0, vjust = 0, hjust=0.5),
-                  legend.title= element_blank(),
-                  axis.title.x = element_blank(),
-                  strip.text.y = element_text(angle = 0))
-
-
-
-km_CERES= kmeans(x = ceres.clean, centers = 3, nstart = 10)
-table(km_CERES$cluster)
-```
-
-
 # Statistical tests
 
 Our next goal is to determine whether there is a correlation between the presence of a specific DM and the essentiality of a second mutated gene, which then might be a potential second-site-target (SST).
@@ -580,20 +530,83 @@ In this part we performed a k-means clustering using the CERES matrix to find ou
 
 The CERES matrix was used to determine potential SSTs. In order to verify them we performed our k-means clustering using the CERES matrix as well.
 
-
-
-
-
-
-
-
-
-
-
 ## Conclusion
 
 In this part, we wanted to find potential second-site-targets in the GBM celllines, where a specific driving mutation is present. After confirming the unnormal distribution of our data using Shapiro-Wilk-Tests, we used Spearman correlation to determine, whether there is a dependency between the presence of a specific DM and the essentiality for cell survival of another mutated gene (indicated by low CERES score). We performed those tests with our cancer-associated DM TP53, PTEN and MUC-16. For each DM we found about 100 potential SSTs, but we could not confirm our results with scientific papers or the other way round, respectively. 
 Furthermore, we are also not able to assign our celllines to a specific GBM subtype (classical, mesenchymal, neural, proneural). However, we would assign our celllines more towards the proneural or mesenchymal subtype, since these subtypes have mutations of PTEN and TP53 as there marker. But we could not confirm any other known tumormarkers for those two subtypes in our celllines.
+
+# K-means
+
+## Determining optimal cluster number k
+```{r}
+
+CERES_Optimal_K <- function(ceres.clean, specifier) {
+  output <- lapply(1:ncol(ceres.clean), function(a){
+   df <- scale(ceres.clean[,a]) # pick one column of input data and scale 
+   wss <-(nrow(df-1))*sum(apply(df,2,var)) #define method of wss computation 
+   for (i in 2:15){ # for k between 2 and 15
+     set.seed(1234) # to ensure reproducability of results 
+     wss[i] <- sum(kmeans(df, centers = i)$withinss)
+     } 
+   return(wss)
+  })
+names (output) <- colnames(ceres.clean) # rename the output 
+return(output)
+}
+
+Ceres_optKS <- CERES_Optimal_K(ceres.clean, "CERES Optimal Clusters k")
+## plotting wss function 
+optimalKprocessedData <- lapply(seq_along(Ceres_optKS), function(a){
+  dtPicker <- as.data.frame(Ceres_optKS[[a]]) # one vector picked and formatted into dataframe
+  dtPicker$Cell_Sample <- names(Ceres_optKS)[a] #sample added as label
+  dtPicker$OptimalK <- 1:nrow(dtPicker) 
+  return(dtPicker)
+})
+
+optimalKprocessedData <- as.data.frame(do.call("rbind",optimalKprocessedData)) # output into dataframe
+colnames(optimalKprocessedData) <- c("WSS", "Cell_Sample", "OptimalK") # renaming columns
+
+## using ggplot to plot output
+
+install.packages("factoextra")
+library(factoextra)
+install.packages("cluster")
+library(cluster)
+install.packages("gridExtra")
+library(gridExtra)
+install.packages("lattice")
+library(lattice)
+
+ggplot(data = optimalKprocessedData, aes(x=OptimalK, y=WSS)) +
+  geom_line(aes(color=Cell_Sample)) +
+  labs(title = 'Optimal number of clusters k', x = 'Number of clusters', y = 'WSS') +
+  theme_minimal() +
+           theme(legend.position ='none',
+                  plot.title = element_text(hjust = 0.5),
+                  axis.text.x = element_text(angle = 0, vjust = 0, hjust=0.5),
+                  legend.title= element_blank(),
+                  axis.title.x = element_blank(),
+                  strip.text.y = element_text(angle = 0))
+
+fviz_nbclust(ceres.clean, kmeans, method = "silhouette")
+
+km2= kmeans(x= ceres.clean, centers = 2, nstart = 25)
+km3= kmeans(x = ceres.clean, centers = 3, nstart = 25)
+km4= kmeans(x= ceres.clean, centers = 4, nstart = 25)
+table(km_CERES$cluster)
+
+p2 = fviz_cluster(km2, geom = "text", labelsize = 8, data = ceres.clean) + ggtitle("k = 2")
+p3 = fviz_cluster(km3, geom = "text", labelsize = 8, data = ceres.clean) + ggtitle("k = 3")
+p4 = fviz_cluster(km4, geom = "text", labelsize = 8, data = ceres.clean) + ggtitle("k = 4")
+
+s2=plot(silhouette(km2$cluster, dist(ceres.clean)), border = NA, main = "Silhouette values for 2 clusters")
+s3=plot(silhouette(km3$cluster, dist(ceres.clean)), border = NA, main = "Silhouette values for 3 clusters")
+s4=plot(silhouette(km4$cluster, dist(ceres.clean)), border = NA, main = "Silhouette values for 4 clusters")
+
+grid.arrange(p2,p3,s2,s3,nrow = 2)
+```
+
+## Conclusion
 
 
 # Multiple linear regression
