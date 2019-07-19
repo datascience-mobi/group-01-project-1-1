@@ -838,7 +838,7 @@ prob_plot
 Looking at both curves we see the same problem we had with the CERES score model. The R-squared value looked promising but after training and testing our model, the result was not good. The curves show that the predicted and real values are not similar, which proves our model to be not that good. 
 
 
-# Conlusion
+# Conclusion
 
 As stated previously, the goal was to create a model that could predict one of our four variables using all three others (between expression, copynumber, CERES score and probability matrices). Our models proved not to be useful or efficient in the prediction, especially for copy number and expression. This has to do with the fact that the expression is an important value and does not depend on the other values, e.g. CERES score or probability. The models for the prediction of the CERES score and probability looked promising because of the R-squared values, but after the visualisation of the predicted versus the real values, we can say that they are not suitable for a correct prediction.
 
