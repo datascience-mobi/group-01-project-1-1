@@ -308,12 +308,16 @@ mutations.tp53 = select(mutations.tp53, c(2,21, 36))
 mutations.tp53 = subset(mutations.tp53, mutations.tp53$isDeleterious == "TRUE")
 
 mutations.muc16 = rbind(relevant.mutations$`ACH-000036`, relevant.mutations$`ACH-000137`, relevant.mutations$`ACH-000152`, relevant.mutations$`ACH-000208`, relevant.mutations$`ACH-000231`, relevant.mutations$`ACH-000368`, relevant.mutations$`ACH-000376`, relevant.mutations$`ACH-000464`, relevant.mutations$`ACH-000571`, relevant.mutations$`ACH-000738`, relevant.mutations$`ACH-000756`, relevant.mutations$`ACH-000819`)
-mutations.muc16= select(mutations.muc16, c(2,21, 36))
+mutations.muc16 = select(mutations.muc16, c(2,21, 36))
 mutations.muc16 = subset(mutations.muc16, mutations.muc16$isDeleterious == "TRUE")
 
 mutations.pten = rbind(relevant.mutations$`ACH-000036`, relevant.mutations$`ACH-000040`, relevant.mutations$`ACH-000075`, relevant.mutations$`ACH-000208`, relevant.mutations$`ACH-000215`, relevant.mutations$`ACH-000137`, relevant.mutations$`ACH-000152`, relevant.mutations$`ACH-000231`, relevant.mutations$`ACH-000244`, relevant.mutations$`ACH-000760`, relevant.mutations$`ACH-000376`, relevant.mutations$`ACH-000464`, relevant.mutations$`ACH-000570`, relevant.mutations$`ACH-000571`, relevant.mutations$`ACH-000623`, relevant.mutations$`ACH-000128`)
 mutations.pten = select(mutations.pten, c(2,21, 36))
 mutations.pten = subset(mutations.pten, mutations.pten$isDeleterious == "TRUE")
+
+mutations.red = rbind(relevant.mutations$`ACH-000036`, relevant.mutations$`ACH-000040`,  relevant.mutations$`ACH-000098`,  relevant.mutations$`ACH-000208`,  relevant.mutations$`ACH-000215`,  relevant.mutations$`ACH-000137`,  relevant.mutations$`ACH-000152`,  relevant.mutations$`ACH-000591`,  relevant.mutations$`ACH-000673`,  relevant.mutations$`ACH-000231`,  relevant.mutations$`ACH-000368`,  relevant.mutations$`ACH-000376`,  relevant.mutations$`ACH-000445`,  relevant.mutations$`ACH-000464`,  relevant.mutations$`ACH-000469`,  relevant.mutations$`ACH-000570`,  relevant.mutations$`ACH-000571`,  relevant.mutations$`ACH-000623`,  relevant.mutations$`ACH-000738`,  relevant.mutations$`ACH-000756`,  relevant.mutations$`ACH-000819`,  relevant.mutations$`ACH-000128`,  relevant.mutations$`ACH-000036`,  relevant.mutations$`ACH-000040`,  relevant.mutations$`ACH-000075`,  relevant.mutations$`ACH-000244`,  relevant.mutations$`ACH-000760`)
+mutations.red = select(mutations.red, c(2,21, 36))
+mutations.red = subset(mutations.red, mutations.red$isDeleterious == "TRUE")
 ```
 
 Next we extracted those remaining genes for each DM from the CERES matrix in order to continue working with just them.
@@ -330,6 +334,10 @@ ceres.muc16.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.muc16),]
 list.pten.genes = unique(subset(mutations.pten))
 genes.pten <- c(list.pten.genes$Hugo_Symbol)
 ceres.pten.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.pten),]
+
+list.red.genes = unique(subset(mutations.red))
+genes.red <- c(list.red.genes$Hugo_Symbol)
+ceres.red.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.red),]
 ```
 
 # Statistical tests
@@ -463,6 +471,7 @@ We need a significance level alpha to evaluate our p-values in order to identify
 We defined a threshold for the p-values to identify all the genes that are correlated to the DMs with a high probability. We classify all genes with a correlation coeficient higher than 0.05 as NA, because the genes, where H0 cannot be rejected, are not potential SST. Next we isolated the remaining values by deleting the rows containing NA-values. The result is a matrix, which contains all potential SSTs, that we can compare to literature afterwards.
 
 * TP53
+
 ```{r}
 sig.cor.ceres.tp53.only[abs(sig.cor.ceres.tp53.only) > 0.05]<- NA
 SST.tp53<-na.omit(sig.cor.ceres.tp53.only)
@@ -539,32 +548,31 @@ Furthermore, we are also not able to assign our celllines to a specific GBM subt
 
 ## Determining optimal cluster number k
 ```{r}
-
-CERES_Optimal_K <- function(ceres.clean, specifier) {
-  output <- lapply(1:ncol(ceres.clean), function(a){
-   df <- scale(ceres.clean[,a]) # pick one column of input data and scale 
-   wss <-(nrow(df-1))*sum(apply(df,2,var)) #define method of wss computation 
-   for (i in 2:15){ # for k between 2 and 15
-     set.seed(1234) # to ensure reproducability of results 
-     wss[i] <- sum(kmeans(df, centers = i)$withinss)
-     } 
-   return(wss)
+CERES.red_Optimal_K <- function(ceres.red.genes, specifier) {
+  output <- lapply(1:ncol(ceres.red.genes), function(a){
+    df <- scale(ceres.red.genes[,a]) # pick one column of input data and scale 
+    wss <-(nrow(df-1))*sum(apply(df,2,var)) #define method of wss computation 
+    for (i in 2:15){ # for k between 2 and 15
+      set.seed(1234) # to ensure reproducability of results 
+      wss[i] <- sum(kmeans(df, centers = i)$withinss)
+    } 
+    return(wss)
   })
-names (output) <- colnames(ceres.clean) # rename the output 
-return(output)
+  names (output) <- colnames(ceres.red.genes) # rename the output 
+  return(output)
 }
 
-Ceres_optKS <- CERES_Optimal_K(ceres.clean, "CERES Optimal Clusters k")
+Ceres.red_optKS <- CERES.red_Optimal_K(ceres.red.genes, "CERES Optimal Clusters k")
 ## plotting wss function 
-optimalKprocessedData <- lapply(seq_along(Ceres_optKS), function(a){
-  dtPicker <- as.data.frame(Ceres_optKS[[a]]) # one vector picked and formatted into dataframe
-  dtPicker$Cell_Sample <- names(Ceres_optKS)[a] #sample added as label
+optimalKprocessedData.red.red <- lapply(seq_along(Ceres.red_optKS), function(a){
+  dtPicker <- as.data.frame(Ceres.red_optKS[[a]]) # one vector picked and formatted into dataframe
+  dtPicker$Cell_Sample <- names(Ceres.red_optKS)[a] #sample added as label
   dtPicker$OptimalK <- 1:nrow(dtPicker) 
   return(dtPicker)
 })
 
-optimalKprocessedData <- as.data.frame(do.call("rbind",optimalKprocessedData)) # output into dataframe
-colnames(optimalKprocessedData) <- c("WSS", "Cell_Sample", "OptimalK") # renaming columns
+optimalKprocessedData.red <- as.data.frame(do.call("rbind",optimalKprocessedData.red)) # output into dataframe
+colnames(optimalKprocessedData.red) <- c("WSS", "Cell_Sample", "OptimalK") # renaming columns
 
 ## using ggplot to plot output
 if(!require(devtools)) install.packages("devtools")
@@ -579,32 +587,31 @@ library(gridExtra)
 install.packages("lattice")
 library(lattice)
 
-ggplot(data = optimalKprocessedData, aes(x=OptimalK, y=WSS)) +
+ggplot(data = optimalKprocessedData.red, aes(x=OptimalK, y=WSS)) +
   geom_line(aes(color=Cell_Sample)) +
   labs(title = 'Optimal number of clusters k', x = 'Number of clusters', y = 'WSS') +
   theme_minimal() +
-           theme(legend.position ='none',
-                  plot.title = element_text(hjust = 0.5),
-                  axis.text.x = element_text(angle = 0, vjust = 0, hjust=0.5),
-                  legend.title= element_blank(),
-                  axis.title.x = element_blank(),
-                  strip.text.y = element_text(angle = 0))
+  theme(legend.position ='none',
+        plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 0, vjust = 0, hjust=0.5),
+        legend.title= element_blank(),
+        axis.title.x = element_blank(),
+        strip.text.y = element_text(angle = 0))
 
 
-km2 = kmeans(x= ceres.clean, centers = 2, nstart = 100)
-km3 = kmeans(x = ceres.clean, centers = 3, nstart = 100)
-km4 = kmeans(x= ceres.clean, centers = 4, nstart = 100)
+km2.red = kmeans(x= ceres.red.genes, centers = 2, nstart = 100)
+km3.red = kmeans(x = ceres.red.genes, centers = 3, nstart = 100)
+km4.red = kmeans(x= ceres.red.genes, centers = 4, nstart = 100)
 
-p2 = fviz_cluster(km2, geom = "point", data = ceres.clean, pointsize = 0.5) + ggtitle("k = 2")
-p3 = fviz_cluster(km3, geom = "point", data = ceres.clean, pointsize = 0.5) + ggtitle("k = 3")
-p4 = fviz_cluster(km4, geom = "point", data = ceres.clean, pointsize = 0.5) + ggtitle("k = 4")
+p2.red = fviz_cluster(km2, geom = "point", data = ceres.red.genes, pointsize = 0.5) + ggtitle("k = 2")
+p3.red = fviz_cluster(km3, geom = "point", data = ceres.red.genes, pointsize = 0.5) + ggtitle("k = 3")
+p4.red = fviz_cluster(km4, geom = "point", data = ceres.red.genes, pointsize = 0.5) + ggtitle("k = 4")
 
-s2 = fviz_silhouette(silhouette(km2$cluster, dist(ceres.clean)), border = NA, main = "Silhouette values for 2 clusters")
-s3 = fviz_silhouette(silhouette(km3$cluster, dist(ceres.clean)), border = NA, main = "Silhouette values for 3 clusters")
-s4 = fviz_silhouette(silhouette(km4$cluster, dist(ceres.clean)), border = NA, main = "Silhouette values for 4 clusters")
+s2.red = fviz_silhouette(silhouette(km2$cluster, dist(ceres.red.genes)), border = NA, main = "Silhouette values for 2 clusters")
+s3.red = fviz_silhouette(silhouette(km3$cluster, dist(ceres.red.genes)), border = NA, main = "Silhouette values for 3 clusters")
+s4.red = fviz_silhouette(silhouette(km4$cluster, dist(ceres.red.genes)), border = NA, main = "Silhouette values for 4 clusters")
 
-grid.arrange(p2,p3,s2,s3, nrow=2)
-
+grid.arrange(p2.red,p3.red,s2.red,s3.red, nrow=2)
 ```
 
 ## Conclusion
