@@ -599,9 +599,11 @@ p2 = fviz_cluster(km2, geom = "point", data = ceres.clean, pointsize = 0.5) + gg
 p3 = fviz_cluster(km3, geom = "point", data = ceres.clean, pointsize = 0.5) + ggtitle("k = 3")
 p4 = fviz_cluster(km4, geom = "point", data = ceres.clean, pointsize = 0.5) + ggtitle("k = 4")
 
-s2 = plot(silhouette(km2$cluster, dist(ceres.clean)), border = NA, main = "Silhouette values for 2 clusters")
-s3 = plot(silhouette(km3$cluster, dist(ceres.clean)), border = NA, main = "Silhouette values for 3 clusters")
-s4 = plot(silhouette(km4$cluster, dist(ceres.clean)), border = NA, main = "Silhouette values for 4 clusters")
+s2 = fviz_silhouette(silhouette(km2$cluster, dist(ceres.clean)), border = NA, main = "Silhouette values for 2 clusters")
+s3 = fviz_silhouette(silhouette(km3$cluster, dist(ceres.clean)), border = NA, main = "Silhouette values for 3 clusters")
+s4 = fviz_silhouette(silhouette(km4$cluster, dist(ceres.clean)), border = NA, main = "Silhouette values for 4 clusters")
+
+grid.arrange(p2,p3,s2,s3, nrow=2)
 
 ```
 
