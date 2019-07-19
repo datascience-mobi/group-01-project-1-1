@@ -610,10 +610,10 @@ p3.red = fviz_cluster(km3.red, geom = "point", data = ceres.red.genes, pointsize
 
 sum2.red = summary(silhouette(km2.red$cluster, dist(ceres.red.genes))) 
 s2.red = fviz_silhouette(silhouette(km2.red$cluster, dist(ceres.red.genes), do.clus.stat = TRUE), border = NA, main = "Silhouette values for 2 clusters") +
-  xlab("Average silhouette width:")
+  xlab(paste0("Average silhouette value: ", round(sum2.red$avg.width, digits = 2)))
 sum3.red = summary(silhouette(km3.red$cluster, dist(ceres.red.genes)))
 s3.red = fviz_silhouette(silhouette(km3.red$cluster, dist(ceres.red.genes), do.clus.stat = TRUE), border = NA, main = "Silhouette values for 3 clusters")+
-  xabs("Average silhouette width:")
+  xlab(paste0("Average silhouette value: ", round(sum3.red$avg.width, digits = 2)))
 
 grid.arrange(p2.red,p3.red,s2.red,s3.red, nrow=2)
 ```
