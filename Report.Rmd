@@ -564,7 +564,7 @@ CERES.red_Optimal_K <- function(ceres.red.genes, specifier) {
 
 Ceres.red_optKS <- CERES.red_Optimal_K(ceres.red.genes, "CERES Optimal Clusters k")
 ## plotting wss function 
-optimalKprocessedData.red.red <- lapply(seq_along(Ceres.red_optKS), function(a){
+optimalKprocessedData.red <- lapply(seq_along(Ceres.red_optKS), function(a){
   dtPicker <- as.data.frame(Ceres.red_optKS[[a]]) # one vector picked and formatted into dataframe
   dtPicker$Cell_Sample <- names(Ceres.red_optKS)[a] #sample added as label
   dtPicker$OptimalK <- 1:nrow(dtPicker) 
