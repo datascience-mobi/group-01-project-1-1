@@ -660,7 +660,7 @@ training.set.prob = subset(mlr.mat, split.prob ==TRUE)
 test.set.prob = subset(mlr.mat, split.prob == FALSE)
 ```
 
-Observation: the training/test set splitting did not work for the copy number matrix. The dimensions of the test set were not right. We had 2541 values instead of the 2309 we needed, which represent one fifth of the original multiple lineaar regression matrix.
+Observation: the training/test set splitting did not work for the copy number matrix. The dimensions of the test set were not right. We had 2541 values instead of the 2309 we needed, which represent one fifth of the original multiple linear regression matrix.
 
 We then fitted the multiple linear regression to the training set.
 ```{r}
@@ -778,7 +778,7 @@ Looking at both curves we see the same problem we had with the CERES score model
 
 # Conlusion
 
-As stated previously, the goal was to create a model that could predict one of our four variables using all three others (between expression, copynumber, CERES score and probability matrices). Our models proved not to be very useful or efficient in the prediction, especially for copy number and expression. The models for the prediction of the CERES score and probability looked promising becuase of the R-squared values, but after the visualisation of the predicted versus the real values, we can say that they are not suitable for an correct prediction.
+As stated previously, the goal was to create a model that could predict one of our four variables using all three others (between expression, copynumber, CERES score and probability matrices). Our models proved not to be useful or efficient in the prediction, especially for copy number and expression. This has to do with the fact that the expression is an important value and does not depend on the other values, e.g. CERES score or probability. The models for the prediction of the CERES score and probability looked promising because of the R-squared values, but after the visualisation of the predicted versus the real values, we can say that they are not suitable for a correct prediction.
 
 # References
 
