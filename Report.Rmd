@@ -531,22 +531,34 @@ We then tested our data for over-expressions:
 
 There are no potential SSTs for MUC16 according to literature, because it is no common driving mutation. 
 
-# K-Means Clustering
-
-In this part we performed a k-means clustering using the CERES matrix to find out if our selected DMs and the potential SST are part of the same cluster. bla bla bla ... erg?nzen
-
-## First step: Define optimal number of clusters k
-
-The CERES matrix was used to determine potential SSTs. In order to verify them we performed our k-means clustering using the CERES matrix as well.
-
 ## Conclusion
 
 In this part, we wanted to find potential second-site-targets in the GBM celllines, where a specific driving mutation is present. After confirming the unnormal distribution of our data using Shapiro-Wilk-Tests, we used Spearman correlation to determine, whether there is a dependency between the presence of a specific DM and the essentiality for cell survival of another mutated gene (indicated by low CERES score). We performed those tests with our cancer-associated DM TP53, PTEN and MUC-16. For each DM we found about 100 potential SSTs, but we could not confirm our results with scientific papers or the other way round, respectively. 
 Furthermore, we are also not able to assign our celllines to a specific GBM subtype (classical, mesenchymal, neural, proneural). However, we would assign our celllines more towards the proneural or mesenchymal subtype, since these subtypes have mutations of PTEN and TP53 as there marker. But we could not confirm any other known tumormarkers for those two subtypes in our celllines.
 
+
 # K-means
 
+Using our reduced data set, we wanted to perform the kmeans clustering to find out if our selected DMs and the potential SST are part of the same cluster. If that is the case, the respective SSTs would not be a valid target. 
+K-means assigns all data points to a set number of clustering centres ("centroids") so that the so-called withing-number-of-squares is minimal until the assignment stops changing. Data points - in our case genes - in the same cluster are likely to show similarities.
+
 ## Determining optimal cluster number k
+
+We first determine the optimal number of clusters using the elbow kink method, which shows how the within-sum-of-squares (WSS) behave with increasing number of clusters.
+
+```{r, include=FALSE}
+if(!require(devtools)) install.packages("devtools")
+devtools::install_github("kassambara/ggpubr")
+library(ggpubr)
+install.packages("factoextra")
+library(factoextra)
+install.packages("cluster")
+library(cluster)
+install.packages("gridExtra")
+library(gridExtra)
+install.packages("lattice")
+library(lattice)
+```
 ```{r}
 CERES.red_Optimal_K <- function(ceres.red.genes, specifier) {
   output <- lapply(1:ncol(ceres.red.genes), function(a){
@@ -575,18 +587,6 @@ optimalKprocessedData.red <- as.data.frame(do.call("rbind",optimalKprocessedData
 colnames(optimalKprocessedData.red) <- c("WSS", "Cell_Sample", "OptimalK") # renaming columns
 
 ## using ggplot to plot output
-if(!require(devtools)) install.packages("devtools")
-devtools::install_github("kassambara/ggpubr")
-library(ggpubr)
-install.packages("factoextra")
-library(factoextra)
-install.packages("cluster")
-library(cluster)
-install.packages("gridExtra")
-library(gridExtra)
-install.packages("lattice")
-library(lattice)
-
 ggplot(data = optimalKprocessedData.red, aes(x=OptimalK, y=WSS)) +
   geom_line(aes(color=Cell_Sample)) +
   labs(title = 'Optimal number of clusters k', x = 'Number of clusters', y = 'WSS') +
@@ -597,25 +597,31 @@ ggplot(data = optimalKprocessedData.red, aes(x=OptimalK, y=WSS)) +
         legend.title= element_blank(),
         axis.title.x = element_blank(),
         strip.text.y = element_text(angle = 0))
+```
 
+Looking at the "kink", this method suggested using two or three cluster centres for clustering: WSS should be minimized without creating unnecessarily many clusters. So clustering plots as well as the respective silhouette graphs allow for better decision making on what to choose.
 
+```{r}
 km2.red = kmeans(x= ceres.red.genes, centers = 2, nstart = 100)
 km3.red = kmeans(x = ceres.red.genes, centers = 3, nstart = 100)
-km4.red = kmeans(x= ceres.red.genes, centers = 4, nstart = 100)
 
-p2.red = fviz_cluster(km2, geom = "point", data = ceres.red.genes, pointsize = 0.5) + ggtitle("k = 2")
-p3.red = fviz_cluster(km3, geom = "point", data = ceres.red.genes, pointsize = 0.5) + ggtitle("k = 3")
-p4.red = fviz_cluster(km4, geom = "point", data = ceres.red.genes, pointsize = 0.5) + ggtitle("k = 4")
+p2.red = fviz_cluster(km2.red, geom = "point", data = ceres.red.genes, pointsize = 0.5) + ggtitle("k = 2")
+p3.red = fviz_cluster(km3.red, geom = "point", data = ceres.red.genes, pointsize = 0.5) + ggtitle("k = 3")
 
-s2.red = fviz_silhouette(silhouette(km2$cluster, dist(ceres.red.genes)), border = NA, main = "Silhouette values for 2 clusters")
-s3.red = fviz_silhouette(silhouette(km3$cluster, dist(ceres.red.genes)), border = NA, main = "Silhouette values for 3 clusters")
-s4.red = fviz_silhouette(silhouette(km4$cluster, dist(ceres.red.genes)), border = NA, main = "Silhouette values for 4 clusters")
+sum2.red = summary(silhouette(km2.red$cluster, dist(ceres.red.genes))) 
+s2.red = fviz_silhouette(silhouette(km2.red$cluster, dist(ceres.red.genes), do.clus.stat = TRUE), border = NA, main = "Silhouette values for 2 clusters") +
+  xlab("Average silhouette width:")
+sum3.red = summary(silhouette(km3.red$cluster, dist(ceres.red.genes)))
+s3.red = fviz_silhouette(silhouette(km3.red$cluster, dist(ceres.red.genes), do.clus.stat = TRUE), border = NA, main = "Silhouette values for 3 clusters")+
+  xabs("Average silhouette width:")
 
 grid.arrange(p2.red,p3.red,s2.red,s3.red, nrow=2)
 ```
+The silhouette values as well as the clustering plot for k = 2 show less wrongly assigned data points (evident by the small red bar going below Si = 0) as well as a more distinct clustering in comparison to k = 3. Hence using 2 centroids proves to be more optimal.
 
 ## Conclusion
 
+Bemerkung für annika: bei 2 clustern ist die chance ein "false" sst zu sein eben 50:50, unbedingt erwähnen; 3 cluster scheinen aber nicht "intuitiv" (siehe k=3 cluster plot); tp53 als "outlier" beeinflusst fit bzw cluster sehr: carl schreibt dazu: WSS makes the assumption that clusters are convex and isotropic, which is not always the case. It responds poorly to elongated clusters, or manifolds with irregular shapes.
 
 # Multiple linear regression
 
