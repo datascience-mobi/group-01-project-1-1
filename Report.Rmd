@@ -260,26 +260,26 @@ library(grid)
 setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
 pheatmap(exp.clean, main = "Distribution of expression values",  show_rownames = F)
 setHook("grid.newpage", NULL, "replace")
-grid.text("cell lines", y=-0.07, gp=gpar(fontsize=16))
-grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
+grid.text("Cell lines", y=-0.07, gp=gpar(fontsize=16))
+grid.text("Genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
 
 setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
 pheatmap(copy.clean, main = "Distribution of copy number values", show_rownames = F)
 setHook("grid.newpage", NULL, "replace")
-grid.text("celllines", y=-0.07, gp=gpar(fontsize=16))
-grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
+grid.text("Cell lines", y=-0.07, gp=gpar(fontsize=16))
+grid.text("Genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
 
 setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
 pheatmap(ceres.clean, main = "Distribution of CERES values", show_rownames = F)
 setHook("grid.newpage", NULL, "replace")
-grid.text("celllines", y=-0.07, gp=gpar(fontsize=16))
-grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
+grid.text("Cell lines", y=-0.07, gp=gpar(fontsize=16))
+grid.text("Genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
 
 setHook("grid.newpage", function() pushViewport(viewport(x=1,y=1,width=0.9, height=0.9, name="vp", just=c("right","top"))), action="prepend")
 pheatmap(prob.clean, main = "Distribution of probability values", show_rownames = F)
 setHook("grid.newpage", NULL, "replace")
-grid.text("celllines", y=-0.07, gp=gpar(fontsize=16))
-grid.text("genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
+grid.text("Cell lines", y=-0.07, gp=gpar(fontsize=16))
+grid.text("Genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
 ```
 
 ## Conclusion
@@ -460,7 +460,7 @@ We need a significance level alpha to evaluate our p-values in order to identify
 
 * H1: The correlation of a mutated gene and the DM is significant --> potential SST
 
-We defined a threshold for the p-values to identify all the genes that are correlated to the DMs with a high probability. We classify all genes with a correlation coeficient higher than 0,05 as NA, because the genes, where H0 cannot be rejected, are not potential SST. Next we isolated the remaining values by deleting the rows containing NA-values. The result is a matrix, which contains all potential SSTs, that we can compare to literature afterwards.
+We defined a threshold for the p-values to identify all the genes that are correlated to the DMs with a high probability. We classify all genes with a correlation coeficient higher than 0.05 as NA, because the genes, where H0 cannot be rejected, are not potential SST. Next we isolated the remaining values by deleting the rows containing NA-values. The result is a matrix, which contains all potential SSTs, that we can compare to literature afterwards.
 
 * TP53
 ```{r}
@@ -588,7 +588,6 @@ ggplot(data = optimalKprocessedData, aes(x=OptimalK, y=WSS)) +
                   axis.title.x = element_blank(),
                   strip.text.y = element_text(angle = 0))
 
-fviz_nbclust(ceres.clean, kmeans, method = "silhouette")
 
 km2= kmeans(x= ceres.clean, centers = 2, nstart = 25)
 km3= kmeans(x = ceres.clean, centers = 3, nstart = 25)
