@@ -580,7 +580,7 @@ Packages: caTools
 
 The aim with this testing was to use values the model had never seen before and to compare them with the real values. 
 
-First we splitted the multiple linear regression matrix into 4/5 training set and 1/5 testing set. 
+First we split the multiple linear regression matrix into 4/5 training set and 1/5 testing set. 
 ```{r}
 library(caTools)
 set.seed(123) #initialize the random numbers
@@ -610,13 +610,14 @@ training.set.prob = subset(mlr.mat, split.prob ==TRUE)
 test.set.prob = subset(mlr.mat, split.prob == FALSE)
 ```
 
-Observation: the training/test set splitting did not work for the copy number matrix. The dimensions of the test set were not right. We had 2541 values instead of the 2309 we needed, which represent one fifth of the original multiple linear regression matrix.
+Observation: the training/test set splitting did not work for the copy number matrix. The dimensions of the test set were not right. We had 2021 values instead of the 2309 we needed, which represent one fifth of the original multiple linear regression matrix.
 
 We then fitted the multiple linear regression to the training set.
 ```{r}
 exp.regressor = lm(expression ~ ., data = training_set_exp)
 ceres.regressor = lm(ceres ~ ., data = as.data.frame(training.set.ceres))
 prob.regressor = lm(probability ~., data = as.data.frame(training.set.prob))
+copy.regressor = lm(copynumber ~., data = test.set.copy)
 ```
 
 Then we predicted the test results based on data that our model had never seen before. This is very useful to evaluate the performance of the model.
@@ -630,13 +631,19 @@ test.set.ceres$Prediction = ceres_pred
 
 prob_pred = predict(prob.regressor, newdata = test.set.prob)
 test.set.prob$Prediction = prob_pred
+
+copy.pred = predict(copy.regressor, newdata = test.set.copy)
+test.set.copy$Prediction = copy.pred
 ```
 
 ## Visualizing real values against test values
 
-To better visualize and evaluate our models we plotted the predicted values against the real values for expression, CERES score and probability. There is no plot for the copy number prediction because the splitting into training/test sets did not work.
+To better visualize and evaluate our models we plotted the predicted values against the real values for expression,copy number, CERES score and probability
 
 For the expression model:
+```{r, include=FALSE}
+library(reshape2)
+```
 ```{r}
 plot.exp.m <- melt(test_set_exp$expression)
 a <- melt(test_set_exp$Prediction)
@@ -665,6 +672,32 @@ exp_plot
 
 We see that the predicted values and the real values do not match. This was already expected judging by the R-squared value our model gave us. We cannot use our model to predict expressions values.
 
+For the copy number model:
+```{r}
+plot.copy.m <- melt(test.set.copy$copynumber)
+a <- melt(test.set.copy$Prediction)
+colnames(plot.copy.m) <- "Copynumber"
+rownames(plot.copy.m) = rownames(test.set.copy)
+colnames(a)<- "Prediction"
+plot.copy.m <- cbind(plot.copy.m,a)
+plottingData.copy <- melt(plot.copy.m)
+
+copy_plot <- ggplot(data = plottingData.copy, aes(x=value, fill=variable)) + 
+  geom_density(alpha=.3) +
+  ggtitle(paste0("Performance evaluation Lin.Reg. Copy number")) +
+  ylab("Density") +
+  xlab("Copy number values") +
+  theme_bw(base_size = 7) +
+  theme(legend.position="bottom",
+        legend.direction="horizontal",
+        plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        legend.title= element_blank(),
+        axis.title.x = element_blank(),
+        strip.text.y = element_text(angle = 0))
+```
+
+Looking at the graph we see that the predicted and real values do not match. This was expected judging by the R-squared values for the copy number prediction model. Our model is not suitable for a prediction of gene copy numbers.
 
 For the CERES score model:
 ```{r}
