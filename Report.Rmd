@@ -680,7 +680,7 @@ We then fitted the multiple linear regression to the training set.
 exp.regressor = lm(expression ~ ., data = training_set_exp)
 ceres.regressor = lm(ceres ~ ., data = as.data.frame(training.set.ceres))
 prob.regressor = lm(probability ~., data = as.data.frame(training.set.prob))
-copy.regressor = lm(copynumber ~., data = test.set.copy)
+copy.regressor = lm(copynumber ~., data = training.set.copy)
 ```
 
 Then we predicted the test results based on data that our model had never seen before. This is very useful to evaluate the performance of the model.
@@ -758,6 +758,8 @@ copy_plot <- ggplot(data = plottingData.copy, aes(x=value, fill=variable)) +
         legend.title= element_blank(),
         axis.title.x = element_blank(),
         strip.text.y = element_text(angle = 0))
+
+copy_plot
 ```
 
 Looking at the graph we see that the predicted and real values do not match. This was expected judging by the R-squared values for the copy number prediction model. Our model is not suitable for a prediction of gene copy numbers.
