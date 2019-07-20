@@ -570,8 +570,8 @@ There are no potential SSTs for MUC16 according to literature, because it is no 
 
 ## Conclusion
 
-In this part, we wanted to find potential second-site-targets in the GBM celllines, where a specific driving mutation is present. After confirming the unnormal distribution of our data using Shapiro-Wilk-Tests, we used Spearman correlation to determine whether there is a dependency between the presence of a specific DM and the essentiality for cell survival of another mutated gene (indicated by low CERES score). We performed those tests with our cancer-associated DM TP53, PTEN and MUC-16. For each DM we found about 100 potential SSTs, but we could not confirm our results with scientific papers or the other way round, respectively. 
-Furthermore, we are also not able to assign our celllines to a specific GBM subtype (classical, mesenchymal, neural, proneural). However, we would assign our celllines more towards the proneural or mesenchymal subtype, since these subtypes have mutations of PTEN and TP53 as their marker (Noushmehr et al., 2010; Verhaak et al., 2010). But we could not confirm any other known tumormarkers for those two subtypes in our celllines.
+In this part, we wanted to find potential second-site-targets in the GBM cell lines, where a specific driving mutation is present. After confirming the unnormal distribution of our data using Shapiro-Wilk-Tests, we used Spearman correlation to determine whether there is a dependency between the presence of a specific DM and the essentiality for cell survival of another mutated gene (indicated by low CERES score). We performed those tests with our cancer-associated DM TP53, PTEN and MUC-16. For each DM we found about 100 potential SSTs, but we could not confirm our results with scientific papers or the other way round, respectively. 
+Furthermore, we are also not able to assign our cell lines to a specific GBM subtype (classical, mesenchymal, neural, proneural). However, we would assign our cell lines more towards the proneural or mesenchymal subtype, since these subtypes have mutations of PTEN and TP53 as their marker (Noushmehr et al., 2010; Verhaak et al., 2010). But we could not confirm any other known tumormarkers for those two subtypes in our cell lines.
 
 
 # K-means
@@ -930,9 +930,24 @@ prob_plot
 Looking at both curves we see the same problem we had with the CERES score model. The R-squared value looked promising but after training and testing our model, the result was not what we aimed for. The curves show that the predicted and real values are not similar, which proves our model to be not that good. 
 
 
-# Conclusion
+## Conclusion
 
 As stated previously, the goal was to create a model that could predict one of our four variables using all three others (between expression, copynumber, CERES score and probability matrices). Our models proved not to be useful or efficient in the prediction, especially for copy number and expression. This has to do with the fact that the expression is an important value and does not depend on the other values, e.g. CERES score or probability. The models for the prediction of the CERES score and probability looked promising because of the R-squared values, but after the visualisation of the predicted versus the real values, we can say that they are not suitable for a correct prediction.
+
+# Final conclusions
+
+Performing our data analysis we identified that three out of the six most common mutations across our cell lines were directly associated with cancer development (TP53, MUC-16 & PTEN). Two of those, TP53 and PTEN, are prominent genetic alterations in GBM.
+
+Using the aforementioned mutations as driving mutations (DMs), we performed Shapiro-Wilk-Tests and used Spearman correlation to determine whether there are dependencies between the presence of a specific driving mutation and the essentiality for cell survival of another mutated gene. For each DM around 100 SSTs were found, none of which could be supported by scientific papers.
+
+We could not assign our cell lines to a specific subtype of GBM. We would assign them more the proneural or mesenchymal GBM subtypes, because of the TP53 and PTEN mutations, which are markers for these subtypes. However, these were the only known markers for these two subtypes that we could identify in our cell lines.
+
+Proceeding with the k-means clustering, we found that by the clustering of the CERES scores of all genes mutated in our cell lines containing at least one of our DMs, led to two distinct clusters. This method allowed us to further reduce our set of possible second site targets (SSTs), but none could be found in current research. 
+
+We also did a multiple linear regression to create models to try and predict one of our four variables using all other three as a base. They proved not to be efficient for a prediction judging by the visualization. We expected the values for expression and copy number to be hardly predictable because these are such independent variables. The results for CERES score and probability were more pleasing. 
+
+All in all, we did not find definite SSTs but did find possible targets that could be further researched with a bigger range of data and other cell lines, in order to confirm if they are indeed SSTs.
+
 
 # References
 
