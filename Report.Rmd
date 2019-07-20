@@ -553,16 +553,10 @@ ceres.red.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.red),]
 We first determine the optimal number of clusters using the elbow kink method, which shows how the within-sum-of-squares (WSS) behave with increasing number of clusters.
 
 ```{r, include=FALSE}
-if(!require(devtools)) install.packages("devtools")
-devtools::install_github("kassambara/ggpubr")
 library(ggpubr)
-install.packages("factoextra")
 library(factoextra)
-install.packages("cluster")
 library(cluster)
-install.packages("gridExtra")
 library(gridExtra)
-install.packages("lattice")
 library(lattice)
 ```
 ```{r}
