@@ -314,10 +314,6 @@ mutations.muc16 = subset(mutations.muc16, mutations.muc16$isDeleterious == "TRUE
 mutations.pten = rbind(relevant.mutations$`ACH-000036`, relevant.mutations$`ACH-000040`, relevant.mutations$`ACH-000075`, relevant.mutations$`ACH-000208`, relevant.mutations$`ACH-000215`, relevant.mutations$`ACH-000137`, relevant.mutations$`ACH-000152`, relevant.mutations$`ACH-000231`, relevant.mutations$`ACH-000244`, relevant.mutations$`ACH-000760`, relevant.mutations$`ACH-000376`, relevant.mutations$`ACH-000464`, relevant.mutations$`ACH-000570`, relevant.mutations$`ACH-000571`, relevant.mutations$`ACH-000623`, relevant.mutations$`ACH-000128`)
 mutations.pten = select(mutations.pten, c(2,21, 36))
 mutations.pten = subset(mutations.pten, mutations.pten$isDeleterious == "TRUE")
-
-mutations.red = rbind(relevant.mutations$`ACH-000036`, relevant.mutations$`ACH-000040`,  relevant.mutations$`ACH-000098`,  relevant.mutations$`ACH-000208`,  relevant.mutations$`ACH-000215`,  relevant.mutations$`ACH-000137`,  relevant.mutations$`ACH-000152`,  relevant.mutations$`ACH-000591`,  relevant.mutations$`ACH-000673`,  relevant.mutations$`ACH-000231`,  relevant.mutations$`ACH-000368`,  relevant.mutations$`ACH-000376`,  relevant.mutations$`ACH-000445`,  relevant.mutations$`ACH-000464`,  relevant.mutations$`ACH-000469`,  relevant.mutations$`ACH-000570`,  relevant.mutations$`ACH-000571`,  relevant.mutations$`ACH-000623`,  relevant.mutations$`ACH-000738`,  relevant.mutations$`ACH-000756`,  relevant.mutations$`ACH-000819`,  relevant.mutations$`ACH-000128`,  relevant.mutations$`ACH-000036`,  relevant.mutations$`ACH-000040`,  relevant.mutations$`ACH-000075`,  relevant.mutations$`ACH-000244`,  relevant.mutations$`ACH-000760`)
-mutations.red = select(mutations.red, c(2,21, 36))
-mutations.red = subset(mutations.red, mutations.red$isDeleterious == "TRUE")
 ```
 
 Next we extracted those remaining genes for each DM from the CERES matrix in order to continue working with just them.
@@ -334,10 +330,6 @@ ceres.muc16.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.muc16),]
 list.pten.genes = unique(subset(mutations.pten))
 genes.pten <- c(list.pten.genes$Hugo_Symbol)
 ceres.pten.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.pten),]
-
-list.red.genes = unique(subset(mutations.red))
-genes.red <- c(list.red.genes$Hugo_Symbol)
-ceres.red.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.red),]
 ```
 
 # Statistical tests
@@ -541,6 +533,20 @@ Furthermore, we are also not able to assign our celllines to a specific GBM subt
 
 Using our reduced data set, we wanted to perform the kmeans clustering to find out if our selected DMs and the potential SST are part of the same cluster. If that is the case, the respective SSTs would not be a valid target. 
 K-means assigns all data points to a set number of clustering centres ("centroids") so that the so-called withing-number-of-squares is minimal until the assignment stops changing. Data points - in our case genes - in the same cluster are likely to show similarities.
+
+## Creating CERES-dataframe
+
+With k-means we are evaluating the CERES score of all cell lines, which have at least one of TP53, MUC-16 or PTEN and where the mutation has a functional effect. (Cell lines were manually selected, analogous to the code in Data Reduction.)
+
+```{r}
+mutations.red = rbind(relevant.mutations$`ACH-000036`, relevant.mutations$`ACH-000040`,  relevant.mutations$`ACH-000098`,  relevant.mutations$`ACH-000208`,  relevant.mutations$`ACH-000215`,  relevant.mutations$`ACH-000137`,  relevant.mutations$`ACH-000152`,  relevant.mutations$`ACH-000591`,  relevant.mutations$`ACH-000673`,  relevant.mutations$`ACH-000231`,  relevant.mutations$`ACH-000368`,  relevant.mutations$`ACH-000376`,  relevant.mutations$`ACH-000445`,  relevant.mutations$`ACH-000464`,  relevant.mutations$`ACH-000469`,  relevant.mutations$`ACH-000570`,  relevant.mutations$`ACH-000571`,  relevant.mutations$`ACH-000623`,  relevant.mutations$`ACH-000738`,  relevant.mutations$`ACH-000756`,  relevant.mutations$`ACH-000819`,  relevant.mutations$`ACH-000128`,  relevant.mutations$`ACH-000036`,  relevant.mutations$`ACH-000040`,  relevant.mutations$`ACH-000075`,  relevant.mutations$`ACH-000244`,  relevant.mutations$`ACH-000760`)
+mutations.red = select(mutations.red, c(2,21, 36))
+mutations.red = subset(mutations.red, mutations.red$isDeleterious == "TRUE")
+
+list.red.genes = unique(subset(mutations.red))
+genes.red <- c(list.red.genes$Hugo_Symbol)
+ceres.red.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.red),]
+```
 
 ## Determining optimal cluster number k
 
