@@ -60,11 +60,6 @@ pre { /* Code block - determines code spacing between lines */
     </tr>
     </tbody>
 </style>
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, error = FALSE)
-library(extrafont)
-font_import()
-```
 
 # Introduction
 
@@ -83,7 +78,7 @@ Our aim in this project was to find the driver mutations in GBM throughout all c
 Once we downloaded the data, we first removed all data that did not have to do with Glioblastoma and made the cell line identifiers be the rownames in the annotation.
 
 ```{r}
-allDepMapData = readRDS("C:\\Users\\nikla\\Documents\\R\\bioinfoproject\\project-01-group-01\\AllDepMapData.RDS")
+allDepMapData = readRDS("/Users/Amanda/Desktop/DepMap19Q1_allData.RDS")
 brain.anno = allDepMapData$annotation[allDepMapData$annotation$Subtype.Disease == "Glioblastoma", ]
 rownames(brain.anno) = brain.anno$DepMap_ID
 brain.anno = brain.anno[, -1]
@@ -683,7 +678,7 @@ sst.genes.clusters.tp53 = genes.clusters[-(which(rownames(genes.clusters) %!in% 
 sst.genes.p.clusters.tp53 = cbind(sst.genes.clusters.tp53, SST.tp53)
 sst.genes.p.clusters.tp53 = sst.genes.p.clusters.tp53[, -2]
 colnames(sst.genes.p.clusters.tp53) = c("Cluster", "Correlation to TP53")
-sst.genes.p.clusters.tp53 = sst.genes.p.clusters.tp53[-which((sst.genes.p.clusters.53$Cluster) == 1),]
+sst.genes.p.clusters.tp53 = sst.genes.p.clusters.tp53[-which((sst.genes.p.clusters.tp53$Cluster) == 1),]
 rownames(sst.genes.p.clusters.tp53)
 ```
 
