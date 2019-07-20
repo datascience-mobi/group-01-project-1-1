@@ -940,7 +940,7 @@ Performing our data analysis we identified that three out of the six most common
 
 Using the aforementioned mutations as driving mutations (DMs), we performed Shapiro-Wilk-Tests and used Spearman correlation to determine whether there are dependencies between the presence of a specific driving mutation and the essentiality for cell survival of another mutated gene. For each DM around 100 SSTs were found, none of which could be supported by scientific papers.
 
-We could not assign our cell lines to a specific subtype of GBM. We would assign them more the proneural or mesenchymal GBM subtypes, because of the TP53 and PTEN mutations, which are markers for these subtypes. However, these were the only known markers for these two subtypes that we could identify in our cell lines.
+We could not assign our cell lines to a specific subtype of GBM. We would assign them more to the proneural or mesenchymal GBM subtypes, because of their specific markers, TP53 and PTEN. However, these were the only known markers for these two subtypes that we could identify in our cell lines.
 
 Proceeding with the k-means clustering, we found that by the clustering of the CERES scores of all genes mutated in our cell lines containing at least one of our DMs, led to two distinct clusters. This method allowed us to further reduce our set of possible second site targets (SSTs), but none could be found in current research. 
 
