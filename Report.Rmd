@@ -4,10 +4,66 @@ author: "Annika Hein, Amanda Janzen, Nicolai Laufer, Niklas Schwan"
 date: "25/06/2019"
 output: html_document
 ---
-<style>
-body {
-text-align: justify}
+<style type="text/css">
+
+body{ /* Normal  */
+    font-size: 16px;
+    font-family: "Segoe UI", Frutiger;
+    text-align: justify
+  }
+td {  /* Table  */
+  font-size: 12px;
+}
+h1.title {
+  font-size: 40px;
+  font-weight: 400
+  color: #013644;
+  font: "Segoe UI", Frutiger;
+}
+h1 { /* Header 1 */
+  font-size: 28px;
+  color: #fba92e;
+}
+h2 { /* Header 2 */
+  font-size: 22px;
+  color: #158597;
+}
+h3 { /* Header 3 */
+  font-size: 18px;
+  color: #158597;
+}
+code.r{ /* Code block */
+    font-size: 14px;
+}
+pre { /* Code block - determines code spacing between lines */
+    font-size: 14px;
+}
+<blockquote class="blockquote-reverse">
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
+  <small>Someone famous in <cite title="Source Title">Source Title</cite></small>
+</blockquote>
+<table class="table table-striped table-hover ">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Column heading</th>
+      <th>Column heading</th>
+      <th>Column heading</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>Column content</td>
+      <td>Column content</td>
+      <td>Column content</td>
+    </tr>
+    </tbody>
 </style>
+{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = FALSE)
+library(extrafont)
+font_import()
 
 
 # Introduction
@@ -27,7 +83,7 @@ Our aim in this project was to find the driver mutations in GBM throughout all c
 Once we downloaded the data, we first removed all data that did not have to do with Glioblastoma.
 
 ```{r}
-allDepMapData = readRDS("/Users/Amanda/Desktop/DepMap19Q1_allData.RDS")
+allDepMapData = readRDS("C:\\Users\\nikla\\Documents\\R\\bioinfoproject\\project-01-group-01\\AllDepMapData.RDS")
 brain.anno = allDepMapData$annotation[allDepMapData$annotation$Subtype.Disease == "Glioblastoma", ]
 ```
 
@@ -380,7 +436,7 @@ p-value < 0.05
 
 Creating a matrix that contains all mutated genes of cell lines
 
-```{r}
+```{r, results= 'hide'}
 ceres.allDM.genes=rbind(ceres.tp53.genes, ceres.pten.genes, ceres.muc16.genes)
 lapply(ceres.allDM.genes,shapiro.test)
 ```
@@ -644,10 +700,13 @@ To evaluate our model we looked at the R-squared value. R squared is a statistic
 
 The definition of R-squared is the percentage of the response variable variation that is explained by a linear model. It is always between 0 and 1. 0 means that the model explains none of the variability around its mean and 1 indicates that the model explains all the variability of the response data around its mean.
 
-* expression -> $$r^{2} = 0.1563$$
-* copynumber -> $$r^{2} = 0.003437$$
-* CERES score -> $$r^{2} = 0.9352$$
-* probability -> $$r^{2} = 0.9358$$
+$expression: r^{2} = 0.1563$
+
+$copynumber: r^{2} = 0.003437$
+
+$CERES-score: r^{2} = 0.9352$
+
+$probability: r^{2} = 0.9358$
 
 As we can see, the model for expression is not that great, having a R-squared value of 0.1563. The models for CERES score and probability look more reliable with values of 0.9352 and 0.9358. The copy number model does not look good at all with a R-squared value of 0.0034.
 
