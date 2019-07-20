@@ -744,7 +744,7 @@ The definition of R-squared is the percentage of the response variable variation
 expression: r^2^ = 0.1563  
 copynumber: r^2^ = 0.003437  
 CERES-score: r^2^ = 0.9352  
-probability: r^2^ = 0.9358 
+probability: r^2^ = 0.9358  
 
 As we can see, the models for expression and copy number do not look promising, having a R-squared value of 0.1563 and 0,0034. The models for CERES score and probability look more reliable with values of 0.9352 and 0.9358.
 
