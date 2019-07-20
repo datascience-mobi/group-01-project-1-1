@@ -233,7 +233,7 @@ barplot_commongenes <- barplot(common.genes.c, beside = T, names.arg = rownames(
 
 ### Comparison with literature
 
-According to scientific papers, the most prominent dirving mutations for GBM are:
+According to scientific papers (McLendon et al., 2008; Brennan et al., 2013), the most prominent driving mutations for GBM are:
 
 1. EGFR
 2. CDKN2A
@@ -534,7 +534,7 @@ There are no potential SSTs for MUC16 according to literature, because it is no 
 ## Conclusion
 
 In this part, we wanted to find potential second-site-targets in the GBM celllines, where a specific driving mutation is present. After confirming the unnormal distribution of our data using Shapiro-Wilk-Tests, we used Spearman correlation to determine, whether there is a dependency between the presence of a specific DM and the essentiality for cell survival of another mutated gene (indicated by low CERES score). We performed those tests with our cancer-associated DM TP53, PTEN and MUC-16. For each DM we found about 100 potential SSTs, but we could not confirm our results with scientific papers or the other way round, respectively. 
-Furthermore, we are also not able to assign our celllines to a specific GBM subtype (classical, mesenchymal, neural, proneural). However, we would assign our celllines more towards the proneural or mesenchymal subtype, since these subtypes have mutations of PTEN and TP53 as there marker. But we could not confirm any other known tumormarkers for those two subtypes in our celllines.
+Furthermore, we are also not able to assign our celllines to a specific GBM subtype (classical, mesenchymal, neural, proneural). However, we would assign our celllines more towards the proneural or mesenchymal subtype, since these subtypes have mutations of PTEN and TP53 as their marker (Noushmehr et al., 2010; Verhaak et al., 2010). But we could not confirm any other known tumormarkers for those two subtypes in our celllines.
 
 
 # K-means
@@ -844,6 +844,7 @@ As stated previously, the goal was to create a model that could predict one of o
 
 # References
 
+* Brennan, C.W., Verhaak, R.G.W., McKenna, A., Campos, B., Noushmehr, H., Salama, S.R., Zheng, S., Chakravarty, D., Sanborn, J.Z., Berman, S.H., et al. (2013). The somatic genomic landscape of glioblastoma. Cell 155, 462-477.
 * Cantley, L.C., and Neel, B.G. (1999). New insights into tumor suppression: PTEN suppresses tumor formation by restraining the phosphoinositide 3-kinase/AKT pathway. Proc Natl Acad Sci U S A 96, 4240-4245.
 * Carossa, V., Ghelli, A., Tropeano, C.V., Valentino, M.L., Iommarini, L., Maresca, A., Caporali, L., La Morgia, C., Liguori, R., Barboni, P., et al. (2014). A Novel in-Frame 18-bp Microdeletion in MT-CYB Causes a Multisystem Disorder with Prominent Exercise Intolerance. Human Mutation 35, 954-958.
 * Ceyhan-Birsoy, O., Agrawal, P.B., Hidalgo, C., Schmitz-Abe, K., DeChene, E.T., Swanson, L.C., Soemedi, R., Vasli, N., Iannaccone, S.T., Shieh, P.B., et al. (2013). Recessive truncating titin gene, TTN, mutations presenting as centronuclear myopathy. Neurology 81, 1205-1214.
@@ -852,7 +853,10 @@ As stated previously, the goal was to create a model that could predict one of o
 * Masica, D.L., and Karchin, R. (2011). Correlation of somatic mutation and expression identifies genes important in human glioblastoma progression and survival. Cancer Res 71, 4550-4561.
 * McKenzie, M., and Duchen, M.R. (2016). Impaired Cellular Bioenergetics Causes Mitochondrial Calcium Handling Defects in MT-ND5 Mutant Cybrids. PLOS ONE 11, e0154371.
 * Mereniuk, T.R., El Gendy, M.A.M., Mendes-Pereira, A.M., Lord, C.J., Ghosh, S., Foley, E., Ashworth, A., and Weinfeld, M. (2013). Synthetic lethal targeting of PTEN-deficient cancer cells using selective disruption of polynucleotide kinase/phosphatase. Mol Cancer Ther 12, 2135-2144.
+* Noushmehr, H., Weisenberger, D.J., Diefes, K., Phillips, H.S., Pujara, K., Berman, B.P., Pan, F., Pelloski, C.E., Sulman, E.P., Bhat, K.P., et al. (2010). Identification of a CpG island methylator phenotype that defines a distinct subgroup of glioma. Cancer cell 17, 510-522.
 * Scholler, N., and Urban, N. (2007). CA125 in ovarian cancer. Biomark Med 1, 513-523.
 * Szczurek, E., Misra, N., and Vingron, M. (2013). Synthetic sickness or lethality points at candidate combination therapy targets in glioblastoma. International Journal of Cancer 133, 2123-2132.
 * Takami, H., Yoshida, A., Fukushima, S., Arita, H., Matsushita, Y., Nakamura, T., Ohno, M., Miyakita, Y., Shibui, S., Narita, Y., et al. (2015). Revisiting TP53 Mutations and Immunohistochemistry—A Comparative Study in 157 Diffuse Gliomas. Brain Pathology 25, 256-265.
+* The Cancer Genome Atlas Research, N., McLendon, R., Friedman, A., Bigner, D., Van Meir, E.G., Brat, D.J., M. Mastrogianakis, G., Olson, J.J., Mikkelsen, T., Lehman, N., et al. (2008). Comprehensive genomic characterization defines human glioblastoma genes and core pathways. Nature 455, 1061.
+* Verhaak, R.G.W., Hoadley, K.A., Purdom, E., Wang, V., Qi, Y., Wilkerson, M.D., Miller, C.R., Ding, L., Golub, T., Mesirov, J.P., et al. (2010). Integrated genomic analysis identifies clinically relevant subtypes of glioblastoma characterized by abnormalities in PDGFRA, IDH1, EGFR, and NF1. Cancer cell 17, 98-110.
 * Zhou, N., Tang, L., Jiang, Y., Qin, S., Cui, J., Wang, Y., Zhu, W., Zhao, W., Pan, C., and Shu, X. (2019). Whole-exome sequencing reveals a novel mutation of MT-ND5 gene in a mitochondrial cardiomyopathy pedigree: Patients who show biventricular hypertrophy, hyperlactacidemia, pulmonary hypertension, and decreased exercise tolerance. Anatol J Cardiol 21, 18-24.
