@@ -295,7 +295,7 @@ grid.text("Genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
 
 # Data reduction
 
-In order to just continue with the necessary data, we need to reduce our dataset. Since we already determined our most common mutations, we now isolate all cell lines from the mutation matrix, which contain one of those specific mutations. Since only PTEN, MUC-16 and TP53 are directly associated with the development of cancer, we decided wot continue working with these three driving mutations (DM). Our aim is to identify all other genes that were also mutated in the presence of this specific DM. Since there were a few thousand mutated genes for each DM, the ones with "IsDeleterious = TRUE" were extracted.
+In order to just continue with the necessary data, we need to reduce our dataset. Since we already determined our most common mutations, we now manually isolate all cell lines from the mutation matrix, which contain one/all of those specific mutations. Since only PTEN, MUC-16 and TP53 are directly associated with the development of cancer, we decided wot continue working with these three driving mutations (DM). Our aim is to identify all other genes that were also mutated in the presence of these specific DMs. Since there were a few thousand mutated genes for each DM, the ones with "IsDeleterious = TRUE" were extracted.
 
 * Package dplyr needed for this step
 
