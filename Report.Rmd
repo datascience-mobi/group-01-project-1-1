@@ -80,16 +80,11 @@ Our aim in this project was to find the driver mutations in GBM throughout all c
 
 # Data cleanup
 
-Once we downloaded the data, we first removed all data that did not have to do with Glioblastoma.
+Once we downloaded the data, we first removed all data that did not have to do with Glioblastoma and made the cell line identifiers be the rownames in the annotation.
 
 ```{r}
 allDepMapData = readRDS("C:\\Users\\nikla\\Documents\\R\\bioinfoproject\\project-01-group-01\\AllDepMapData.RDS")
 brain.anno = allDepMapData$annotation[allDepMapData$annotation$Subtype.Disease == "Glioblastoma", ]
-```
-
-* Make cell line identifier be the rownames in annotation
-
-```{r}
 rownames(brain.anno) = brain.anno$DepMap_ID
 brain.anno = brain.anno[, -1]
 ```
@@ -150,7 +145,7 @@ sum(is.na(copy.clean))
 
 3. Scan for outliers via boxplots.
 
-* Two values were identified as outliers and removed
+Two values were identified as outliers and removed
 
 ```{r}
 library(reshape2)
@@ -352,7 +347,7 @@ grid.text("Genes", x=-0.07, rot=90, gp=gpar(fontsize=16))
 
 In order to just continue with the necessary data, we need to reduce our dataset. Since we already determined our most common mutations, we now manually isolate all cell lines from the mutation matrix, which contain one/all of those specific mutations. Since only PTEN, MUC-16 and TP53 are directly associated with the development of cancer, we decided wot continue working with these three driving mutations (DM). Our aim is to identify all other genes that were also mutated in the presence of these specific DMs. Since there were a few thousand mutated genes for each DM, the ones with "IsDeleterious = TRUE" were extracted.
 
-* Package dplyr needed for this step
+Package dplyr needed for this step
 
 ```{r, include=FALSE}
 library(dplyr)
@@ -751,7 +746,7 @@ copynumber: r^2^ = 0.003437
 CERES-score: r^2^ = 0.9352  
 probability: r^2^ = 0.9358 
 
-As we can see, the model for expression is not that great, having a R-squared value of 0.1563. The models for CERES score and probability look more reliable with values of 0.9352 and 0.9358. The copy number model does not look good at all with a R-squared value of 0.0034.
+As we can see, the models for expression and copy number do not look promising, having a R-squared value of 0.1563 and 0,0034. The models for CERES score and probability look more reliable with values of 0.9352 and 0.9358.
 
 ## Training and testing our multiple linear regression model
 
@@ -907,7 +902,7 @@ ceres_plot <- ggplot(data = plottingData.ceres, aes(x=value, fill=variable)) +
 ceres_plot
 ```
 
-The R-squared value for the CERES score model was very promising, but judging by the visualization it is not so good. Both real and predicted values peak in the same region, around 0.0, but they have very different densities and do not match. 
+The R-squared value for the CERES score model was very promising, but judging by the visualization it is not reliable. Both real and predicted values peak in the same region, around 0.0, but they have very different densities and do not match. 
 
 **For the probability model:**
 ```{r}
@@ -937,7 +932,7 @@ prob_plot <- ggplot(data = plottingData.prob, aes(x=value, fill=variable)) +
 prob_plot
 ```
 
-Looking at both curves we see the same problem we had with the CERES score model. The R-squared value looked promising but after training and testing our model, the result was not good. The curves show that the predicted and real values are not similar, which proves our model to be not that good. 
+Looking at both curves we see the same problem we had with the CERES score model. The R-squared value looked promising but after training and testing our model, the result was not what we aimed for. The curves show that the predicted and real values are not similar, which proves our model to be not that good. 
 
 
 # Conclusion
