@@ -342,11 +342,11 @@ ceres.red.genes <- ceres.clean[which(rownames(ceres.clean) %in% genes.red),]
 
 # Statistical tests
 
-Our next goal is to determine whether there is a correlation between the presence of a specific DM and the essentiality of a second mutated gene, which then might be a potential second-site-target (SST).
+Our next goal was to determine whether there is a correlation between the presence of a specific DM and the essentiality of a second mutated gene, which then might be a potential second-site-target (SST).
 
 ## Checking data distribution in order to determine which correlation test to apply
 
-Parametric correlation test (e.g. Pearson correlation) needs normally distributed data. If that is not the case, we need to apply non-parametric tests (e.g. Spearman correlation or Wilcoxon Rank sum test).
+Parametric correlation tests (e.g. Pearson correlation) need normally distributed data. If that is not the case, we need to apply non-parametric tests (e.g. Spearman correlation or Wilcoxon Rank sum test).
 
 Methods to determine the type of distribution: qq-plots (visual determination), Shapiro-Wilk-test.
 
@@ -435,7 +435,7 @@ The function rcorr(x, type = c("pearson", "spearman")) can be used to compute th
 
 Packages used: Hmisc
 
-We calculated the significance levels for TP53 and extracted the relevant column:
+We calculated the significance levels for our DMs and extracted the relevant columns manually:
 ```{r, include = FALSE}
 library(Hmisc)
 ```
@@ -533,13 +533,13 @@ There are no potential SSTs for MUC16 according to literature, because it is no 
 
 ## Conclusion
 
-In this part, we wanted to find potential second-site-targets in the GBM celllines, where a specific driving mutation is present. After confirming the unnormal distribution of our data using Shapiro-Wilk-Tests, we used Spearman correlation to determine, whether there is a dependency between the presence of a specific DM and the essentiality for cell survival of another mutated gene (indicated by low CERES score). We performed those tests with our cancer-associated DM TP53, PTEN and MUC-16. For each DM we found about 100 potential SSTs, but we could not confirm our results with scientific papers or the other way round, respectively. 
-Furthermore, we are also not able to assign our celllines to a specific GBM subtype (classical, mesenchymal, neural, proneural). However, we would assign our celllines more towards the proneural or mesenchymal subtype, since these subtypes have mutations of PTEN and TP53 as there marker. But we could not confirm any other known tumormarkers for those two subtypes in our celllines.
+In this part, we wanted to find potential second-site-targets in GBM celllines, where a specific driving mutation is present. After confirming the unnormal distribution of our data using Shapiro-Wilk-Tests, we used Spearman correlation to determine, whether there is a dependency between the presence of a specific DM and the essentiality for cell survival of another mutated gene (indicated by low CERES score). We performed those tests with our cancer-associated DMs TP53, PTEN and MUC-16. For each DM we found about 100 potential SSTs, but we could not confirm our results with scientific papers or the other way round, respectively. 
+Furthermore, we are also not able to assign our celllines to a specific GBM subtype (classical, mesenchymal, neural, proneural). However, we would assign our celllines more towards the proneural or mesenchymal subtype, since these subtypes have mutations of PTEN and TP53 as their marker. But we could not confirm any other known tumor markers for those two subtypes in our celllines.
 
 
 # K-means
 
-Using our reduced data set, we wanted to perform the kmeans clustering to find out if our selected DMs and the potential SST are part of the same cluster. If that is the case, the respective SSTs would not be a valid target. 
+Using our reduced data set, we wanted to perform the k means clustering to find out if our selected DMs and the potential SSTs are part of the same cluster. If that is the case, the respective SSTs would not be a valid target. 
 K-means assigns all data points to a set number of clustering centres ("centroids") so that the so-called withing-number-of-squares is minimal until the assignment stops changing. Data points - in our case genes - in the same cluster are likely to show similarities.
 
 ## Determining optimal cluster number k
@@ -559,6 +559,7 @@ library(gridExtra)
 install.packages("lattice")
 library(lattice)
 ```
+
 ```{r}
 CERES.red_Optimal_K <- function(ceres.red.genes, specifier) {
   output <- lapply(1:ncol(ceres.red.genes), function(a){
@@ -575,6 +576,13 @@ CERES.red_Optimal_K <- function(ceres.red.genes, specifier) {
 }
 
 Ceres.red_optKS <- CERES.red_Optimal_K(ceres.red.genes, "CERES Optimal Clusters k")
+## plotting wss function 
+optimalKprocessedData.red <- lapply(seq_along(Ceres.red_optKS), function(a){
+  dtPicker <- as.data.frame(Ceres.red_optKS[[a]]) # one vector picked and formatted into dataframe
+  dtPicker$Cell_Sample <- names(Ceres.red_optKS)[a] #sample added as label
+  dtPicker$OptimalK <- 1:nrow(dtPicker) 
+  return(dtPicker)
+})
 ## plotting wss function 
 optimalKprocessedData.red <- lapply(seq_along(Ceres.red_optKS), function(a){
   dtPicker <- as.data.frame(Ceres.red_optKS[[a]]) # one vector picked and formatted into dataframe
@@ -617,11 +625,57 @@ s3.red = fviz_silhouette(silhouette(km3.red$cluster, dist(ceres.red.genes), do.c
 
 grid.arrange(p2.red,p3.red,s2.red,s3.red, nrow=2)
 ```
+
 The silhouette values as well as the clustering plot for k = 2 show less wrongly assigned data points (evident by the small red bar going below Si = 0) as well as a more distinct clustering in comparison to k = 3. Hence using 2 centroids proves to be more optimal.
 
 ## Conclusion
 
-Bemerkung für annika: bei 2 clustern ist die chance ein "false" sst zu sein eben 50:50, unbedingt erwähnen; 3 cluster scheinen aber nicht "intuitiv" (siehe k=3 cluster plot); tp53 als "outlier" beeinflusst fit bzw cluster sehr: carl schreibt dazu: WSS makes the assumption that clusters are convex and isotropic, which is not always the case. It responds poorly to elongated clusters, or manifolds with irregular shapes.
+Goal of k means clustering is grouping of similar objects together in one specific cluster. Potential SSTs should therefore be part of the same cluster as the belonging DM.
+We clustered our reduced data as described above and found the following potential SSTs in the same clusters as the DMs:
+
+TP53: Part of Cluster 2 --> all genes that are part of cluster 1 are no potentiual SSTs
+
+```{r}
+genes.clusters = as.data.frame(km2.red$cluster)
+genes.clusters$rownames = rownames(genes.clusters)
+sst.genes.clusters.tp53 = genes.clusters[-(which(rownames(genes.clusters) %!in% rownames(SST.tp53))),]
+sst.genes.p.clusters.tp53 = cbind(sst.genes.clusters.tp53, SST.tp53)
+sst.genes.p.clusters.tp53 = sst.genes.p.clusters.tp53[, -2]
+colnames(sst.genes.p.clusters.tp53) = c("Cluster", "Correlation to TP53")
+sst.genes.p.clusters.tp53 = sst.genes.p.clusters.tp53[-which((sst.genes.p.clusters.53$Cluster) == 1),]
+rownames(sst.genes.p.clusters.tp53)
+```
+
+PTEN:
+
+```{r}
+genes.clusters = as.data.frame(km2.red$cluster)
+genes.clusters$rownames = rownames(genes.clusters)
+sst.genes.clusters.pten = genes.clusters[-(which(rownames(genes.clusters) %!in% rownames(SST.pten))),]
+sst.genes.p.clusters.pten = cbind(sst.genes.clusters.pten, SST.pten)
+sst.genes.p.clusters.pten = sst.genes.p.clusters.pten[, -2]
+colnames(sst.genes.p.clusters.pten) = c("Cluster", "Correlation to PTEN")
+sst.genes.p.clusters.pten = sst.genes.p.clusters.pten[-which((sst.genes.p.clusters.pten$Cluster) == 1),]
+rownames(sst.genes.p.clusters.pten)
+```
+
+MUC-16:
+```{r}
+genes.clusters = as.data.frame(km2.red$cluster)
+genes.clusters$rownames = rownames(genes.clusters)
+sst.genes.clusters.muc16 = genes.clusters[-(which(rownames(genes.clusters) %!in% rownames(SST.muc16))),]
+sst.genes.p.clusters.muc16 = cbind(sst.genes.clusters.muc16, SST.muc16)
+sst.genes.p.clusters.muc16 = sst.genes.p.clusters.muc16[, -2]
+colnames(sst.genes.p.clusters.muc16) = c("Cluster", "Correlation to MUC-16")
+sst.genes.p.clusters.muc16 = sst.genes.p.clusters.muc16[-which((sst.genes.p.clusters.muc16$Cluster) == 1),]
+rownames(sst.genes.p.clusters.muc16)
+```
+
+In  this step we excluded the potential SSTs that do not cluster together with the corresponding DM based on the CERES scores of these genes in order to further reduce the number of potential SSTs based on their likeability.
+We need to pay attention to the circumstance that the chance of putting a gene into the wrong cluster is about 50 % when 2 centers are used. The probability of wrong clustering is smaller if we used more centers. Based on our silhouette plot the optimal k seems to be 2 because there were less negative silhouette values compared to the clustering that was performed using 3 centers. Clustering with 2 centers also lead to 2 clearly distinct clusters. When we performed the k means clustering unsing 3 centers the result were two clusters that were very close and the separation was not as distinct. For this reason we chose to perform our k means with 2 centers.
+A potential problem is that the TP53 is located very distant from all other data points. This affects the used method to determine the optimal number of k through WSS. WSS makes the assumption that clusters are convex and isotropic, which is not always the case. This method responds poorly to elongated clusters or manifolds with irregular shapes.
+
+Bemerkung f�r Annika: bei 2 clustern ist die chance ein "false" sst zu sein eben 50:50, unbedingt erwähnen; 3 cluster scheinen aber nicht "intuitiv" (siehe k=3 cluster plot); tp53 als "outlier" beeinflusst fit bzw cluster sehr: carl schreibt dazu: WSS makes the assumption that clusters are convex and isotropic, which is not always the case. It responds poorly to elongated clusters, or manifolds with irregular shapes.
 
 # Multiple linear regression
 
