@@ -675,6 +675,52 @@ grid.arrange(p2.red,p3.red,s2.red,s3.red, nrow=2)
 
 The silhouette values as well as the clustering plot for k = 2 show less wrongly assigned data points (evident by the small red bar going below Si = 0) as well as a more distinct clustering in comparison to k = 3. Hence using 2 centroids proves to be more optimal.
 
+
+Goal of k means clustering is grouping of similar objects together in one specific cluster. Potential SSTs should therefore be part of the same cluster as the belonging DM.
+We clustered our reduced data as described above and found the following potential SSTs in the same clusters as the DMs:
+
+TP53
+
+```{r}
+genes.clusters = as.data.frame(km2.red$cluster)
+genes.clusters$rownames = rownames(genes.clusters)
+sst.genes.clusters.tp53 = genes.clusters[-(which(rownames(genes.clusters) %!in% rownames(SST.tp53))),]
+sst.genes.p.clusters.tp53 = cbind(sst.genes.clusters.tp53, SST.tp53)
+sst.genes.p.clusters.tp53 = sst.genes.p.clusters.tp53[, -2]
+colnames(sst.genes.p.clusters.tp53) = c("Cluster", "Correlation to TP53")
+sst.genes.p.clusters.tp53 = sst.genes.p.clusters.tp53[-which((sst.genes.p.clusters.53$Cluster) == 1),]
+rownames(sst.genes.p.clusters.tp53)
+```
+
+PTEN:
+
+```{r}
+genes.clusters = as.data.frame(km2.red$cluster)
+genes.clusters$rownames = rownames(genes.clusters)
+sst.genes.clusters.pten = genes.clusters[-(which(rownames(genes.clusters) %!in% rownames(SST.pten))),]
+sst.genes.p.clusters.pten = cbind(sst.genes.clusters.pten, SST.pten)
+sst.genes.p.clusters.pten = sst.genes.p.clusters.pten[, -2]
+colnames(sst.genes.p.clusters.pten) = c("Cluster", "Correlation to PTEN")
+sst.genes.p.clusters.pten = sst.genes.p.clusters.pten[-which((sst.genes.p.clusters.pten$Cluster) == 1),]
+rownames(sst.genes.p.clusters.pten)
+```
+
+MUC-16:
+```{r}
+genes.clusters = as.data.frame(km2.red$cluster)
+genes.clusters$rownames = rownames(genes.clusters)
+sst.genes.clusters.muc16 = genes.clusters[-(which(rownames(genes.clusters) %!in% rownames(SST.muc16))),]
+sst.genes.p.clusters.muc16 = cbind(sst.genes.clusters.muc16, SST.muc16)
+sst.genes.p.clusters.muc16 = sst.genes.p.clusters.muc16[, -2]
+colnames(sst.genes.p.clusters.muc16) = c("Cluster", "Correlation to MUC-16")
+sst.genes.p.clusters.muc16 = sst.genes.p.clusters.muc16[-which((sst.genes.p.clusters.muc16$Cluster) == 1),]
+rownames(sst.genes.p.clusters.muc16)
+```
+
+In  this step we excluded the potential SSTs that do not cluster together with the corresponding DM based on the CERES scores of these genes in order to further reduce the number of potential SSTs based on their likeability.
+We need to pay attention to the circumstance that the chance of putting a gene into the wrong cluster is about 50 % when 2 centers are used. The probability of wrong clustering is smaller if we used more centers. Based on our silhouette plot the optimal k seems to be 2 because there were less negative silhouette values compared to the clustering that was performed using 3 centers. Clustering with 2 centers also lead to 2 clearly distinct clusters. When we performed the k means clustering unsing 3 centers the result were two clusters that were very close and the separation was not as distinct. For this reason we chose to perform our k means with 2 centers.
+A potential problem is that the TP53 is located very distant from all other data points. This affects the used method to determine the optimal number of k through WSS. WSS makes the assumption that clusters are convex and isotropic, which is not always the case. This method responds poorly to elongated clusters or manifolds with irregular shapes.
+
 ## Conclusion
 
 Bemerkung für annika: bei 2 clustern ist die chance ein "false" sst zu sein eben 50:50, unbedingt erwähnen; 3 cluster scheinen aber nicht "intuitiv" (siehe k=3 cluster plot); tp53 als "outlier" beeinflusst fit bzw cluster sehr: carl schreibt dazu: WSS makes the assumption that clusters are convex and isotropic, which is not always the case. It responds poorly to elongated clusters, or manifolds with irregular shapes.
