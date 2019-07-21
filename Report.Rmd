@@ -111,7 +111,7 @@ copy.clean = copy.clean[order(rownames(copy.clean)), order(colnames(copy.clean))
 
 After isolating the relevant cell lines, we checked our matrices for NA values, outliers as well as values x = 0 and removed them.
 
-1a. Checking for NA values in all matrices.
+1. Checking for NA values in all matrices.
 
 ```{r}
 sum(is.na(ceres.clean))
