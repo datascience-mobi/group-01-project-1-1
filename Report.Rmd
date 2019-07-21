@@ -71,7 +71,7 @@ The identification of genomic interactions and their effect on cancer cell survi
 
 The driver mutations are normally highly essential genes for all cells in the human body, making them a bad target for anti-cancer drugs, for they would shut down all cells, not just cancer cells. The alternative to this targeting problem is to find genes that are linked with the driving mutations in the cancer cells, but not in the normal cells. Ideally, the targeting of these so called *second site targets* (SST) would cause the cancer cells to shut down and stop proliferating, while the normal cells would not be subjected to any changes.
 
-Our aim in this project was to find the driver mutations in GBM throughout all cell lines in our data set, compare them to the literature and investigate if there is a dependency between them and any second site targets. In the end the aim was to find a model where we could possibly predict either the expression, copy number, CERES score or the probability of stopping cell proliferation targeting one specific gene.
+Our aim in this project was to find the driver mutations in GBM throughout all cell lines in our data set, compare them to the literature and investigate if there is a dependency between them and any second site targets. In the end the aim was to find a model where we could possibly predict either the expression, copy number, CERES score or the probability of stopping cell proliferation targeting one specific gene. The CERES score is a measure of how essential/important a particular gene is for cell survival. It reflects whether upon knocking down that genes the cell reduces or increases its proliferation or has no effect. Smaller values refer to higher essentiality.
 
 # Data cleanup
 
@@ -666,7 +666,7 @@ grid.arrange(p2.red,p3.red,s2.red,s3.red, nrow=2)
 The silhouette values as well as the clustering plot for k = 2 show less wrongly assigned data points (evident by the small red bar going below Si = 0) as well as a more distinct clustering in comparison to k = 3. Hence using 2 centroids proves to be more optimal.
 
 
-Goal of k means clustering is grouping of similar objects together in one specific cluster. Potential SSTs as well as our selected driver mutations should therefore be part of the same cluster. TP53, PTEN and MUC-16 are all part of cluster 2, so potential SSTs which belong to cluster 1 are removed.
+Goal of k means clustering is grouping of objects with similar values (here the CERES score) together in one specific cluster. Potential SSTs as well as our selected driver mutations should therefore be part of the same cluster. TP53, PTEN and MUC-16 are all part of cluster 2, so potential SSTs which belong to cluster 1 are removed.
 We clustered our reduced data as described above and found the following potential SSTs in the same clusters as the DMs:
 
 TP53
