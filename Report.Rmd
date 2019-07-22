@@ -259,7 +259,7 @@ barplot_commongenes <- barplot(common.genes.c, beside = T, names.arg = rownames(
   Variations are associated with several forms of myopathy (Ceyhan-Birsoy et al., 2013; Gerull et al., 2002).
   
 **3. TP53:**
-  (24 mutations) Tumorsuppressorgene, which encodes for p53, which plays a role in regulation or progression through the cell cycle, apoptosis and genomic stability. 
+  (24 mutations) Tumor suppressing gene, which encodes for p53, which plays a role in regulation or progression through the cell cycle, apoptosis and genomic stability. 
   Variations are directly associated with cancer formation (Takami et al., 2015).
   
 **4. MUC16:**
@@ -576,7 +576,7 @@ Furthermore, we are also not able to assign our cell lines to a specific GBM sub
 
 # K-means
 
-Using our reduced data set, we wanted to perform the kmeans clustering to find out if our selected DMs and the potential SST are part of the same cluster. If that is the case, the respective SSTs would not be a valid target. 
+Using our reduced data set, we wanted to perform the kmeans clustering to find out if our selected DMs and the potential SST are part of the same cluster. If that is the case, the respective SSTs will be a valid target. 
 K-means assigns all data points to a set number of clustering centres ("centroids") so that the so-called withing-number-of-squares is minimal until the assignment stops changing. Data points - in our case genes - in the same cluster are likely to show similarities.
 
 ## Creating CERES-dataframe
